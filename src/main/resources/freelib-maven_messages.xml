@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <!-- Define message codes class name -->
+  <entry key="message-class-name">info.freelibrary.maven.MessageCodes</entry>
+
+  <!-- To process file: -->
+  <!-- mvn info.freelibrary:freelib-utils:generate-codes -->
+
+  <!-- Maven plug-in related messages -->
+  <entry key="MVN-001">No message files were supplied so no code classes were created</entry>
+  <entry key="MVN-002">ResourceBundle&apos;s &quot;{}&quot; key not found</entry>
+  <entry key="MVN-003">Codes class ({}) cannot be created because package directory ({}) does not exist and cannot be
+    created</entry>
+  <entry key="MVN-004">Set system.free.memory property to: {}</entry>
+  <entry key="MVN-005">Set system.total.memory property to: {}</entry>
+  <entry key="MVN-006">Set system.cores property to: {}</entry>
+  <entry key="MVN-007">Getting a percentage of system's free memory: {} of {}</entry>
+  <entry key="MVN-008">BEGIN GENERATED CODE</entry>
+  <entry key="MVN-009">Supplied log level '{}' was unknown, setting level to 'ERROR'</entry>
+  <entry key="MVN-010">Supplied logger '{}' isn't a org.slf4j.impl.SimpleLogger</entry>
+  <entry key="MVN-011">Has the Maven logger changed?</entry>
+  <entry key="MVN-012">'{}' logging level is now set to: {}</entry>
+  <entry key="MVN-013">Setting a UUID property ({} = {}) for use in the Maven build</entry>
+  <entry key="MVN-014">Setting System property ({} = {}) for use in the Maven build</entry>
+  <entry key="MVN-015">File '{}' exists, but there are no properties to be set</entry>
+
+</properties>

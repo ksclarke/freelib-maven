@@ -1,0 +1,13 @@
+# Target really should be in ~/.gitignore, but adding here for the convenience of others
+target/
+
+# By product of using PMD in Eclipse
+.eclipse-pmd
+
+# We encode this for Travis builds, but don't want to check it in to source control!
+src/main/resources/build-key.gpg
+
+# Ignore project build tools which are generated on each build;
+# we keep Checkstyle and PMD so they can be picked up by Codacy
+src/main/tools/travis
+src/main/tools/eclipse
