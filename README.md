@@ -8,9 +8,6 @@ To build the project, type:
     cd freelib-maven-plugins
     mvn install
 
-If you want to use a pre-built version, please consult the project's [home page](http://projects.freelibrary.info/freelib-maven-plugins) to learn 
-more.
-
 ### License
 
 GNU Lesser General Public License, Version 3.0 (or any later version)
