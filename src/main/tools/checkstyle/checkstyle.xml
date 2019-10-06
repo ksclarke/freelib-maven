@@ -85,7 +85,7 @@
     </module>
   </module>
   <module name="SuppressionFilter">
-    <property name="file" value="checkstyle-suppressions.xml" />
+    <property name="file" value="${config_loc}/checkstyle-suppressions.xml" />
   </module>
   <module name="FileTabCharacter">
     <property name="eachLine" value="true" />
