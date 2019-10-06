@@ -52,7 +52,7 @@
 
     <!-- Project build plug-in dependencies -->
     <codacy.plugin.version>1.0.2</codacy.plugin.version>
-    
+
     <!-- Checkstyle configs -->
     <config_loc>${project.basedir}/src/main/tools/checkstyle</config_loc>
   </properties>
@@ -147,6 +147,9 @@
       <plugin>
         <groupId>br.com.ingenieux</groupId>
         <artifactId>jbake-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
