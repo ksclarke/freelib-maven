@@ -11,7 +11,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import info.freelibrary.util.Logger;
 import info.freelibrary.util.LoggerFactory;
-import info.freelibrary.util.MessageCodes;
 
 /**
  * Sets the logging level for Maven builds to ERROR instead of INFO. The only other way to do this is to configure the

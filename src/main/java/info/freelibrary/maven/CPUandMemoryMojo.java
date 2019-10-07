@@ -16,7 +16,6 @@ import org.apache.maven.project.MavenProject;
 
 import info.freelibrary.util.Logger;
 import info.freelibrary.util.LoggerFactory;
-import info.freelibrary.util.MessageCodes;
 
 import oshi.SystemInfo;
 import oshi.hardware.GlobalMemory;
@@ -26,9 +25,9 @@ import oshi.hardware.HardwareAbstractionLayer;
  * Sets Maven project properties with values for system.cores, system.free.memory, and system.total.memory; memory
  * values are set with unit of measurement appended (e.g., 200m, 3g, 5000k).
  * <p>
- * To manually run the plugin: `mvn info.freelibrary:freelib-utils:[VERSION]:set-cpumem-properties` (supplying whatever
- * version is appropriate). Usually, though, the plugin would just be configured to run as a part of the Maven
- * lifecycle.
+ * To manually run the plugin: `mvn info.freelibrary:freelib-utils:[VERSION]:set-cpumem-properties` (supplying
+ * whatever version is appropriate). Usually, though, the plugin would just be configured to run as a part of the
+ * Maven lifecycle.
  * </p>
  */
 @Mojo(name = "set-cpumem-properties", defaultPhase = LifecyclePhase.INITIALIZE)

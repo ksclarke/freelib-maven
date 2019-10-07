@@ -43,7 +43,7 @@
   <properties>
     <!-- Project specific dependencies -->
     <oshi.version>2.3</oshi.version>
-    <freelib.utils.version>0.8.10</freelib.utils.version>
+    <freelib.utils.version>1.0.1</freelib.utils.version>
     <slf4j.simple.logger.version>1.7.25</slf4j.simple.logger.version>
 
     <!-- Our Maven mojo dependencies -->

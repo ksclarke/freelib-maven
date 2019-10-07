@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
-import info.freelibrary.util.MessageCodes;
-
 /**
  * Maven related utilities.
  */

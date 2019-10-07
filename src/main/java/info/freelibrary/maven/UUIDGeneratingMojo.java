@@ -16,7 +16,6 @@ import org.apache.maven.project.MavenProject;
 
 import info.freelibrary.util.Logger;
 import info.freelibrary.util.LoggerFactory;
-import info.freelibrary.util.MessageCodes;
 
 /**
  * A Maven mojo that can generate UUIDs as a part of the build process.
