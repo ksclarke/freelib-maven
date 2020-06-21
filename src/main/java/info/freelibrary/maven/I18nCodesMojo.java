@@ -1,8 +1,6 @@
 
 package info.freelibrary.maven;
 
-import static info.freelibrary.maven.Constants.BUNDLE_NAME;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,11 +45,13 @@ public class I18nCodesMojo extends AbstractMojo {
 
     private static final String MESSAGE_CLASS_NAME = "message-class-name";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(I18nCodesMojo.class, BUNDLE_NAME);
+    private static final Logger LOGGER = LoggerFactory.getLogger(I18nCodesMojo.class, Constants.BUNDLE_NAME);
 
     private static final File RESOURCES_DIR = new File("src/main/resources");
 
     private static final RegexFileFilter DEFAULT_MESSAGE_FILTER = new RegexFileFilter(".*_messages.xml");
+
+    private static final String BUNDLE_DELIM = "_";
 
     /**
      * The Maven project directory.
@@ -100,7 +100,9 @@ public class I18nCodesMojo extends AbstractMojo {
             FileInputStream inStream = null;
 
             try {
-                inStream = new FileInputStream((String) iterator.next());
+                final String fileName = (String) iterator.next();
+
+                inStream = new FileInputStream(fileName);
                 properties.loadFromXML(inStream);
 
                 final String fullClassName = properties.getProperty(MESSAGE_CLASS_NAME);
@@ -131,14 +133,24 @@ public class I18nCodesMojo extends AbstractMojo {
                     while (messageIterator.hasNext()) {
                         final String key = messageIterator.next();
 
+                        // Create a field that contains the name of the bundle file
+                        if (key.equals(MESSAGE_CLASS_NAME)) {
+                            final FieldSource<JavaClassSource> field = source.addField();
+                            final String bundleName = FileUtils.stripExt(new File(fileName).getName());
+
+                            field.setName("BUNDLE").setStringInitializer(bundleName);
+                            field.setType(String.class.getSimpleName()).setPublic().setStatic(true).setFinal(true);
+                            field.getJavaDoc().setFullText("Message bundle name.");
+                        }
+
                         // Create a field in our new message codes class for the message
                         if (!key.equals(MESSAGE_CLASS_NAME)) {
-                            final String normalizedKey = key.replaceAll("[\\.-]", "_");
+                            final String normalizedKey = key.replaceAll("[\\.-]", BUNDLE_DELIM);
                             final String value = properties.getProperty(key);
                             final FieldSource<JavaClassSource> field = source.addField();
 
                             field.setName(normalizedKey).setStringInitializer(key);
-                            field.setType("String").setPublic().setStatic(true).setFinal(true);
+                            field.setType(String.class.getSimpleName()).setPublic().setStatic(true).setFinal(true);
                             field.getJavaDoc().setFullText("Message: " + value);
                         }
                     }
