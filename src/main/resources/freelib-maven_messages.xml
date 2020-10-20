@@ -3,7 +3,7 @@
 <properties>
   <!-- Define message codes class name -->
   <entry key="message-class-name">info.freelibrary.maven.MessageCodes</entry>
-
+  <!--  freelib-maven_messages -->
   <!-- To process file: -->
   <!-- mvn info.freelibrary:freelib-utils:generate-codes -->
 

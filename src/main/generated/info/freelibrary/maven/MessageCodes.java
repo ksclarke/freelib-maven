@@ -65,6 +65,10 @@ final public class MessageCodes {
 	 * Message: Supplied log level '{}' was unknown, setting level to 'ERROR'
 	 */
 	public static final String MVN_009 = "MVN-009";
+	/**
+	 * Message bundle name.
+	 */
+	public static final String BUNDLE = "freelib-maven_messages";
 
 	private MessageCodes() {
 		super();

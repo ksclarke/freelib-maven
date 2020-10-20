@@ -42,16 +42,18 @@
 
   <properties>
     <!-- Project specific dependencies -->
-    <oshi.version>2.3</oshi.version>
-    <freelib.utils.version>1.0.1</freelib.utils.version>
-    <slf4j.simple.logger.version>1.7.25</slf4j.simple.logger.version>
+    <maven.version>3.6.3</maven.version>
+    <oshi.core.version>5.2.4</oshi.core.version>
+    <freelib.utils.version>2.1.0</freelib.utils.version>
+    <maven.plugin.version>3.6.0</maven.plugin.version>
+    <slf4j.simple.logger.version>1.7.30</slf4j.simple.logger.version>
 
     <!-- Our Maven mojo dependencies -->
     <roaster.version>2.15.0.Final</roaster.version>
-    <plexus.utils.version>3.1.0</plexus.utils.version>
+    <plexus.utils.version>3.3.0</plexus.utils.version>
 
     <!-- Project build plug-in dependencies -->
-    <codacy.plugin.version>1.0.2</codacy.plugin.version>
+    <codacy.plugin.version>1.2.0</codacy.plugin.version>
   </properties>
 
   <dependencies>
@@ -61,9 +63,9 @@
       <version>${freelib.utils.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.github.dblock</groupId>
+      <groupId>com.github.oshi</groupId>
       <artifactId>oshi-core</artifactId>
-      <version>${oshi.version}</version>
+      <version>${oshi.core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -80,6 +82,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
+      <version>${maven.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -94,6 +97,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
+      <version>${maven.version}</version>
       <exclusions>
         <exclusion>
           <groupId>com.google.guava</groupId>
@@ -102,8 +106,14 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-plugin-plugin</artifactId>
+      <version>${maven.plugin.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
+      <version>${maven.plugin.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.forge.roaster</groupId>
@@ -119,6 +129,26 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>${maven.plugin.version}</version>
+        <configuration>
+          <outputDirectory>src/main/generated</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default-descriptor</id>
+            <phase>process-classes</phase>
+          </execution>
+          <execution>
+            <id>help-goal</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
@@ -159,7 +189,7 @@
   <parent>
     <artifactId>freelib-parent</artifactId>
     <groupId>info.freelibrary</groupId>
-    <version>4.0.1</version>
+    <version>5.2.0</version>
   </parent>
 
 </project>

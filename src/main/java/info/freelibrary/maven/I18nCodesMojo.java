@@ -32,8 +32,8 @@ import info.freelibrary.util.LoggerFactory;
 
 /**
  * I18nCodesMojo is a Maven mojo that can generate a <code>MessageCodes</code> class from which I18N message codes can
- * be referenced. The codes are then used to retrieve textual messages from resource bundles. The benefit of this is
- * the code can be generic, but the actual text from the pre-configured message file will be displayed in the IDE.
+ * be referenced. The codes are then used to retrieve textual messages from resource bundles. The benefit of this is the
+ * code can be generic, but the actual text from the pre-configured message file will be displayed in the IDE.
  * <p>
  * To manually run the plugin: `mvn info.freelibrary:freelib-utils:0.8.0:generate-codes
  * -DmessageFiles=src/main/resources/freelib-utils_messages.xml` (supplying whatever version and message file is
@@ -45,7 +45,7 @@ public class I18nCodesMojo extends AbstractMojo {
 
     private static final String MESSAGE_CLASS_NAME = "message-class-name";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(I18nCodesMojo.class, Constants.BUNDLE_NAME);
+    private static final Logger LOGGER = LoggerFactory.getLogger(I18nCodesMojo.class, MessageCodes.BUNDLE);
 
     private static final File RESOURCES_DIR = new File("src/main/resources");
 
@@ -116,8 +116,8 @@ public class I18nCodesMojo extends AbstractMojo {
                     final String[] packageParts = Arrays.copyOfRange(nameParts, 0, classNameIndex);
                     final String packageName = StringUtils.join(packageParts, ".");
                     final JavaClassSource source = Roaster.create(JavaClassSource.class);
-                    final File packageDir = new File(srcFolderName + File.separatorChar + packageName.replace('.',
-                            File.separatorChar));
+                    final File packageDir =
+                            new File(srcFolderName + File.separatorChar + packageName.replace('.', File.separatorChar));
 
                     source.setFinal(true).setPublic();
 

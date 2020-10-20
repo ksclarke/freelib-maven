@@ -1,7 +1,6 @@
 
 package info.freelibrary.maven;
 
-import static info.freelibrary.util.Constants.BUNDLE_NAME;
 import static info.freelibrary.util.FileUtils.sizeFromBytes;
 
 import java.util.Properties;
@@ -25,9 +24,9 @@ import oshi.hardware.HardwareAbstractionLayer;
  * Sets Maven project properties with values for system.cores, system.free.memory, and system.total.memory; memory
  * values are set with unit of measurement appended (e.g., 200m, 3g, 5000k).
  * <p>
- * To manually run the plugin: `mvn info.freelibrary:freelib-utils:[VERSION]:set-cpumem-properties` (supplying
- * whatever version is appropriate). Usually, though, the plugin would just be configured to run as a part of the
- * Maven lifecycle.
+ * To manually run the plugin: `mvn info.freelibrary:freelib-utils:[VERSION]:set-cpumem-properties` (supplying whatever
+ * version is appropriate). Usually, though, the plugin would just be configured to run as a part of the Maven
+ * lifecycle.
  * </p>
  */
 @Mojo(name = "set-cpumem-properties", defaultPhase = LifecyclePhase.INITIALIZE)
@@ -39,7 +38,7 @@ public class CPUandMemoryMojo extends AbstractMojo {
 
     public static final String SYSTEM_TOTAL_MEMORY = "system.total.memory";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CPUandMemoryMojo.class, BUNDLE_NAME);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CPUandMemoryMojo.class, MessageCodes.BUNDLE);
 
     /**
      * The Maven project directory.

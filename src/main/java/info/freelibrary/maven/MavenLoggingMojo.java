@@ -1,8 +1,6 @@
 
 package info.freelibrary.maven;
 
-import static info.freelibrary.util.Constants.BUNDLE_NAME;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -16,7 +14,10 @@ import info.freelibrary.util.LoggerFactory;
  * Sets the logging level for Maven builds to ERROR instead of INFO. The only other way to do this is to configure the
  * logging level for all Maven builds in <code>${MAVEN_HOME}/conf/logging/simplelogger.properties</code>.
  * <p>
- * The plugin comes with defaults, but can also be configured like: <pre><code>
+ * The plugin comes with defaults, but can also be configured like:
+ * 
+ * <pre>
+ * <code>
      &lt;plugin&gt;
        &lt;groupId&gt;info.freelibrary&lt;/groupId&gt;
        &lt;artifactId&gt;freelib-utils&lt;/artifactId&gt;
@@ -40,12 +41,13 @@ import info.freelibrary.util.LoggerFactory;
          &lt;/execution&gt;
        &lt;/executions&gt;
      &lt;/plugin&gt;
- * </code></pre>
+ * </code>
+ * </pre>
  */
 @Mojo(name = "configure-logging")
 public class MavenLoggingMojo extends AbstractMojo {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MavenLoggingMojo.class, BUNDLE_NAME);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MavenLoggingMojo.class, MessageCodes.BUNDLE);
 
     /**
      * The log level to reset the Maven loggers too.

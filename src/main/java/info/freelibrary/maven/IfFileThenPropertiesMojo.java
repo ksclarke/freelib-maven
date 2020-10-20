@@ -1,8 +1,6 @@
 
 package info.freelibrary.maven;
 
-import static info.freelibrary.util.Constants.BUNDLE_NAME;
-
 import java.io.File;
 import java.util.Iterator;
 import java.util.Properties;
@@ -24,7 +22,7 @@ import info.freelibrary.util.LoggerFactory;
 @Mojo(name = "check-file-set-property", defaultPhase = LifecyclePhase.INITIALIZE)
 public class IfFileThenPropertiesMojo extends AbstractMojo {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UUIDGeneratingMojo.class, BUNDLE_NAME);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UUIDGeneratingMojo.class, MessageCodes.BUNDLE);
 
     /**
      * The Maven project directory.
@@ -56,9 +54,7 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
             if (myExistsFile.exists() && !myMissingFile.exists()) {
                 addProperties();
             }
-        } else if (myExistsFile != null && myExistsFile.exists()) {
-            addProperties();
-        } else if (myMissingFile != null && !myMissingFile.exists()) {
+        } else if (myExistsFile != null && myExistsFile.exists() || myMissingFile != null && !myMissingFile.exists()) {
             addProperties();
         }
     }
@@ -67,7 +63,7 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
         final Properties properties = myProject.getProperties();
 
         if (myProperties != null) {
-            final Iterator keyIterator = myProperties.keySet().iterator();
+            final Iterator<?> keyIterator = myProperties.keySet().iterator();
 
             while (keyIterator.hasNext()) {
                 final String key = keyIterator.next().toString();

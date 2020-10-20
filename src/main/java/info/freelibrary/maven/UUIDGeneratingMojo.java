@@ -1,8 +1,6 @@
 
 package info.freelibrary.maven;
 
-import static info.freelibrary.util.Constants.BUNDLE_NAME;
-
 import java.util.Properties;
 import java.util.UUID;
 
@@ -23,7 +21,7 @@ import info.freelibrary.util.LoggerFactory;
 @Mojo(name = "set-uuid-property", defaultPhase = LifecyclePhase.INITIALIZE)
 public class UUIDGeneratingMojo extends AbstractMojo {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UUIDGeneratingMojo.class, BUNDLE_NAME);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UUIDGeneratingMojo.class, MessageCodes.BUNDLE);
 
     /**
      * The Maven project directory.
