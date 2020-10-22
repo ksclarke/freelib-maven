@@ -143,24 +143,36 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>freelib-maven_messages.xml</include>
+        </includes>
+        <targetPath>.</targetPath>
+      </resource>
+      <resource>
+        <directory>src/main/generated</directory>
+        <includes>
+          <include>plugin.xml</include>
+        </includes>
+        <targetPath>META-INF/maven</targetPath>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>${maven.plugin.version}</version>
         <configuration>
-          <outputDirectory>src/main/generated</outputDirectory>
+          <extractors>
+            <extractor>java-annotations</extractor>
+          </extractors>
         </configuration>
         <executions>
           <execution>
             <id>default-descriptor</id>
             <phase>process-classes</phase>
-          </execution>
-          <execution>
-            <id>help-goal</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
@@ -204,7 +216,7 @@
   <parent>
     <artifactId>freelib-parent</artifactId>
     <groupId>info.freelibrary</groupId>
-    <version>5.2.0</version>
+    <version>5.2.1</version>
   </parent>
 
 </project>
