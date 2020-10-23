@@ -48,6 +48,11 @@
     <maven.plugin.version>3.6.0</maven.plugin.version>
     <slf4j.simple.logger.version>1.7.30</slf4j.simple.logger.version>
 
+    <!-- Transitive dependencies made explicit for security reasons -->
+    <commons.collections.version>3.2.2</commons.collections.version>
+    <commons.compress.version>1.20</commons.compress.version>
+    <shared.utils.version>3.3.3</shared.utils.version>
+
     <!-- Our Maven mojo dependencies -->
     <roaster.version>2.15.0.Final</roaster.version>
     <plexus.utils.version>3.3.0</plexus.utils.version>
@@ -103,14 +108,32 @@
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
         </exclusion>
+        <!-- Exclusions for security reasons; newer versions explicitly included in the POM -->
+        <exclusion>
+          <groupId>org.apache.maven.shared</groupId>
+          <artifactId>maven-shared-utils</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-plugin-plugin</artifactId>
       <version>${maven.plugin.version}</version>
-      <!-- Exclusions in JDK and cannot be in more than one module: https://stackoverflow.com/a/53824670/171452 -->
       <exclusions>
+        <!-- Exclusions for security reasons; newer versions are added to the POM directly. -->
+        <exclusion>
+          <groupId>commons-collections</groupId>
+          <artifactId>commons-collections</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.maven.shared</groupId>
+          <artifactId>maven-shared-utils</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-compress</artifactId>
+        </exclusion>
+        <!-- Exclusions in JDK and cannot be in more than one module: https://stackoverflow.com/a/53824670/171452 -->
         <exclusion>
           <groupId>org.apache.maven.doxia</groupId>
           <artifactId>doxia-site-renderer</artifactId>
@@ -139,6 +162,22 @@
       <groupId>org.jboss.forge.roaster</groupId>
       <artifactId>roaster-jdt</artifactId>
       <version>${roaster.version}</version>
+    </dependency>
+    <!-- Transitive dependencies made explicit for security reasons -->
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>${commons.collections.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-shared-utils</artifactId>
+      <version>${shared.utils.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>${commons.compress.version}</version>
     </dependency>
   </dependencies>
 
