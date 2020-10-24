@@ -52,6 +52,7 @@
     <commons.collections.version>3.2.2</commons.collections.version>
     <commons.compress.version>1.20</commons.compress.version>
     <shared.utils.version>3.3.3</shared.utils.version>
+    <guava.version>30.0-jre</guava.version>
 
     <!-- Our Maven mojo dependencies -->
     <roaster.version>2.15.0.Final</roaster.version>
@@ -104,11 +105,11 @@
       <artifactId>maven-core</artifactId>
       <version>${maven.version}</version>
       <exclusions>
+        <!-- Exclusions for security reasons; newer versions explicitly included in the POM -->
         <exclusion>
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
         </exclusion>
-        <!-- Exclusions for security reasons; newer versions explicitly included in the POM -->
         <exclusion>
           <groupId>org.apache.maven.shared</groupId>
           <artifactId>maven-shared-utils</artifactId>
@@ -178,6 +179,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <version>${commons.compress.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
     </dependency>
   </dependencies>
 
