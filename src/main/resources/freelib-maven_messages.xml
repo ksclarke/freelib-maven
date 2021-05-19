@@ -3,7 +3,7 @@
 <properties>
   <!-- Define message codes class name -->
   <entry key="message-class-name">info.freelibrary.maven.MessageCodes</entry>
-  <!--  freelib-maven_messages -->
+  <!-- freelib-maven_messages -->
   <!-- To process file: -->
   <!-- mvn info.freelibrary:freelib-utils:generate-codes -->
 
@@ -16,7 +16,12 @@
   <entry key="MVN-005">Set system.total.memory property to: {}</entry>
   <entry key="MVN-006">Set system.cores property to: {}</entry>
   <entry key="MVN-007">Getting a percentage of system's free memory: {} of {}</entry>
-  <entry key="MVN-008">BEGIN GENERATED CODE</entry>
+  <entry key="MVN-008">Codes used for internationalized text in logs and other application components. This class is
+    automatically generated from the project's &lt;code&gt;*_messages.xml&lt;/code&gt; file (found in the project's
+    &lt;code&gt;src/main/resources&lt;/code&gt; directory). Do not manually edit the Java code for this class.
+    &lt;p&gt;
+    BEGIN GENERATED CODE
+    &lt;/p&gt;</entry>
   <entry key="MVN-009">Supplied log level '{}' was unknown, setting level to 'ERROR'</entry>
   <entry key="MVN-010">Supplied logger '{}' isn't a org.slf4j.impl.SimpleLogger</entry>
   <entry key="MVN-011">Has the Maven logger changed?</entry>

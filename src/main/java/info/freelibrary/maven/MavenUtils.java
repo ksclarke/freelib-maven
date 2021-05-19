@@ -13,21 +13,44 @@ import org.slf4j.spi.LocationAwareLogger;
 /**
  * Maven related utilities.
  */
+@SuppressWarnings("PMD.MoreThanOneLogger")
 public final class MavenUtils {
 
+    /**
+     * The error log level integer.
+     */
     public static final int ERROR_LOG_LEVEL = LocationAwareLogger.ERROR_INT;
 
+    /**
+     * The warn log level integer.
+     */
     public static final int WARN_LOG_LEVEL = LocationAwareLogger.WARN_INT;
 
+    /**
+     * The info log level integer.
+     */
     public static final int INFO_LOG_LEVEL = LocationAwareLogger.INFO_INT;
 
+    /**
+     * The debug log level integer.
+     */
     public static final int DEBUG_LOG_LEVEL = LocationAwareLogger.DEBUG_INT;
 
+    /**
+     * The trace log level integer.
+     */
     public static final int TRACE_LOG_LEVEL = LocationAwareLogger.TRACE_INT;
 
+    /**
+     * The logger used by MavenUtils.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(MavenUtils.class);
 
+    /**
+     * Creates a new Maven utilities instance.
+     */
     private MavenUtils() {
+        // This intentionally left empty
     }
 
     /**
@@ -38,7 +61,7 @@ public final class MavenUtils {
      * @param aLoggerList A list of names of loggers that need their levels adjusted
      */
     public static void setLogLevels(final int aLogLevel, final String... aLoggerList) {
-        setLogLevels(aLogLevel, aLoggerList, null, null);
+        setLogLevels(aLogLevel, aLoggerList, null, (String[]) null);
     }
 
     /**
@@ -49,11 +72,11 @@ public final class MavenUtils {
      * @param aExcludesList A list of names of loggers to exclude from the reset
      * @param aIncludesList A list of names of additional loggers to include in the reset
      */
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     public static void setLogLevels(final int aLogLevel, final String[] aLoggerList, final String[] aExcludesList,
             final String... aIncludesList) {
         final ArrayList<String> loggerList = new ArrayList<>(Arrays.asList(aLoggerList));
-        final Class<? extends Logger> simpleLogger = LoggerFactory.getLogger("org.slf4j.impl.SimpleLogger")
-                .getClass();
+        final Class<? extends Logger> simpleLogger = LoggerFactory.getLogger("org.slf4j.impl.SimpleLogger").getClass();
 
         if (aIncludesList != null) {
             loggerList.addAll(Arrays.asList(aIncludesList));
@@ -114,8 +137,7 @@ public final class MavenUtils {
             "org.apache.maven.plugin.failsafe.VerifyMojo", "org.apache.maven.DefaultMaven",
             "org.apache.maven.plugin.compiler.TestCompilerMojo", "org.apache.maven.plugins.enforcer.EnforceMojo",
             "org.apache.maven.plugin.compiler.CompilerMojo", "org.codehaus.plexus.archiver.jar.JarArchiver",
-            "org.apache.maven.plugin.surefire.SurefirePlugin",
-            "org.apache.maven.plugin.failsafe.IntegrationTestMojo" };
+            "org.apache.maven.plugin.surefire.SurefirePlugin", "org.apache.maven.plugin.failsafe.IntegrationTestMojo" };
     }
 
     /**

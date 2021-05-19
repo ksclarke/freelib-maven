@@ -22,6 +22,9 @@ import info.freelibrary.util.LoggerFactory;
 @Mojo(name = "check-file-set-property", defaultPhase = LifecyclePhase.INITIALIZE)
 public class IfFileThenPropertiesMojo extends AbstractMojo {
 
+    /**
+     * The logger for IfFileThenPropertiesMojo.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(UUIDGeneratingMojo.class, MessageCodes.BUNDLE);
 
     /**

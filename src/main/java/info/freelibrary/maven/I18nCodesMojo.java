@@ -26,7 +26,6 @@ import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 import info.freelibrary.util.FileUtils;
-import info.freelibrary.util.IOUtils;
 import info.freelibrary.util.Logger;
 import info.freelibrary.util.LoggerFactory;
 
@@ -43,14 +42,29 @@ import info.freelibrary.util.LoggerFactory;
 @Mojo(name = "generate-codes", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class I18nCodesMojo extends AbstractMojo {
 
+    /**
+     * The name of the message class.
+     */
     private static final String MESSAGE_CLASS_NAME = "message-class-name";
 
+    /**
+     * The logger for I18nCodesMojo.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(I18nCodesMojo.class, MessageCodes.BUNDLE);
 
+    /**
+     * The resources directory where the message file should be found.
+     */
     private static final File RESOURCES_DIR = new File("src/main/resources");
 
+    /**
+     * A regex pattern to find the expected message file.
+     */
     private static final RegexFileFilter DEFAULT_MESSAGE_FILTER = new RegexFileFilter(".*_messages.xml");
 
+    /**
+     * A delimiter to use in the bundle name.
+     */
     private static final String BUNDLE_DELIM = "_";
 
     /**
@@ -59,9 +73,15 @@ public class I18nCodesMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}")
     protected MavenProject myProject;
 
+    /**
+     * A configuration option for the message file(s).
+     */
     @Parameter(alias = "messageFiles", property = "messageFiles")
     private List<String> myPropertyFiles;
 
+    /**
+     * A configuration option for the generated sources directory.
+     */
     @Parameter(alias = "generatedSourcesDirectory", property = "generatedSourcesDirectory",
             defaultValue = "${project.basedir}/src/main/generated")
     private File myGeneratedSrcDir;
@@ -92,17 +112,21 @@ public class I18nCodesMojo extends AbstractMojo {
         }
     }
 
+    /**
+     * Generates the message codes class.
+     *
+     * @param aFilesList A list of message files
+     * @throws MojoExecutionException If the mojo failed to run successfully
+     */
+    @SuppressWarnings({ "PMD.AvoidFileStream", "PMD.CyclomaticComplexity" })
     private void generateMessageCodes(final List<String> aFilesList) throws MojoExecutionException {
         final Iterator<?> iterator = aFilesList.iterator();
         final Properties properties = new Properties();
 
         while (iterator.hasNext()) {
-            FileInputStream inStream = null;
+            final String fileName = (String) iterator.next();
 
-            try {
-                final String fileName = (String) iterator.next();
-
-                inStream = new FileInputStream(fileName);
+            try (FileInputStream inStream = new FileInputStream(fileName)) {
                 properties.loadFromXML(inStream);
 
                 final String fullClassName = properties.getProperty(MESSAGE_CLASS_NAME);
@@ -159,24 +183,21 @@ public class I18nCodesMojo extends AbstractMojo {
                     source.addMethod().setPrivate().setConstructor(true).setBody("super();");
 
                     // Create our new message codes class in the requested package directory
-                    final File javaFile = new File(packageDir, className + ".java");
-                    final FileWriter javaWriter = new FileWriter(javaFile);
+                    try (FileWriter javaWriter = new FileWriter(new File(packageDir, className + ".java"))) {
+                        // Let's tell Checkstyle to ignore the generated code (if it's so configured)
+                        source.getJavaDoc().setFullText(LOGGER.getMessage(MessageCodes.MVN_008));
 
-                    // Let's tell Checkstyle to ignore the generated code (if it's so configured)
-                    source.getJavaDoc().setFullText(LOGGER.getMessage(MessageCodes.MVN_008));
+                        // Name our Java file and add a constructor
+                        source.setPackage(packageName).setName(className);
 
-                    // Name our Java file and add a constructor
-                    source.setPackage(packageName).setName(className);
-
-                    // Lastly, write our generated Java class out to the file system
-                    javaWriter.write(source.toString());
-                    javaWriter.close();
+                        // Lastly, write our generated Java class out to the file system
+                        javaWriter.write(source.toString());
+                    }
                 } else {
                     LOGGER.warn(MessageCodes.MVN_002, MESSAGE_CLASS_NAME);
                 }
             } catch (final IOException details) {
                 LOGGER.error(details.getMessage(), details);
-                IOUtils.closeQuietly(inStream);
             }
         }
     }

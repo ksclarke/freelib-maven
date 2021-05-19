@@ -21,6 +21,9 @@ import info.freelibrary.util.LoggerFactory;
 @Mojo(name = "set-uuid-property", defaultPhase = LifecyclePhase.INITIALIZE)
 public class UUIDGeneratingMojo extends AbstractMojo {
 
+    /**
+     * The logger used by UUIDGeneratingMojo.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(UUIDGeneratingMojo.class, MessageCodes.BUNDLE);
 
     /**

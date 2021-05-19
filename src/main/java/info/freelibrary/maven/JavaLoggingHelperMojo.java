@@ -2,8 +2,10 @@
 package info.freelibrary.maven;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ListIterator;
 import java.util.logging.LogManager;
 
@@ -26,6 +28,9 @@ import info.freelibrary.util.FileUtils;
 @Mojo(name = "read-logging-properties", defaultPhase = LifecyclePhase.INITIALIZE)
 public final class JavaLoggingHelperMojo extends AbstractMojo {
 
+    /**
+     * The name of the expected logging configuration file.
+     */
     private static final String LOGGING_CONF_FILE = "logging.properties";
 
     /**
@@ -44,7 +49,7 @@ public final class JavaLoggingHelperMojo extends AbstractMojo {
                 if (file.getName().equals(LOGGING_CONF_FILE)) {
                     final LogManager logManager = LogManager.getLogManager();
 
-                    try (FileInputStream in = new FileInputStream(file)) {
+                    try (InputStream in = Files.newInputStream(Paths.get(file.getAbsolutePath()))) {
                         logManager.readConfiguration(in);
                     } catch (final IOException details) {
                         getLog().error(details);
