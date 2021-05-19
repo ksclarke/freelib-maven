@@ -32,12 +32,24 @@ import oshi.hardware.HardwareAbstractionLayer;
 @Mojo(name = "set-cpumem-properties", defaultPhase = LifecyclePhase.INITIALIZE)
 public class CPUandMemoryMojo extends AbstractMojo {
 
+    /**
+     * A constant label for number of system cores.
+     */
     public static final String SYSTEM_CORES = "system.cores";
 
+    /**
+     * A constant label for system's free memory.
+     */
     public static final String SYSTEM_FREE_MEMORY = "system.free.memory";
 
+    /**
+     * A constant label for system's total memory.
+     */
     public static final String SYSTEM_TOTAL_MEMORY = "system.total.memory";
 
+    /**
+     * The CPUandMemoryMojo logger.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(CPUandMemoryMojo.class, MessageCodes.BUNDLE);
 
     /**
@@ -53,6 +65,7 @@ public class CPUandMemoryMojo extends AbstractMojo {
     private String myFreeMemPercent;
 
     @Override
+    @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Properties properties = myProject.getProperties();
         final int cores = Runtime.getRuntime().availableProcessors();
@@ -64,7 +77,7 @@ public class CPUandMemoryMojo extends AbstractMojo {
 
         properties.setProperty(SYSTEM_CORES, Integer.toString(cores));
 
-        if (!"1".equals(myFreeMemPercent)) {
+        if (1D != freeMemPercent) {
             LOGGER.info(MessageCodes.MVN_007, myFreeMemPercent, sizeToString(freeMemory));
         }
 

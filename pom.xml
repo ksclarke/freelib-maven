@@ -44,7 +44,7 @@
     <!-- Project specific dependencies -->
     <maven.version>3.6.3</maven.version>
     <oshi.core.version>5.2.4</oshi.core.version>
-    <freelib.utils.version>2.1.0</freelib.utils.version>
+    <freelib.utils.version>2.4.0</freelib.utils.version>
     <maven.plugin.version>3.6.0</maven.plugin.version>
     <slf4j.simple.logger.version>1.7.30</slf4j.simple.logger.version>
 
@@ -246,13 +246,6 @@
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-      </plugin>
     </plugins>
   </build>
 
@@ -268,7 +261,7 @@
   <parent>
     <artifactId>freelib-parent</artifactId>
     <groupId>info.freelibrary</groupId>
-    <version>5.2.1</version>
+    <version>6.9.2</version>
   </parent>
 
 </project>

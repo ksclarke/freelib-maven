@@ -1,6 +1,9 @@
 # Target really should be in ~/.gitignore, but adding here for the convenience of others
 target/
 
+# Build artifact supporting versioned POMs
+.flattened-pom.xml
+
 # By product of using PMD in Eclipse
 .eclipse-pmd
 

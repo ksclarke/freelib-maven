@@ -15,7 +15,7 @@ import info.freelibrary.util.LoggerFactory;
  * logging level for all Maven builds in <code>${MAVEN_HOME}/conf/logging/simplelogger.properties</code>.
  * <p>
  * The plugin comes with defaults, but can also be configured like:
- * 
+ *
  * <pre>
  * <code>
      &lt;plugin&gt;
@@ -45,8 +45,12 @@ import info.freelibrary.util.LoggerFactory;
  * </pre>
  */
 @Mojo(name = "configure-logging")
+@SuppressWarnings("PMD.CommentSize")
 public class MavenLoggingMojo extends AbstractMojo {
 
+    /**
+     * The MavenLoggingMojo logger.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(MavenLoggingMojo.class, MessageCodes.BUNDLE);
 
     /**
