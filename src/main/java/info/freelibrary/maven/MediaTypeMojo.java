@@ -44,7 +44,7 @@ import info.freelibrary.util.StringUtils;
  * the system's <code>/etc/mime.types</code> file.
  */
 @SuppressWarnings({ "PMD.ExcessiveImports", "MultipleStringLiterals", "PMD.AvoidDuplicateLiterals",
-    "PMD.Consecutive Literal Appends" })
+    "PMD.ConsecutiveLiteralAppends" })
 @Mojo(name = "generate-mediatype", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class MediaTypeMojo extends AbstractMojo {
 
@@ -276,7 +276,7 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     private void addParseUriMethod(final JavaEnumSource aSource) {
         final String methodTemplate = "public static Optional<MediaType> parse(final URI aURI) {}";
-        final StringBuilder impl = new StringBuilder();
+        final StringBuilder impl = new StringBuilder(350);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         impl.append("{ return parse(aURI, null); }");
