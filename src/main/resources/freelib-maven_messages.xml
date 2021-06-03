@@ -29,5 +29,10 @@
   <entry key="MVN-013">Setting a UUID property ({} = {}) for use in the Maven build</entry>
   <entry key="MVN-014">Setting System property ({} = {}) for use in the Maven build</entry>
   <entry key="MVN-015">File '{}' exists, but there are no properties to be set</entry>
+  <entry key="MVN-116">Unable to create missing generated sources directory: {}</entry>
+  <entry key="MVN-117">Invalid number of property keys and values: {} [{}]</entry>
+  <entry key="MVN-118">Unable to create Java source package directory: {}</entry>
+  <entry key="MVN-119">BEGIN GENERATED CODE</entry>
+  <entry key="MVN-120">The mime.types file was not found in the expected place</entry>
 
 </properties>

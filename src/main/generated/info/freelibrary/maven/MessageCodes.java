@@ -9,6 +9,10 @@ final public class MessageCodes {
 	 */
 	public static final String MVN_010 = "MVN-010";
 	/**
+	 * Message: The mime.types file was not found in the expected place
+	 */
+	public static final String MVN_120 = "MVN-120";
+	/**
 	 * Message: Has the Maven logger changed?
 	 */
 	public static final String MVN_011 = "MVN-011";
@@ -54,17 +58,38 @@ final public class MessageCodes {
 	 */
 	public static final String MVN_006 = "MVN-006";
 	/**
+	 * Message: Unable to create missing generated sources directory: {}
+	 */
+	public static final String MVN_116 = "MVN-116";
+	/**
 	 * Message: Getting a percentage of system's free memory: {} of {}
 	 */
 	public static final String MVN_007 = "MVN-007";
 	/**
-	 * Message: BEGIN GENERATED CODE
+	 * Message: Invalid number of property keys and values: {} [{}]
+	 */
+	public static final String MVN_117 = "MVN-117";
+	/**
+	 * Message: Codes used for internationalized text in logs and other application components. This class is
+	    automatically generated from the project's <code>*_messages.xml</code> file (found in the project's
+	    <code>src/main/resources</code> directory). Do not manually edit the Java code for this class.
+	    <p>
+	    BEGIN GENERATED CODE
+	    </p>
 	 */
 	public static final String MVN_008 = "MVN-008";
+	/**
+	 * Message: Unable to create Java source package directory: {}
+	 */
+	public static final String MVN_118 = "MVN-118";
 	/**
 	 * Message: Supplied log level '{}' was unknown, setting level to 'ERROR'
 	 */
 	public static final String MVN_009 = "MVN-009";
+	/**
+	 * Message: BEGIN GENERATED CODE
+	 */
+	public static final String MVN_119 = "MVN-119";
 	/**
 	 * Message bundle name.
 	 */
