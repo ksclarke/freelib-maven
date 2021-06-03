@@ -42,21 +42,25 @@
 
   <properties>
     <!-- Project specific dependencies -->
-    <maven.version>3.6.3</maven.version>
+    <maven.version>3.8.1</maven.version>
     <oshi.core.version>5.2.4</oshi.core.version>
     <freelib.utils.version>2.4.0</freelib.utils.version>
-    <maven.plugin.version>3.6.0</maven.plugin.version>
+    <maven.plugin.version>3.6.1</maven.plugin.version>
     <slf4j.simple.logger.version>1.7.30</slf4j.simple.logger.version>
 
     <!-- Transitive dependencies made explicit for security reasons -->
-    <commons.collections.version>3.2.2</commons.collections.version>
-    <commons.compress.version>1.20</commons.compress.version>
     <shared.utils.version>3.3.3</shared.utils.version>
     <guava.version>30.0-jre</guava.version>
+    <commons.io.version>2.7</commons.io.version>
+    <commons.codec.version>1.13</commons.codec.version>
+    <commons.httpclient.version>4.5.13</commons.httpclient.version>
 
     <!-- Our Maven mojo dependencies -->
     <roaster.version>2.15.0.Final</roaster.version>
     <plexus.utils.version>3.3.0</plexus.utils.version>
+
+    <!-- Test dependencies -->
+    <test.harness.version>3.3.0</test.harness.version>
 
     <!-- Project build plug-in dependencies -->
     <codacy.plugin.version>1.2.0</codacy.plugin.version>
@@ -104,50 +108,11 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <version>${maven.version}</version>
-      <exclusions>
-        <!-- Exclusions for security reasons; newer versions explicitly included in the POM -->
-        <exclusion>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.maven.shared</groupId>
-          <artifactId>maven-shared-utils</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-plugin-plugin</artifactId>
       <version>${maven.plugin.version}</version>
-      <exclusions>
-        <!-- Exclusions for security reasons; newer versions are added to the POM directly. -->
-        <exclusion>
-          <groupId>commons-collections</groupId>
-          <artifactId>commons-collections</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.maven.shared</groupId>
-          <artifactId>maven-shared-utils</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-compress</artifactId>
-        </exclusion>
-        <!-- Exclusions in JDK and cannot be in more than one module: https://stackoverflow.com/a/53824670/171452 -->
-        <exclusion>
-          <groupId>org.apache.maven.doxia</groupId>
-          <artifactId>doxia-site-renderer</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.maven.doxia</groupId>
-          <artifactId>doxia-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.maven.reporting</groupId>
-          <artifactId>maven-reporting-impl</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
@@ -164,26 +129,51 @@
       <artifactId>roaster-jdt</artifactId>
       <version>${roaster.version}</version>
     </dependency>
+
     <!-- Transitive dependencies made explicit for security reasons -->
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-      <version>${commons.collections.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-shared-utils</artifactId>
       <version>${shared.utils.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-      <version>${commons.compress.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>${commons.codec.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons.io.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${commons.httpclient.version}</version>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-testing</groupId>
+      <artifactId>maven-plugin-testing-harness</artifactId>
+      <scope>test</scope>
+      <version>${test.harness.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-compat</artifactId>
+      <version>${maven.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -193,6 +183,7 @@
         <directory>src/main/resources</directory>
         <includes>
           <include>freelib-maven_messages.xml</include>
+          <include>mime.types</include>
         </includes>
         <targetPath>.</targetPath>
       </resource>
@@ -205,6 +196,14 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <testExcludes>
+            <testExclude>**/MediaTypeTest.java</testExclude>
+          </testExcludes>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
@@ -236,11 +235,10 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <systemPropertyVariables>
-            <org.slf4j.simpleLogger.defaultLogLevel>trace</org.slf4j.simpleLogger.defaultLogLevel>
-            <org.slf4j.simpleLogger.log.info.freelibrary.util.ClasspathUtils>info</org.slf4j.simpleLogger.log.info.freelibrary.util.ClasspathUtils>
-            <org.slf4j.simpleLogger.log.info.freelibrary.util.JarClassLoader>debug</org.slf4j.simpleLogger.log.info.freelibrary.util.JarClassLoader>
-          </systemPropertyVariables>
+          <excludes>
+            <exclude>**/MediaTypeTest.java</exclude>
+          </excludes>
+          <argLine>${jacoco.agent.arg}</argLine>
         </configuration>
       </plugin>
       <plugin>

@@ -1,0 +1,38 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>info.freelibrary</groupId>
+  <artifactId>plugin-test</artifactId>
+  <version>0.0.0-SNAPSHOT</version>
+
+  <properties>
+    <junit.version>4.13.2</junit.version>
+    <freelib.maven.version>0.0.0-SNAPSHOT</freelib.maven.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>info.freelibrary</groupId>
+        <artifactId>freelib-maven-plugins</artifactId>
+        <version>${freelib.maven.version}</version>
+        <configuration></configuration> <!--  Test harness throws an NPE without this empty config -->
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>generate-mimetypes</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
