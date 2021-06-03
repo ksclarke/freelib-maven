@@ -54,6 +54,7 @@
     <commons.io.version>2.7</commons.io.version>
     <commons.codec.version>1.13</commons.codec.version>
     <commons.httpclient.version>4.5.13</commons.httpclient.version>
+    <commons.compress.version>1.19</commons.compress.version>
 
     <!-- Our Maven mojo dependencies -->
     <roaster.version>2.15.0.Final</roaster.version>
@@ -165,6 +166,11 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <version>${commons.httpclient.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>${commons.compress.version}</version>
     </dependency>
 
     <!-- Test dependencies -->
