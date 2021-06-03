@@ -1,7 +1,7 @@
 
 package info.freelibrary.maven;
 
-import static info.freelibrary.util.Constants.*;
+import static info.freelibrary.util.Constants.*; // NOPMD
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,7 +43,8 @@ import info.freelibrary.util.StringUtils;
  * A Maven mojo that generates an enum of pre-configured mime-types, adding any addition ones (with extensions) found in
  * the system's <code>/etc/mime.types</code> file.
  */
-@SuppressWarnings({ "PMD.ExcessiveImports", "MultipleStringLiterals", "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings({ "PMD.ExcessiveImports", "MultipleStringLiterals", "PMD.AvoidDuplicateLiterals",
+    "PMD.Consecutive Literal Appends" })
 @Mojo(name = "generate-mediatype", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class MediaTypeMojo extends AbstractMojo {
 
@@ -235,11 +236,11 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     private void addParseUriMethodWithHint(final JavaEnumSource aSource) {
         final String methodTemplate = "public static Optional<MediaType> parse(final URI aURI, final String aHint) {}";
-        final StringBuilder impl = new StringBuilder();
+        final StringBuilder impl = new StringBuilder(350);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append("{") //
-                .append("final String fragment = '" + HASH + "' + aURI.getFragment();") //
+        impl.append('{') //
+                .append("final String fragment = '").append(HASH).append("' + aURI.getFragment();") //
                 .append("final String ext; final int index;") //
                 .append("String uri = aURI.toString();") //
                 .append("if ((index = uri.indexOf(fragment)) != -1) { uri = uri.substring(0, index); }") //
@@ -352,7 +353,7 @@ public class MediaTypeMojo extends AbstractMojo {
         final StringBuilder impl = new StringBuilder();
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append("{") //
+        impl.append('{') //
                 .append("for (final MediaType mediaType : values()) {") //
                 .append("if (mediaType.myType.equalsIgnoreCase(aType)) {") //
                 .append("return Optional.of(mediaType);") //
@@ -380,7 +381,7 @@ public class MediaTypeMojo extends AbstractMojo {
         final StringBuilder impl = new StringBuilder();
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append("{") //
+        impl.append('{') //
                 .append("final List<MediaType> types = new ArrayList<>();") //
                 .append("for (final MediaType mediaType : values()) {") //
                 .append("if (mediaType.myType.startsWith(aClass.toLowerCase() + \"/\")) {") //
@@ -432,7 +433,7 @@ public class MediaTypeMojo extends AbstractMojo {
         final StringBuilder impl = new StringBuilder();
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append("{") //
+        impl.append('{') //
                 .append("final String hint = aHint != null ? aHint.toLowerCase() : null;") //
                 .append("MediaType chosenMediaType = null;") //
                 .append("for (final MediaType mediaType : values()) {") //
