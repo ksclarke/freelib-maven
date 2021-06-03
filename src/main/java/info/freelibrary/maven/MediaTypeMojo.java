@@ -79,6 +79,11 @@ public class MediaTypeMojo extends AbstractMojo {
     private static final String QUOTE = "\"";
 
     /**
+     * The default size of StringBuilders used in the mojo.
+     */
+    private static final int BUILDER_SIZE = 350;
+
+    /**
      * The Maven project directory.
      */
     @Parameter(defaultValue = "${project}")
@@ -236,7 +241,7 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     private void addParseUriMethodWithHint(final JavaEnumSource aSource) {
         final String methodTemplate = "public static Optional<MediaType> parse(final URI aURI, final String aHint) {}";
-        final StringBuilder impl = new StringBuilder(350);
+        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         impl.append('{') //
@@ -276,7 +281,7 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     private void addParseUriMethod(final JavaEnumSource aSource) {
         final String methodTemplate = "public static Optional<MediaType> parse(final URI aURI) {}";
-        final StringBuilder impl = new StringBuilder(350);
+        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         impl.append("{ return parse(aURI, null); }");
@@ -300,7 +305,7 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     private void addParseStringMethod(final JavaEnumSource aSource) {
         final String methodTemplate = "public static Optional<MediaType> parse(final String aURI) {}";
-        final StringBuilder impl = new StringBuilder();
+        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         impl.append("{ return parse(URI.create(aURI), null); }");
@@ -325,7 +330,7 @@ public class MediaTypeMojo extends AbstractMojo {
     private void addParseStringMethodWithHint(final JavaEnumSource aSource) {
         final String methodTemplate =
                 "public static Optional<MediaType> parse(final String aURI, final String aHint) {}";
-        final StringBuilder impl = new StringBuilder();
+        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         impl.append("{ return parse(URI.create(aURI), aHint); }");
@@ -350,7 +355,7 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     private void addFromStringMethod(final JavaEnumSource aSource) {
         final String methodTemplate = "public static Optional<MediaType> fromString(final String aType) {}";
-        final StringBuilder impl = new StringBuilder();
+        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         impl.append('{') //
@@ -378,7 +383,7 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     private void addGetTypesMethod(final JavaEnumSource aSource) {
         final String methodTemplate = "public static List<MediaType> getTypes(final String aClass) {}";
-        final StringBuilder impl = new StringBuilder();
+        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         impl.append('{') //
@@ -411,7 +416,7 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     private void addFromExtMethod(final JavaEnumSource aSource) {
         final String methodTemplate = "public static Optional<MediaType> fromExt(final String aExt) {}";
-        final StringBuilder impl = new StringBuilder();
+        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         impl.append("{ return fromExt(aExt, null); }");
@@ -430,7 +435,7 @@ public class MediaTypeMojo extends AbstractMojo {
     private void addFromExtMethodWithHint(final JavaEnumSource aSource) {
         final String methodTemplate =
                 "public static Optional<MediaType> fromExt(final String aExt, final String aHint) {}";
-        final StringBuilder impl = new StringBuilder();
+        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         impl.append('{') //
