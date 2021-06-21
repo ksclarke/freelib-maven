@@ -270,6 +270,7 @@ public class MediaTypeMojo extends AbstractMojo {
         // Add the fromString method to the source
         javadoc = aSource.addMethod(StringUtils.format(methodTemplate, impl.toString())).getJavaDoc();
         javadoc.addTagValue("@param", "aURI A URI from which to parse the media type");
+        javadoc.addTagValue("@param", "aHint A hint as to what class of media type we want");
         javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
         javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
     }
