@@ -33,7 +33,7 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
     /**
      * A constant for the snapshot URL build property.
      */
-    static final String SNAPSHOT_URL = "snapshot.url";
+    public static final String SNAPSHOT_URL = "snapshot.url";
 
     /**
      * A constant for the snapshot artifact.
