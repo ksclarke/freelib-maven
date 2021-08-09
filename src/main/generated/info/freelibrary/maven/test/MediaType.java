@@ -1255,7 +1255,366 @@ public enum MediaType {
 	VIDEO_X_SGI_MOVIE("video/x-sgi-movie", new String[]{"movie"}), /**
 																	 * Media-type for x-world/x-vrml
 																	 */
-	X_WORLD_X_VRML("x-world/x-vrml", new String[]{"vrm", "vrml", "wrl"});
+	X_WORLD_X_VRML("x-world/x-vrml", new String[]{"vrm", "vrml", "wrl"}), /**
+																			 * Media-type for application/cellml+xml
+																			 */
+	APPLICATION_CELLML_PLUS_XML("application/cellml+xml", new String[]{
+			"cellml", "cml"}), /**
+								 * Media-type for application/gltf-buffer
+								 */
+	APPLICATION_GLTF_BUFFER("application/gltf-buffer", new String[]{"glbin",
+			"glbuf"}), /**
+						 * Media-type for application/inkml+xml
+						 */
+	APPLICATION_INKML_PLUS_XML("application/inkml+xml", new String[]{"ink",
+			"inkml"}), /**
+						 * Media-type for application/pgp-keys
+						 */
+	APPLICATION_PGP_KEYS("application/pgp-keys", new String[]{"asc", "key"}), /**
+																				 * Media-type for application/pkcs12
+																				 */
+	APPLICATION_PKCS12("application/pkcs12", new String[]{"p12", "pfx"}), /**
+																			 * Media-type for application/pkcs7-mime
+																			 */
+	APPLICATION_PKCS7_MIME("application/pkcs7-mime", new String[]{"p7m", "p7c",
+			"p7z"}), /**
+						 * Media-type for application/prs.nprend
+						 */
+	APPLICATION_PRS_NPREND("application/prs.nprend", new String[]{"rnd", "rct"}), /**
+																					 * Media-type for application/sieve
+																					 */
+	APPLICATION_SIEVE("application/sieve", new String[]{"siv", "sieve"}), /**
+																			 * Media-type for application/vnd.acucorp
+																			 */
+	APPLICATION_VND_ACUCORP("application/vnd.acucorp", new String[]{"atc",
+			"acutc"}), /**
+						 * Media-type for application/vnd.afpc.modca
+						 */
+	APPLICATION_VND_AFPC_MODCA("application/vnd.afpc.modca", new String[]{
+			"list3820", "listafp", "afp", "pseg3820"}), /**
+														 * Media-type for application/vnd.apple.installer+xml
+														 */
+	APPLICATION_VND_APPLE_INSTALLER_PLUS_XML(
+			"application/vnd.apple.installer+xml", new String[]{"dist",
+					"distz", "pkg", "mpkg"}), /**
+												 * Media-type for application/vnd.clonk.c4group
+												 */
+	APPLICATION_VND_CLONK_C4GROUP("application/vnd.clonk.c4group",
+			new String[]{"c4g", "c4d", "c4f", "c4p", "c4u"}), /**
+																 * Media-type for application/vnd.commerce-battelle
+																 */
+	APPLICATION_VND_COMMERCE_BATTELLE("application/vnd.commerce-battelle",
+			new String[]{"icf", "icd", "ic0", "ic1", "ic2", "ic3", "ic4",
+					"ic5", "ic6", "ic7", "ic8"}), /**
+													 * Media-type for application/vnd.commonspace
+													 */
+	APPLICATION_VND_COMMONSPACE("application/vnd.commonspace", new String[]{
+			"csp", "cst"}), /**
+							 * Media-type for application/vnd.coreos.ignition+json
+							 */
+	APPLICATION_VND_COREOS_IGNITION_PLUS_JSON(
+			"application/vnd.coreos.ignition+json", new String[]{"ign",
+					"ignition"}), /**
+									 * Media-type for application/vnd.dece.data
+									 */
+	APPLICATION_VND_DECE_DATA("application/vnd.dece.data", new String[]{"uvf",
+			"uvvf", "uvd", "uvvd"}), /**
+										 * Media-type for application/vnd.dece.ttml+xml
+										 */
+	APPLICATION_VND_DECE_TTML_PLUS_XML("application/vnd.dece.ttml+xml",
+			new String[]{"uvt", "uvvt"}), /**
+											 * Media-type for application/vnd.dece.unspecified
+											 */
+	APPLICATION_VND_DECE_UNSPECIFIED("application/vnd.dece.unspecified",
+			new String[]{"uvx", "uvvx"}), /**
+											 * Media-type for application/vnd.dece.zip
+											 */
+	APPLICATION_VND_DECE_ZIP("application/vnd.dece.zip", new String[]{"uvz",
+			"uvvz"}), /**
+						 * Media-type for application/vnd.ericsson.quickcall
+						 */
+	APPLICATION_VND_ERICSSON_QUICKCALL("application/vnd.ericsson.quickcall",
+			new String[]{"qcall", "qca"}), /**
+											 * Media-type for application/vnd.eszigno3+xml
+											 */
+	APPLICATION_VND_ESZIGNO3_PLUS_XML("application/vnd.eszigno3+xml",
+			new String[]{"es3", "et3"}), /**
+											 * Media-type for application/vnd.etsi.asic-e+zip
+											 */
+	APPLICATION_VND_ETSI_ASIC_E_PLUS_ZIP("application/vnd.etsi.asic-e+zip",
+			new String[]{"asice", "sce"}), /**
+											 * Media-type for application/vnd.fdsn.mseed
+											 */
+	APPLICATION_VND_FDSN_MSEED("application/vnd.fdsn.mseed", new String[]{
+			"msd", "mseed"}), /**
+								 * Media-type for application/vnd.geometry-explorer
+								 */
+	APPLICATION_VND_GEOMETRY_EXPLORER("application/vnd.geometry-explorer",
+			new String[]{"gex", "gre"}), /**
+											 * Media-type for application/vnd.hbci
+											 */
+	APPLICATION_VND_HBCI("application/vnd.hbci", new String[]{"hbci", "hbc",
+			"kom", "upa", "pkd", "bpd"}), /**
+											 * Media-type for application/vnd.hp-hpid
+											 */
+	APPLICATION_VND_HP_HPID("application/vnd.hp-hpid", new String[]{"hpi",
+			"hpid"}), /**
+						 * Media-type for application/vnd.intercon.formnet
+						 */
+	APPLICATION_VND_INTERCON_FORMNET("application/vnd.intercon.formnet",
+			new String[]{"xpw", "xpx"}), /**
+											 * Media-type for application/vnd.kde.kpresenter
+											 */
+	APPLICATION_VND_KDE_KPRESENTER("application/vnd.kde.kpresenter",
+			new String[]{"kpr", "kpt"}), /**
+											 * Media-type for application/vnd.kde.kword
+											 */
+	APPLICATION_VND_KDE_KWORD("application/vnd.kde.kword", new String[]{"kwd",
+			"kwt"}), /**
+						 * Media-type for application/vnd.Kinar
+						 */
+	APPLICATION_VND_KINAR("application/vnd.Kinar", new String[]{"kne", "knp",
+			"sdf"}), /**
+						 * Media-type for application/vnd.koan
+						 */
+	APPLICATION_VND_KOAN("application/vnd.koan", new String[]{"skp", "skd",
+			"skm", "skt"}), /**
+							 * Media-type for application/vnd.logipipe.circuit+zip
+							 */
+	APPLICATION_VND_LOGIPIPE_CIRCUIT_PLUS_ZIP(
+			"application/vnd.logipipe.circuit+zip", new String[]{"lcs", "lca"}), /**
+																					 * Media-type for application/vnd.lotus-approach
+																					 */
+	APPLICATION_VND_LOTUS_APPROACH("application/vnd.lotus-approach",
+			new String[]{"apr", "vew"}), /**
+											 * Media-type for application/vnd.lotus-freelance
+											 */
+	APPLICATION_VND_LOTUS_FREELANCE("application/vnd.lotus-freelance",
+			new String[]{"prz", "pre"}), /**
+											 * Media-type for application/vnd.lotus-notes
+											 */
+	APPLICATION_VND_LOTUS_NOTES("application/vnd.lotus-notes", new String[]{
+			"nsf", "ntf", "ndl", "ns4", "ns3", "ns2", "nsh", "nsg"}), /**
+																		 * Media-type for application/vnd.lotus-organizer
+																		 */
+	APPLICATION_VND_LOTUS_ORGANIZER("application/vnd.lotus-organizer",
+			new String[]{"or3", "or2", "org"}), /**
+												 * Media-type for application/vnd.lotus-wordpro
+												 */
+	APPLICATION_VND_LOTUS_WORDPRO("application/vnd.lotus-wordpro",
+			new String[]{"lwp", "sam"}), /**
+											 * Media-type for application/vnd.ms-project
+											 */
+	APPLICATION_VND_MS_PROJECT("application/vnd.ms-project", new String[]{
+			"mpp", "mpt"}), /**
+							 * Media-type for application/vnd.ms-tnef
+							 */
+	APPLICATION_VND_MS_TNEF("application/vnd.ms-tnef", new String[]{"tnef",
+			"tnf"}), /**
+						 * Media-type for application/vnd.nervana
+						 */
+	APPLICATION_VND_NERVANA("application/vnd.nervana", new String[]{"entity",
+			"request", "bkm", "kcm"}), /**
+										 * Media-type for application/vnd.nintendo.snes.rom
+										 */
+	APPLICATION_VND_NINTENDO_SNES_ROM("application/vnd.nintendo.snes.rom",
+			new String[]{"sfc", "smc"}), /**
+											 * Media-type for application/vnd.palm
+											 */
+	APPLICATION_VND_PALM("application/vnd.palm", new String[]{"prc", "pdb",
+			"pqa", "oprc"}), /**
+								 * Media-type for application/vnd.previewsystems.box
+								 */
+	APPLICATION_VND_PREVIEWSYSTEMS_BOX("application/vnd.previewsystems.box",
+			new String[]{"box", "vbox"}), /**
+											 * Media-type for application/vnd.Quark.QuarkXPress
+											 */
+	APPLICATION_VND_QUARK_QUARKXPRESS("application/vnd.Quark.QuarkXPress",
+			new String[]{"qxd", "qxt", "qwd", "qwt", "qxl", "qxb"}), /**
+																		 * Media-type for application/vnd.quobject-quoxdocument
+																		 */
+	APPLICATION_VND_QUOBJECT_QUOXDOCUMENT(
+			"application/vnd.quobject-quoxdocument", new String[]{"quox",
+					"quiz"}), /**
+								 * Media-type for application/vnd.scribus
+								 */
+	APPLICATION_VND_SCRIBUS("application/vnd.scribus", new String[]{"scd",
+			"sla", "slaz"}), /**
+								 * Media-type for application/vnd.sealed.doc
+								 */
+	APPLICATION_VND_SEALED_DOC("application/vnd.sealed.doc", new String[]{
+			"sdoc", "sdo", "s1w"}), /**
+									 * Media-type for application/vnd.sealed.eml
+									 */
+	APPLICATION_VND_SEALED_EML("application/vnd.sealed.eml", new String[]{
+			"seml", "sem"}), /**
+								 * Media-type for application/vnd.sealedmedia.softseal.html
+								 */
+	APPLICATION_VND_SEALEDMEDIA_SOFTSEAL_HTML(
+			"application/vnd.sealedmedia.softseal.html", new String[]{"stml",
+					"s1h"}), /**
+								 * Media-type for application/vnd.sealedmedia.softseal.pdf
+								 */
+	APPLICATION_VND_SEALEDMEDIA_SOFTSEAL_PDF(
+			"application/vnd.sealedmedia.softseal.pdf", new String[]{"spdf",
+					"spd", "s1a"}), /**
+									 * Media-type for application/vnd.sealed.mht
+									 */
+	APPLICATION_VND_SEALED_MHT("application/vnd.sealed.mht", new String[]{
+			"smht", "smh"}), /**
+								 * Media-type for application/vnd.sealed.ppt
+								 */
+	APPLICATION_VND_SEALED_PPT("application/vnd.sealed.ppt", new String[]{
+			"sppt", "s1p"}), /**
+								 * Media-type for application/vnd.sealed.xls
+								 */
+	APPLICATION_VND_SEALED_XLS("application/vnd.sealed.xls", new String[]{
+			"sxls", "sxl", "s1e"}), /**
+									 * Media-type for application/vnd.SimTech-MindMapper
+									 */
+	APPLICATION_VND_SIMTECH_MINDMAPPER("application/vnd.SimTech-MindMapper",
+			new String[]{"twd", "twds"}), /**
+											 * Media-type for application/vnd.snesdev-page-table
+											 */
+	APPLICATION_VND_SNESDEV_PAGE_TABLE("application/vnd.snesdev-page-table",
+			new String[]{"ptrom", "pt"}), /**
+											 * Media-type for application/vnd.solent.sdkm+xml
+											 */
+	APPLICATION_VND_SOLENT_SDKM_PLUS_XML("application/vnd.solent.sdkm+xml",
+			new String[]{"sdkm", "sdkd"}), /**
+											 * Media-type for application/vnd.sqlite3
+											 */
+	APPLICATION_VND_SQLITE3("application/vnd.sqlite3", new String[]{"sqlite",
+			"sqlite3"}), /**
+							 * Media-type for application/vnd.sus-calendar
+							 */
+	APPLICATION_VND_SUS_CALENDAR("application/vnd.sus-calendar", new String[]{
+			"sus", "susp"}), /**
+								 * Media-type for application/vnd.tml
+								 */
+	APPLICATION_VND_TML("application/vnd.tml", new String[]{"vfr", "viaframe"}), /**
+																					 * Media-type for application/vnd.ufdl
+																					 */
+	APPLICATION_VND_UFDL("application/vnd.ufdl", new String[]{"ufdl", "ufd",
+			"frm"}), /**
+						 * Media-type for application/vnd.uri-map
+						 */
+	APPLICATION_VND_URI_MAP("application/vnd.uri-map", new String[]{"urim",
+			"urimap"}), /**
+						 * Media-type for application/vnd.vd-study
+						 */
+	APPLICATION_VND_VD_STUDY("application/vnd.vd-study", new String[]{"mxi",
+			"study-inter", "model-inter"}), /**
+											 * Media-type for application/vnd.veryant.thin
+											 */
+	APPLICATION_VND_VERYANT_THIN("application/vnd.veryant.thin", new String[]{
+			"istc", "isws"}), /**
+								 * Media-type for application/vnd.zul
+								 */
+	APPLICATION_VND_ZUL("application/vnd.zul", new String[]{"zir", "zirz"}), /**
+																				 * Media-type for application/xv+xml
+																				 */
+	APPLICATION_XV_PLUS_XML("application/xv+xml", new String[]{"mxml", "xhvml",
+			"xvml", "xvm"}), /**
+								 * Media-type for audio/aac
+								 */
+	AUDIO_AAC("audio/aac", new String[]{"adts", "aac", "ass"}), /**
+																 * Media-type for audio/AMR
+																 */
+	AUDIO_AMR("audio/AMR", new String[]{"amr", "AMR"}), /**
+														 * Media-type for audio/AMR-WB
+														 */
+	AUDIO_AMR_WB("audio/AMR-WB", new String[]{"awb", "AWB"}), /**
+																 * Media-type for audio/ATRAC3
+																 */
+	AUDIO_ATRAC3("audio/ATRAC3", new String[]{"at3", "aa3", "omg"}), /**
+																		 * Media-type for audio/EVRC-QCP
+																		 */
+	AUDIO_EVRC_QCP("audio/EVRC-QCP", new String[]{"qcp", "QCP"}), /**
+																	 * Media-type for audio/prs.sid
+																	 */
+	AUDIO_PRS_SID("audio/prs.sid", new String[]{"sid", "psid"}), /**
+																	 * Media-type for audio/usac
+																	 */
+	AUDIO_USAC("audio/usac", new String[]{"loas", "xhe"}), /**
+															 * Media-type for audio/vnd.sealedmedia.softseal.mpeg
+															 */
+	AUDIO_VND_SEALEDMEDIA_SOFTSEAL_MPEG("audio/vnd.sealedmedia.softseal.mpeg",
+			new String[]{"smp3", "smp", "s1m"}), /**
+													 * Media-type for image/fits
+													 */
+	IMAGE_FITS("image/fits", new String[]{"fits", "fit", "fts"}), /**
+																	 * Media-type for image/jphc
+																	 */
+	IMAGE_JPHC("image/jphc", new String[]{"jhc", "jphc"}), /**
+															 * Media-type for image/jpm
+															 */
+	IMAGE_JPM("image/jpm", new String[]{"jpm", "jpgm"}), /**
+															 * Media-type for image/prs.btif
+															 */
+	IMAGE_PRS_BTIF("image/prs.btif", new String[]{"btif", "btf"}), /**
+																	 * Media-type for image/t38
+																	 */
+	IMAGE_T38("image/t38", new String[]{"t38", "T38"}), /**
+														 * Media-type for image/vnd.globalgraphics.pgb
+														 */
+	IMAGE_VND_GLOBALGRAPHICS_PGB("image/vnd.globalgraphics.pgb", new String[]{
+			"PGB", "pgb"}), /**
+							 * Media-type for image/vnd.radiance
+							 */
+	IMAGE_VND_RADIANCE("image/vnd.radiance",
+			new String[]{"hdr", "rgbe", "xyze"}), /**
+													 * Media-type for image/vnd.sealedmedia.softseal.gif
+													 */
+	IMAGE_VND_SEALEDMEDIA_SOFTSEAL_GIF("image/vnd.sealedmedia.softseal.gif",
+			new String[]{"sgif", "sgi", "s1g"}), /**
+													 * Media-type for image/vnd.sealedmedia.softseal.jpg
+													 */
+	IMAGE_VND_SEALEDMEDIA_SOFTSEAL_JPG("image/vnd.sealedmedia.softseal.jpg",
+			new String[]{"sjpg", "sjp", "s1j"}), /**
+													 * Media-type for image/vnd.sealed.png
+													 */
+	IMAGE_VND_SEALED_PNG("image/vnd.sealed.png", new String[]{"spng", "spn",
+			"s1n"}), /**
+						 * Media-type for model/vnd.parasolid.transmit.binary
+						 */
+	MODEL_VND_PARASOLID_TRANSMIT_BINARY("model/vnd.parasolid.transmit.binary",
+			new String[]{"x_b", "xmt_bin"}), /**
+												 * Media-type for model/vnd.parasolid.transmit.text
+												 */
+	MODEL_VND_PARASOLID_TRANSMIT_TEXT("model/vnd.parasolid.transmit.text",
+			new String[]{"x_t", "xmt_txt"}), /**
+												 * Media-type for model/x3d+vrml
+												 */
+	MODEL_X3D_PLUS_VRML("model/x3d+vrml", new String[]{"x3dv", "x3dvz"}), /**
+																			 * Media-type for text/cache-manifest
+																			 */
+	TEXT_CACHE_MANIFEST("text/cache-manifest", new String[]{"appcache",
+			"manifest"}), /**
+							 * Media-type for text/dns
+							 */
+	TEXT_DNS("text/dns", new String[]{"soa", "zone"}), /**
+														 * Media-type for text/prs.lines.tag
+														 */
+	TEXT_PRS_LINES_TAG("text/prs.lines.tag", new String[]{"tag", "dsc"}), /**
+																			 * Media-type for video/vnd.dece.mp4
+																			 */
+	VIDEO_VND_DECE_MP4("video/vnd.dece.mp4", new String[]{"uvu", "uvvu"}), /**
+																			 * Media-type for video/vnd.radgamettools.bink
+																			 */
+	VIDEO_VND_RADGAMETTOOLS_BINK("video/vnd.radgamettools.bink", new String[]{
+			"bik", "bk2"}), /**
+							 * Media-type for video/vnd.sealedmedia.softseal.mov
+							 */
+	VIDEO_VND_SEALEDMEDIA_SOFTSEAL_MOV("video/vnd.sealedmedia.softseal.mov",
+			new String[]{"smov", "smo", "s1q"}), /**
+													 * Media-type for video/vnd.sealed.mpeg1
+													 */
+	VIDEO_VND_SEALED_MPEG1("video/vnd.sealed.mpeg1",
+			new String[]{"smpg", "s11"}), /**
+											 * Media-type for video/vnd.sealed.swf
+											 */
+	VIDEO_VND_SEALED_SWF("video/vnd.sealed.swf", new String[]{"sswf", "ssw"});
 
 	/**
 	 * Sets the media type's identifier.
@@ -1381,6 +1740,7 @@ public enum MediaType {
 	 * Gets a media type from the supplied URI's extension.
 	 *
 	 * @param aURI A URI from which to parse the media type
+	 * @param aHint A hint as to what class of media type we want
 	 * @return The media type that corresponds to the supplied URI
 	 */
 	public static Optional<MediaType> parse(final URI aURI, final String aHint) {

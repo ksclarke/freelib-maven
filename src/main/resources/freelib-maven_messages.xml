@@ -34,5 +34,7 @@
   <entry key="MVN-118">Unable to create Java source package directory: {}</entry>
   <entry key="MVN-119">BEGIN GENERATED CODE</entry>
   <entry key="MVN-120">The mime.types file was not found in the expected place</entry>
+  <entry key="MVN-121">Failed to parse maven-metadata.xml file: {}</entry>
+  <entry key="MVN-122">Failed to find snapshot timestamp in response: {}</entry>
 
 </properties>

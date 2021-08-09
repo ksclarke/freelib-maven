@@ -17,6 +17,10 @@ final public class MessageCodes {
 	 */
 	public static final String MVN_011 = "MVN-011";
 	/**
+	 * Message: Failed to parse maven-metadata.xml file: {}
+	 */
+	public static final String MVN_121 = "MVN-121";
+	/**
 	 * Message: No message files were supplied so no code classes were created
 	 */
 	public static final String MVN_001 = "MVN-001";
@@ -24,6 +28,10 @@ final public class MessageCodes {
 	 * Message: '{}' logging level is now set to: {}
 	 */
 	public static final String MVN_012 = "MVN-012";
+	/**
+	 * Message: Failed to find snapshot timestamp in response: {}
+	 */
+	public static final String MVN_122 = "MVN-122";
 	/**
 	 * Message: ResourceBundle's "{}" key not found
 	 */
