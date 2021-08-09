@@ -56,6 +56,7 @@
     <commons.codec.version>1.13</commons.codec.version>
     <commons.httpclient.version>4.5.13</commons.httpclient.version>
     <commons.compress.version>1.21</commons.compress.version>
+    <xerces.version>2.12.1</xerces.version>
 
     <!-- Our Maven mojo dependencies -->
     <roaster.version>2.15.0.Final</roaster.version>
@@ -175,6 +176,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <version>${commons.compress.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>${xerces.version}</version>
     </dependency>
 
     <!-- Test dependencies -->
