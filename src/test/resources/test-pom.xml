@@ -23,12 +23,20 @@
         <groupId>info.freelibrary</groupId>
         <artifactId>freelib-maven-plugins</artifactId>
         <version>${freelib.maven.version}</version>
-        <configuration></configuration> <!--  Test harness throws an NPE without this empty config -->
+        <configuration></configuration> <!-- Test harness throws an NPE without this empty config -->
         <executions>
           <execution>
+            <id>test-generate-mimetypes</id>
             <phase>process-resources</phase>
             <goals>
               <goal>generate-mimetypes</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>test-set-snapshot-url</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>set-snapshot-url</goal>
             </goals>
           </execution>
         </executions>
