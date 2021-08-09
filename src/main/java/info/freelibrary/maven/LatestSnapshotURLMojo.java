@@ -115,7 +115,7 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final Properties properties = new Properties();
+        final Properties properties = myProject.getProperties();
         final MavenURL url = new MavenURL();
 
         Objects.requireNonNull(myArtifact);
