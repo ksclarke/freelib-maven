@@ -72,7 +72,7 @@ public final class MavenUtils {
      * @param aExcludesList A list of names of loggers to exclude from the reset
      * @param aIncludesList A list of names of additional loggers to include in the reset
      */
-    @SuppressWarnings("PMD.CyclomaticComplexity")
+    @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.CognitiveComplexity" })
     public static void setLogLevels(final int aLogLevel, final String[] aLoggerList, final String[] aExcludesList,
             final String... aIncludesList) {
         final ArrayList<String> loggerList = new ArrayList<>(Arrays.asList(aLoggerList));
@@ -105,7 +105,7 @@ public final class MavenUtils {
                 try {
                     final Field field = loggerClass.getDeclaredField("currentLogLevel");
 
-                    field.setAccessible(true);
+                    field.setAccessible(true); // NOPMD - AvoidAccessibilityAlteration
                     field.setInt(loggerObject, aLogLevel);
 
                     if (loggerObject.isDebugEnabled()) {
@@ -174,11 +174,14 @@ public final class MavenUtils {
 
         if ("error".equals(levelName)) {
             return ERROR_LOG_LEVEL;
-        } else if ("warn".equals(levelName)) {
+        }
+        if ("warn".equals(levelName)) {
             return WARN_LOG_LEVEL;
-        } else if ("info".equals(levelName)) {
+        }
+        if ("info".equals(levelName)) {
             return INFO_LOG_LEVEL;
-        } else if ("debug".equals(levelName)) {
+        }
+        if ("debug".equals(levelName)) {
             return DEBUG_LOG_LEVEL;
         } else if ("trace".equals(levelName)) {
             return TRACE_LOG_LEVEL;

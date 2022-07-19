@@ -46,7 +46,7 @@ public final class JavaLoggingHelperMojo extends AbstractMojo {
 
         while (resources.hasNext()) {
             for (final File file : new File(resources.next().getDirectory()).listFiles(filter)) {
-                if (file.getName().equals(LOGGING_CONF_FILE)) {
+                if (LOGGING_CONF_FILE.equals(file.getName())) {
                     final LogManager logManager = LogManager.getLogManager();
 
                     try (InputStream in = Files.newInputStream(Paths.get(file.getAbsolutePath()))) {
