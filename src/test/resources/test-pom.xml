@@ -39,6 +39,13 @@
               <goal>set-snapshot-url</goal>
             </goals>
           </execution>
+          <execution>
+            <id>test-generate-codes</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>generate-codes</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
     </plugins>
