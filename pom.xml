@@ -277,14 +277,6 @@
     </plugins>
   </build>
 
-  <!-- Enables pushing project documentation up to an S3 bucket -->
-  <distributionManagement>
-    <site>
-      <id>s3.site</id>
-      <url>s3://projects.freelibrary.info/freelib-maven-plugins</url>
-    </site>
-  </distributionManagement>
-
   <!-- Pulls in standard FreeLibrary Project configuration options -->
   <parent>
     <artifactId>freelib-parent</artifactId>
