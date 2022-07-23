@@ -38,11 +38,6 @@ import info.freelibrary.util.LoggerFactory;
  * I18nCodesMojo is a Maven mojo that can generate a <code>MessageCodes</code> class from which I18N message codes can
  * be referenced. The codes are then used to retrieve textual messages from resource bundles. The benefit of this is the
  * code can be generic, but the actual text from the pre-configured message file will be displayed in the IDE.
- * <p>
- * To manually run the plugin: `mvn info.freelibrary:freelib-utils:0.8.0:generate-codes
- * -DmessageFiles=src/main/resources/freelib-utils_messages.xml` (supplying whatever version and message file is
- * appropriate). Usually, though, the plugin would just be configured to run with the process-sources Maven lifecycle.
- * </p>
  */
 @Mojo(name = "generate-codes", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class I18nCodesMojo extends AbstractMojo {

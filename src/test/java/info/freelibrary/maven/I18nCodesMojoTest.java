@@ -19,7 +19,7 @@ public class I18nCodesMojoTest extends BetterAbstractMojoTestCase {
     private static final File POM = new File("src/test/resources/test-pom.xml");
 
     /**
-     * Tests running the {@link MediaTypeMojo}.
+     * Tests running the {@link I18nCodesMojo}.
      *
      * @throws Exception If there is trouble running the test
      */
