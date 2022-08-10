@@ -36,19 +36,19 @@ public class UUIDGeneratingMojo extends AbstractMojo {
      * An optional String value from which to construct the UUID.
      */
     @Parameter(alias = "string")
-    private String myString;
+    protected String myString;
 
     /**
      * An optional build property name for the requested UUID.
      */
     @Parameter(alias = "name", defaultValue = "uuid")
-    private String myName;
+    protected String myName;
 
     /**
      * An option to not override the property if it's already set.
      */
     @Parameter(alias = "override", defaultValue = "true")
-    private boolean myPropertyOverrides;
+    protected boolean myPropertyOverrides;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

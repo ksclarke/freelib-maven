@@ -37,19 +37,19 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
      * A path to a file to test for presence.
      */
     @Parameter(alias = "exists")
-    private File myExistsFile;
+    protected File myExistsFile;
 
     /**
      * A path to a file to test for absence.
      */
     @Parameter(alias = "missing")
-    private File myMissingFile;
+    protected File myMissingFile;
 
     /**
      * Properties to set if the file exists.
      */
     @Parameter(alias = "properties")
-    private Properties myProperties;
+    protected Properties myProperties;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

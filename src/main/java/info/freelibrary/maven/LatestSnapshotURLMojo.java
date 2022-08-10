@@ -91,19 +91,19 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
      * The name of the snapshot artifact.
      */
     @Parameter(alias = SNAPSHOT_ARTIFACT, property = SNAPSHOT_ARTIFACT, required = true)
-    private String myArtifact;
+    protected String myArtifact;
 
     /**
      * The name of the snapshot group.
      */
     @Parameter(alias = SNAPSHOT_GROUP, property = SNAPSHOT_GROUP, required = true)
-    private String myGroup;
+    protected String myGroup;
 
     /**
      * The name of the snapshot version.
      */
     @Parameter(alias = SNAPSHOT_VERSION, property = SNAPSHOT_VERSION, required = true)
-    private String myVersion;
+    protected String myVersion;
 
     /**
      * The base URL of the snapshot repository. The default value is:
@@ -111,23 +111,20 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
      */
     @Parameter(alias = SNAPSHOT_REPO_URL, property = SNAPSHOT_REPO_URL,
             defaultValue = "https://s01.oss.sonatype.org/content/repositories/snapshots")
-    private String myRepoURL;
+    protected String myRepoURL;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Properties properties = myProject.getProperties();
-        final MavenURL url = new MavenURL();
+        final MavenURL url;
 
         Objects.requireNonNull(myArtifact);
         Objects.requireNonNull(myVersion);
         Objects.requireNonNull(myGroup);
 
-        url.myGroupId = trim(myGroup).replace('.', SLASH);
-        url.myArtifactId = trim(myArtifact);
-        url.myVersion = trim(myVersion);
-        url.myBaseURL = trim(myRepoURL);
+        url = new MavenURL(trim(myGroup).replace('.', SLASH), trim(myArtifact), trim(myVersion), trim(myRepoURL));
 
-        properties.setProperty(SNAPSHOT_URL, url.getJarURL(getMetadata(url)));
+        properties.setProperty(SNAPSHOT_URL, url.getJarURL());
         LOGGER.info(MessageCodes.MVN_014, SNAPSHOT_URL, properties.getProperty(SNAPSHOT_URL));
     }
 
@@ -140,69 +137,23 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
     private String trim(final String aValue) {
         final String value = aValue.trim();
         final int end = value.length() - 1;
+        final StringBuilder stringBuilder;
 
-        if (value.charAt(0) == SLASH || value.charAt(end) == SLASH) {
-            final StringBuilder stringBuilder = new StringBuilder(value);
-
-            if (value.charAt(0) == SLASH) {
-                stringBuilder.deleteCharAt(0);
-            }
-
-            if (value.charAt(end) == SLASH) {
-                stringBuilder.deleteCharAt(end);
-            }
-
-            return stringBuilder.toString();
-        } else {
+        if (value.charAt(0) != SLASH && value.charAt(end) != SLASH) {
             return value;
         }
-    }
 
-    /**
-     * Gets latest version metadata from the supplied Maven URL.
-     *
-     * @param aURL A URL for an artifact in a Maven repository
-     * @return The artifact's latest version metadata
-     * @throws MojoExecutionException If the Maven website cannot be reached
-     * @throws MojoFailureException If the mojo fails to execute
-     */
-    private Metadata getMetadata(final MavenURL aURL) throws MojoExecutionException, MojoFailureException {
-        try {
-            final Builder parser = new Builder();
-            final Document doc = parser.build(aURL.getMetadataURL());
-            final Nodes nodes = doc.query("/metadata/versioning/snapshot");
+        stringBuilder = new StringBuilder(value);
 
-            if (nodes.size() > 0) {
-                return getLatestSnapshot(nodes);
-            } else {
-                throw new MojoFailureException(LOGGER.getMessage(MessageCodes.MVN_122, doc.toXML()));
-            }
-        } catch (final ParsingException details) {
-            throw new MojoFailureException(LOGGER.getMessage(MessageCodes.MVN_121, details.getMessage()), details);
-        } catch (final IOException details) {
-            throw new MojoExecutionException(details.getMessage(), details);
+        if (value.charAt(0) == SLASH) {
+            stringBuilder.deleteCharAt(0);
         }
-    }
 
-    /**
-     * Extracts the snapshot version and build number metadata from the supplied node array.
-     *
-     * @param aMetadataNodes An array of nodes containing the metadata we want
-     * @return The extracted metadata
-     * @throws MojoFailureException If the supplied nodes do not contain the expected metadata
-     */
-    private Metadata getLatestSnapshot(final Nodes aMetadataNodes) throws MojoFailureException {
-        final Nodes buildNumberNodes = aMetadataNodes.get(0).query("buildNumber");
-        final Nodes versionNodes = aMetadataNodes.get(0).query("timestamp");
-
-        if (buildNumberNodes.size() > 0 && versionNodes.size() > 0) {
-            final String snapshotVersion = versionNodes.get(0).getValue();
-            final String buildNumber = buildNumberNodes.get(0).getValue();
-
-            return new Metadata().setBuildNumber(buildNumber).setSnapshotVersion(snapshotVersion);
-        } else {
-            throw new MojoFailureException(LOGGER.getMessage(MessageCodes.MVN_122, aMetadataNodes.toString()));
+        if (value.charAt(end) == SLASH) {
+            stringBuilder.deleteCharAt(end);
         }
+
+        return stringBuilder.toString();
     }
 
     /**
@@ -211,24 +162,61 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
     private static final class MavenURL {
 
         /**
+         * The artifact version from the Maven repo.
+         */
+        private final String myVersion;
+
+        /**
          * The artifact ID from the Maven repo.
          */
-        private String myArtifactId;
+        private final String myArtifactId;
 
         /**
          * The groupId ID from the Maven repo.
          */
-        private String myGroupId;
-
-        /**
-         * The artifact version from the Maven repo.
-         */
-        private String myVersion;
+        private final String myGroupId;
 
         /**
          * The Maven repositories base URL.
          */
-        private String myBaseURL;
+        private final String myBaseURL;
+
+        /**
+         * Creates a new Maven URL.
+         *
+         * @param aGroupId An artifact's group ID
+         * @param aArtifactId An artifact's ID
+         * @param aVersion An artifact's version
+         * @param aBaseURL A base Maven URL
+         */
+        private MavenURL(final String aGroupId, final String aArtifactId, final String aVersion,
+                final String aBaseURL) {
+            myGroupId = aGroupId;
+            myArtifactId = aArtifactId;
+            myVersion = aVersion;
+            myBaseURL = aBaseURL;
+        }
+
+        /**
+         * Extracts the snapshot version and build number metadata from the supplied node array.
+         *
+         * @param aMetadataNodes An array of nodes containing the metadata we want
+         * @return The extracted metadata
+         * @throws MojoFailureException If the supplied nodes do not contain the expected metadata
+         */
+        private Metadata getLatestSnapshot(final Nodes aMetadataNodes) throws MojoFailureException {
+            final Nodes buildNumberNodes = aMetadataNodes.get(0).query("buildNumber");
+            final Nodes versionNodes = aMetadataNodes.get(0).query("timestamp");
+
+            if (buildNumberNodes.size() > 0 && versionNodes.size() > 0) {
+                final String snapshotVersion = versionNodes.get(0).getValue();
+                final String buildNumber = buildNumberNodes.get(0).getValue();
+
+                return new Metadata().setBuildNumber(buildNumber).setSnapshotVersion(snapshotVersion);
+            }
+
+            throw new MojoFailureException(LOGGER.getMessage(MessageCodes.MVN_122, aMetadataNodes.toString()));
+        }
 
         /**
          * Returns a URL for the artifact's metadata file.
@@ -242,12 +230,29 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
         /**
          * Returns a URL for the artifact's latest snapshot Jar file.
          *
-         * @param aMetadata Metadata about the latest snapshot
          * @return A URL for the artifact's latest snapshot Jar file
          */
-        private String getJarURL(final Metadata aMetadata) {
+        private String getJarURL() throws MojoFailureException, MojoExecutionException {
+            final Metadata metadata;
+
+            try {
+                final Builder parser = new Builder();
+                final Document doc = parser.build(getMetadataURL());
+                final Nodes nodes = doc.query("/metadata/versioning/snapshot");
+
+                if (nodes.size() <= 0) {
+                    throw new MojoFailureException(LOGGER.getMessage(MessageCodes.MVN_122, doc.toXML()));
+                }
+
+                metadata = getLatestSnapshot(nodes);
+            } catch (final ParsingException details) {
+                throw new MojoFailureException(LOGGER.getMessage(MessageCodes.MVN_121, details.getMessage()), details);
+            } catch (final IOException details) {
+                throw new MojoExecutionException(details.getMessage(), details);
+            }
+
             return StringUtils.format(JAR_URL_PATTERN, myBaseURL, myGroupId, myArtifactId, myVersion, myArtifactId,
-                    myVersion.replace("-SNAPSHOT", EMPTY), aMetadata.mySnapshotVersion, aMetadata.myBuildNumber);
+                    myVersion.replace("-SNAPSHOT", EMPTY), metadata.mySnapshotVersion, metadata.myBuildNumber);
         }
     }
 
