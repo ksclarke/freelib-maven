@@ -26,7 +26,7 @@ import info.freelibrary.util.FileUtils;
  * <code>src/main/resources</code>.
  */
 @Mojo(name = "read-logging-properties", defaultPhase = LifecyclePhase.INITIALIZE)
-public final class JavaLoggingHelperMojo extends AbstractMojo {
+public class JavaLoggingHelperMojo extends AbstractMojo {
 
     /**
      * The name of the expected logging configuration file.
@@ -37,7 +37,7 @@ public final class JavaLoggingHelperMojo extends AbstractMojo {
      * The Maven project directory.
      */
     @Parameter(defaultValue = "${project}")
-    private MavenProject myProject;
+    protected MavenProject myProject;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

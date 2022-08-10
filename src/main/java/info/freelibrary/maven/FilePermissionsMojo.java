@@ -34,19 +34,19 @@ public class FilePermissionsMojo extends AbstractMojo {
      * The permissions to set.
      */
     @Parameter(alias = "perms")
-    private int myPerms;
+    protected int myPerms;
 
     /**
      * The file or directory on which to set permissions.
      */
     @Parameter(alias = "file")
-    private File myFile;
+    protected File myFile;
 
     /**
      * A list of files or directories on which to set permissions.
      */
     @Parameter(alias = "files")
-    private List<String> myFiles;
+    protected List<String> myFiles;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

@@ -57,7 +57,7 @@ public class MavenLoggingMojo extends AbstractMojo {
      * The log level to reset the Maven loggers too.
      */
     @Parameter(property = "level", defaultValue = "error")
-    private String myLevel;
+    protected String myLevel;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

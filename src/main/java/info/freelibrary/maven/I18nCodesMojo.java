@@ -92,19 +92,19 @@ public class I18nCodesMojo extends AbstractMojo {
      * A configuration option for the message file(s).
      */
     @Parameter(alias = MESSAGE_FILES, property = MESSAGE_FILES)
-    private List<String> myPropertyFiles;
+    protected List<String> myPropertyFiles;
 
     /**
      * A configuration option for the generated sources directory.
      */
     @Parameter(alias = GEN_SRC_DIR, property = GEN_SRC_DIR, defaultValue = "${project.basedir}/src/main/generated")
-    private File myGeneratedSrcDir;
+    protected File myGeneratedSrcDir;
 
     /**
      * A configuration option for generating a standard properties file in addition to the codes class.
      */
     @Parameter(alias = IS_TRANSCODING_NEEDED, property = IS_TRANSCODING_NEEDED, defaultValue = "false")
-    private boolean isTranscodingNeeded;
+    protected boolean isTranscodingNeeded;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

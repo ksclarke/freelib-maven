@@ -62,7 +62,7 @@ public class CPUandMemoryMojo extends AbstractMojo {
      * A percentage of the total memory to return instead of the total.
      */
     @Parameter(alias = "free-mem-percent", property = "free-mem-percent", defaultValue = "1")
-    private String myFreeMemPercent;
+    protected String myFreeMemPercent;
 
     @Override
     @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
