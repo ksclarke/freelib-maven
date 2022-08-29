@@ -147,7 +147,7 @@ public class I18nCodesMojo extends AbstractMojo {
             final Path filePath = Path.of("target/classes", fileName.toString());
             final Properties properties = new Properties();
 
-            LOGGER.warn(MessageCodes.MVN_125, xmlFilePath, filePath);
+            LOGGER.debug(MessageCodes.MVN_125, xmlFilePath, filePath);
 
             try (InputStream xmlFileStream = Files.newInputStream(Path.of(xmlFilePath));
                     BufferedWriter fileWriter = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {

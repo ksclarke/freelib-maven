@@ -1,7 +1,11 @@
 
-package info.freelibrary.maven;
+package info.freelibrary.maven; // NOPMD
 
-import static info.freelibrary.util.Constants.*; // NOPMD
+import static info.freelibrary.util.Constants.EOL;
+import static info.freelibrary.util.Constants.HASH;
+import static info.freelibrary.util.Constants.PERIOD;
+import static info.freelibrary.util.Constants.SLASH;
+import static info.freelibrary.util.Constants.SPACE;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -133,16 +137,17 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     private List<MediaTypeEntry> readDefaultMediaTypes() throws MojoExecutionException {
         try (InputStream resourceStream = getClass().getResourceAsStream("/mime.types")) {
-            if (resourceStream == null) {
-                try (InputStream fileStream = Files.newInputStream(Paths.get("src/main/resources/mime.types"))) {
-                    if (fileStream == null) {
-                        throw new I18nRuntimeException(MessageCodes.BUNDLE, MessageCodes.MVN_120);
-                    }
-
-                    return getMediaTypes(fileStream);
-                }
-            } else {
+            if (resourceStream != null) {
                 return getMediaTypes(resourceStream);
+            }
+
+            // If mime.types file can't be found in jar, see if we're running from a Maven project
+            try (InputStream fileStream = Files.newInputStream(Paths.get("src/main/resources/mime.types"))) {
+                if (fileStream == null) {
+                    throw new I18nRuntimeException(MessageCodes.BUNDLE, MessageCodes.MVN_120);
+                }
+
+                return getMediaTypes(fileStream);
             }
         } catch (final IOException details) {
             throw new MojoExecutionException(details.getMessage(), details);

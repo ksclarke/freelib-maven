@@ -23,7 +23,9 @@
         <groupId>info.freelibrary</groupId>
         <artifactId>freelib-maven-plugins</artifactId>
         <version>${freelib.maven.version}</version>
-        <configuration></configuration> <!-- Test harness throws an NPE without this empty config -->
+        <configuration>
+          <!-- Test harness throws an NPE without this empty config -->
+        </configuration>
         <executions>
           <execution>
             <id>test-generate-mimetypes</id>
