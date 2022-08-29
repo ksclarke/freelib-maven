@@ -22,12 +22,12 @@ public class MediaTypeMojoTest extends BetterAbstractMojoTestCase {
     /**
      * The generated sources directory path used in the tests.
      */
-    private static final String TEST_GEN_SRC = new File("src/main/generated").getAbsolutePath();
+    private static final String TEST_GEN_SRC = new File("src/test/generated").getAbsolutePath();
 
     /**
      * The package name used in the tests.
      */
-    private static final String TEST_PACKAGE = "info.freelibrary.maven.test";
+    private static final String TEST_PACKAGE = "info.freelibrary.maven";
 
     /**
      * Tests running the {@link MediaTypeMojo}.
@@ -37,7 +37,7 @@ public class MediaTypeMojoTest extends BetterAbstractMojoTestCase {
     @Test
     public void testMojoGoal() throws Exception {
         final Properties props = getProperties(PACKAGE, TEST_PACKAGE, GEN_SRC, TEST_GEN_SRC);
-        final File mediaTypeFile = new File("src/main/generated/info/freelibrary/maven/test/MediaType.java");
+        final File mediaTypeFile = new File("src/test/generated/info/freelibrary/maven/MediaType.java");
 
         // Run our test of the mojo
         lookupConfiguredMojo(POM, props, "generate-mediatype").execute();
@@ -46,6 +46,6 @@ public class MediaTypeMojoTest extends BetterAbstractMojoTestCase {
         assertTrue(mediaTypeFile.exists());
 
         // Test the that test artifact has been cleaned up
-        // assertTrue(mediaTypeFile.delete());
+        assertTrue(mediaTypeFile.delete());
     }
 }
