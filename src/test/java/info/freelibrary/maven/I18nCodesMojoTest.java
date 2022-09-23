@@ -5,10 +5,10 @@ import static info.freelibrary.util.Constants.EMPTY;
 import static info.freelibrary.util.Constants.SPACE;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -42,55 +42,51 @@ public class I18nCodesMojoTest extends BetterAbstractMojoTestCase {
     private static final Pattern PATTERN = Pattern.compile("\\{\\}");
 
     /**
-     * A placeholder value for string replacement.
-     */
-    private static final String VALUE = "VALUE";
-
-    /**
      * Tests running the {@link I18nCodesMojo}.
      *
      * @throws Exception If there is trouble running the test
      */
     @Test
     public void testMojoGoal() throws Exception {
-        final Properties props = getProperties(I18nCodesMojo.IS_TRANSCODING_NEEDED, Boolean.toString(true));
         final File propertiesFile = new File("target/classes/freelib-maven_messages.properties");
         final File codes = new File("src/test/resources/src/main/generated/info/freelibrary/maven/MessageCodes.java");
-        final Properties testProperties = new Properties();
-        final Iterator<Entry<Object, Object>> iterator;
+        final Properties properties = getProperties(I18nCodesMojo.Config.IS_TRANSCODING_NEEDED, Boolean.toString(true),
+                I18nCodesMojo.Config.MESSAGE_FILES,
+                "src/main/resources/freelib-maven_messages.xml,freelib-utils_messages.xml");
 
         // Run our test of the mojo
-        lookupConfiguredMojo(POM, props, "generate-codes").execute();
+        lookupConfiguredMojo(POM, properties, MojoNames.GENERATE_CODES).execute();
 
         // Load generated properties file
         try (InputStream inStream = Files.newInputStream(propertiesFile.toPath())) {
+            final Properties testProperties = new Properties();
+
             testProperties.load(inStream);
+
+            // Check to see that the generated file exists
+            assertTrue(propertiesFile.exists());
+            assertTrue(codes.exists());
+
+            for (final Entry<Object, Object> entry : testProperties.entrySet()) {
+                final String key = entry.getKey().toString();
+                final String value = entry.getValue().toString();
+                final Matcher matcher = PATTERN.matcher(value);
+                final int argCount = (int) matcher.results().count();
+                final Object[] args = new Object[argCount];
+                final String message;
+
+                // Fake the arguments to the message template
+                Arrays.fill(args, "VALUE");
+
+                message = StringUtils.format(testProperties.getProperty(key), args);
+                assertEquals(LOGGER.getMessage(key, args), message.replaceAll("\\R", EMPTY).replaceAll("\\s+", SPACE));
+            }
+
+            // Test the that test artifact has been cleaned up
+            assertTrue(propertiesFile.delete());
+            assertTrue(FileUtils.delete(new File("src/test/resources/src")));
+        } catch (final IOException details) {
+            fail(details.getMessage());
         }
-
-        // Check to see that the generated file exists
-        assertTrue(propertiesFile.exists());
-        assertTrue(codes.exists());
-
-        iterator = testProperties.entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            final Entry<Object, Object> entry = iterator.next();
-            final String key = entry.getKey().toString();
-            final String value = entry.getValue().toString();
-            final Matcher matcher = PATTERN.matcher(value);
-            final int argCount = (int) matcher.results().count();
-            final Object[] args = new Object[argCount];
-            final String message;
-
-            // Fake the arguments to the message template
-            Arrays.fill(args, VALUE);
-
-            message = StringUtils.format(testProperties.getProperty(key), args);
-            assertEquals(LOGGER.getMessage(key, args), message.replaceAll("\\R", EMPTY).replaceAll("\\s+", SPACE));
-        }
-
-        // Test the that test artifact has been cleaned up
-        assertTrue(propertiesFile.delete());
-        assertTrue(FileUtils.delete(new File("src/test/resources/src")));
     }
 }

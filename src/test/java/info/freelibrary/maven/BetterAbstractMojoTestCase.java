@@ -31,6 +31,9 @@ import info.freelibrary.util.LoggerFactory;
  */
 public abstract class BetterAbstractMojoTestCase extends AbstractMojoTestCase {
 
+    /**
+     * Logger for the tests.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(BetterAbstractMojoTestCase.class, MessageCodes.BUNDLE);
 
     /**

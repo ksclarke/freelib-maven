@@ -1,0 +1,10 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JAVA-XALAN-2953385:
+    - '*':
+        reason: XSLTC not used and Xalan won't be fixed
+        expires: 2025-12-31T05:00:40.733Z
+        created: 2022-09-23T05:00:40.743Z
+patch: {}

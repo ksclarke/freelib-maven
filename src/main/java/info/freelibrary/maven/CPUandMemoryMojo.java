@@ -15,6 +15,7 @@ import org.apache.maven.project.MavenProject;
 
 import info.freelibrary.util.Logger;
 import info.freelibrary.util.LoggerFactory;
+import info.freelibrary.util.warnings.PMD;
 
 import oshi.SystemInfo;
 import oshi.hardware.GlobalMemory;
@@ -29,7 +30,7 @@ import oshi.hardware.HardwareAbstractionLayer;
  * lifecycle.
  * </p>
  */
-@Mojo(name = "set-cpumem-properties", defaultPhase = LifecyclePhase.INITIALIZE)
+@Mojo(name = MojoNames.SET_CPUMEM_PROPERTIES, defaultPhase = LifecyclePhase.INITIALIZE)
 public class CPUandMemoryMojo extends AbstractMojo {
 
     /**
@@ -61,11 +62,11 @@ public class CPUandMemoryMojo extends AbstractMojo {
     /**
      * A percentage of the total memory to return instead of the total.
      */
-    @Parameter(alias = "free-mem-percent", property = "free-mem-percent", defaultValue = "1")
+    @Parameter(alias = Config.FREE_MEMORY_PERCENT, property = Config.FREE_MEMORY_PERCENT, defaultValue = "1")
     protected String myFreeMemPercent;
 
     @Override
-    @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
+    @SuppressWarnings({ "PMD.AvoidLiteralsInIfCondition", PMD.AVOID_LITERALS_IN_IF_CONDITION })
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Properties properties = myProject.getProperties();
         final int cores = Runtime.getRuntime().availableProcessors();
@@ -99,5 +100,16 @@ public class CPUandMemoryMojo extends AbstractMojo {
     private String sizeToString(final long aSizeInBytes) {
         final String size = sizeFromBytes(aSizeInBytes, true).replace(" ", "");
         return size.substring(0, size.length() - 1);
+    }
+
+    /**
+     * Mojo configuration options.
+     */
+    private class Config {
+
+        /**
+         * The percentage of free memory.
+         */
+        private static final String FREE_MEMORY_PERCENT = "free-mem-percent";
     }
 }

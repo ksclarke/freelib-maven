@@ -27,36 +27,11 @@ import nu.xom.ParsingException;
 /**
  * Sets the URL of a Maven artifact's latest snapshot version to a build property.
  */
-@Mojo(name = "set-snapshot-url", defaultPhase = LifecyclePhase.VALIDATE)
+@Mojo(name = MojoNames.SET_SNAPSHOT_URL, defaultPhase = LifecyclePhase.VALIDATE)
 public class LatestSnapshotURLMojo extends AbstractMojo {
 
     /**
-     * A constant for the snapshot URL build property.
-     */
-    public static final String SNAPSHOT_URL = "snapshot.url";
-
-    /**
-     * A constant for the snapshot artifact.
-     */
-    static final String SNAPSHOT_ARTIFACT = "snapshot.artifact";
-
-    /**
-     * A constant for the snapshot group.
-     */
-    static final String SNAPSHOT_GROUP = "snapshot.group";
-
-    /**
-     * A constant for the snapshot version.
-     */
-    static final String SNAPSHOT_VERSION = "snapshot.version";
-
-    /**
-     * A constant for the snapshot repository URL.
-     */
-    static final String SNAPSHOT_REPO_URL = "snapshot.repo.url";
-
-    /**
-     * The CPUandMemoryMojo logger.
+     * The Mojo's logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(LatestSnapshotURLMojo.class, MessageCodes.BUNDLE);
 
@@ -90,26 +65,26 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
     /**
      * The name of the snapshot artifact.
      */
-    @Parameter(alias = SNAPSHOT_ARTIFACT, property = SNAPSHOT_ARTIFACT, required = true)
+    @Parameter(alias = Config.SNAPSHOT_ARTIFACT, property = Config.SNAPSHOT_ARTIFACT, required = true)
     protected String myArtifact;
 
     /**
      * The name of the snapshot group.
      */
-    @Parameter(alias = SNAPSHOT_GROUP, property = SNAPSHOT_GROUP, required = true)
+    @Parameter(alias = Config.SNAPSHOT_GROUP, property = Config.SNAPSHOT_GROUP, required = true)
     protected String myGroup;
 
     /**
      * The name of the snapshot version.
      */
-    @Parameter(alias = SNAPSHOT_VERSION, property = SNAPSHOT_VERSION, required = true)
+    @Parameter(alias = Config.SNAPSHOT_VERSION, property = Config.SNAPSHOT_VERSION, required = true)
     protected String myVersion;
 
     /**
      * The base URL of the snapshot repository. The default value is:
      * https://s01.oss.sonatype.org/content/repositories/snapshots.
      */
-    @Parameter(alias = SNAPSHOT_REPO_URL, property = SNAPSHOT_REPO_URL,
+    @Parameter(alias = Config.SNAPSHOT_REPO_URL, property = Config.SNAPSHOT_REPO_URL,
             defaultValue = "https://s01.oss.sonatype.org/content/repositories/snapshots")
     protected String myRepoURL;
 
@@ -124,8 +99,8 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
 
         url = new MavenURL(trim(myGroup).replace('.', SLASH), trim(myArtifact), trim(myVersion), trim(myRepoURL));
 
-        properties.setProperty(SNAPSHOT_URL, url.getJarURL());
-        LOGGER.info(MessageCodes.MVN_014, SNAPSHOT_URL, properties.getProperty(SNAPSHOT_URL));
+        properties.setProperty(Config.SNAPSHOT_URL, url.getJarURL());
+        LOGGER.info(MessageCodes.MVN_014, Config.SNAPSHOT_URL, properties.getProperty(Config.SNAPSHOT_URL));
     }
 
     /**
@@ -291,6 +266,44 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
         private Metadata setBuildNumber(final String aBuildNumber) {
             myBuildNumber = aBuildNumber;
             return this;
+        }
+    }
+
+    /**
+     * The Mojo's configuration options.
+     */
+    final class Config {
+
+        /**
+         * A constant for the snapshot URL build property.
+         */
+        static final String SNAPSHOT_URL = "snapshot.url";
+
+        /**
+         * A constant for the snapshot artifact.
+         */
+        static final String SNAPSHOT_ARTIFACT = "snapshot.artifact";
+
+        /**
+         * A constant for the snapshot group.
+         */
+        static final String SNAPSHOT_GROUP = "snapshot.group";
+
+        /**
+         * A constant for the snapshot version.
+         */
+        static final String SNAPSHOT_VERSION = "snapshot.version";
+
+        /**
+         * A constant for the snapshot repository URL.
+         */
+        static final String SNAPSHOT_REPO_URL = "snapshot.repo.url";
+
+        /**
+         * A private constructor for a constants class.
+         */
+        private Config() {
+            // This is intentionally left empty.
         }
     }
 }

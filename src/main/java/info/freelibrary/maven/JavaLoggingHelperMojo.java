@@ -25,7 +25,7 @@ import info.freelibrary.util.FileUtils;
  * A helper class that configures the default Java log manager if there is a <code>logging.properties</code> file in
  * <code>src/main/resources</code>.
  */
-@Mojo(name = "read-logging-properties", defaultPhase = LifecyclePhase.INITIALIZE)
+@Mojo(name = MojoNames.READ_LOGGING_PROPERTIES, defaultPhase = LifecyclePhase.INITIALIZE)
 public class JavaLoggingHelperMojo extends AbstractMojo {
 
     /**

@@ -21,7 +21,7 @@ import info.freelibrary.util.FileUtils;
 /**
  * A Maven plugin to set file permissions on a project file (probably one created by the build).
  */
-@Mojo(name = "set-file-perms")
+@Mojo(name = MojoNames.SET_FILE_PERMS)
 public class FilePermissionsMojo extends AbstractMojo {
 
     /**
@@ -33,19 +33,19 @@ public class FilePermissionsMojo extends AbstractMojo {
     /**
      * The permissions to set.
      */
-    @Parameter(alias = "perms")
+    @Parameter(alias = Config.PERMISSIONS)
     protected int myPerms;
 
     /**
      * The file or directory on which to set permissions.
      */
-    @Parameter(alias = "file")
+    @Parameter(alias = Config.FILE)
     protected File myFile;
 
     /**
      * A list of files or directories on which to set permissions.
      */
-    @Parameter(alias = "files")
+    @Parameter(alias = Config.FILES)
     protected List<String> myFiles;
 
     @Override
@@ -67,4 +67,24 @@ public class FilePermissionsMojo extends AbstractMojo {
         }
     }
 
+    /**
+     * Configuration options for the Mojo.
+     */
+    private class Config {
+
+        /**
+         * The permissions configuration option.
+         */
+        private static final String PERMISSIONS = "perms";
+
+        /**
+         * The file configuration option.
+         */
+        private static final String FILE = "file";
+
+        /**
+         * The files configuration option.
+         */
+        private static final String FILES = "files";
+    }
 }
