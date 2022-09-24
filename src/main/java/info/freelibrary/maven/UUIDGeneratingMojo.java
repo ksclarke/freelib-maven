@@ -18,7 +18,7 @@ import info.freelibrary.util.LoggerFactory;
 /**
  * A Maven mojo that can generate UUIDs as a part of the build process.
  */
-@Mojo(name = "set-uuid-property", defaultPhase = LifecyclePhase.INITIALIZE)
+@Mojo(name = MojoNames.SET_UUID_PROPERTY, defaultPhase = LifecyclePhase.INITIALIZE)
 public class UUIDGeneratingMojo extends AbstractMojo {
 
     /**
@@ -35,19 +35,19 @@ public class UUIDGeneratingMojo extends AbstractMojo {
     /**
      * An optional String value from which to construct the UUID.
      */
-    @Parameter(alias = "string")
+    @Parameter(alias = Config.STRING)
     protected String myString;
 
     /**
      * An optional build property name for the requested UUID.
      */
-    @Parameter(alias = "name", defaultValue = "uuid")
+    @Parameter(alias = Config.NAME, defaultValue = "uuid")
     protected String myName;
 
     /**
      * An option to not override the property if it's already set.
      */
-    @Parameter(alias = "override", defaultValue = "true")
+    @Parameter(alias = Config.OVERRIDE, defaultValue = "true")
     protected boolean myPropertyOverrides;
 
     @Override
@@ -62,4 +62,24 @@ public class UUIDGeneratingMojo extends AbstractMojo {
         }
     }
 
+    /**
+     * The Mojo's configuration options.
+     */
+    private class Config {
+
+        /**
+         * The override configuration option.
+         */
+        private static final String OVERRIDE = "override";
+
+        /**
+         * The name configuration option.
+         */
+        private static final String NAME = "name";
+
+        /**
+         * The string configuration option.
+         */
+        private static final String STRING = "string";
+    }
 }

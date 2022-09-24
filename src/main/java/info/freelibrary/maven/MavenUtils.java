@@ -10,10 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
+import info.freelibrary.util.warnings.PMD;
+
 /**
  * Maven related utilities.
  */
-@SuppressWarnings("PMD.MoreThanOneLogger")
+@SuppressWarnings({ "PMD.MoreThanOneLogger", PMD.MORE_THAN_ONE_LOGGER })
 public final class MavenUtils {
 
     /**
@@ -72,7 +74,8 @@ public final class MavenUtils {
      * @param aExcludesList A list of names of loggers to exclude from the reset
      * @param aIncludesList A list of names of additional loggers to include in the reset
      */
-    @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.CognitiveComplexity" })
+    @SuppressWarnings({ "PMD.CyclomaticComplexity", PMD.CYCLOMATIC_COMPLEXITY, "PMD.CognitiveComplexity",
+        PMD.COGNITIVE_COMPLEXITY })
     public static void setLogLevels(final int aLogLevel, final String[] aLoggerList, final String[] aExcludesList,
             final String... aIncludesList) {
         final ArrayList<String> loggerList = new ArrayList<>(Arrays.asList(aLoggerList));
@@ -175,19 +178,20 @@ public final class MavenUtils {
         if ("error".equals(levelName)) {
             return ERROR_LOG_LEVEL;
         }
+
         if ("warn".equals(levelName)) {
             return WARN_LOG_LEVEL;
         }
+
         if ("info".equals(levelName)) {
             return INFO_LOG_LEVEL;
         }
+
         if ("debug".equals(levelName)) {
             return DEBUG_LOG_LEVEL;
-        } else if ("trace".equals(levelName)) {
-            return TRACE_LOG_LEVEL;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
 }

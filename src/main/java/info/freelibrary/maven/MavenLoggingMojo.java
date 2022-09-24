@@ -44,7 +44,7 @@ import info.freelibrary.util.LoggerFactory;
  * </code>
  * </pre>
  */
-@Mojo(name = "configure-logging")
+@Mojo(name = MojoNames.CONFIGURE_LOGGING)
 @SuppressWarnings("PMD.CommentSize")
 public class MavenLoggingMojo extends AbstractMojo {
 
@@ -56,7 +56,7 @@ public class MavenLoggingMojo extends AbstractMojo {
     /**
      * The log level to reset the Maven loggers too.
      */
-    @Parameter(property = "level", defaultValue = "error")
+    @Parameter(property = Config.LEVEL, defaultValue = "error")
     protected String myLevel;
 
     @Override
@@ -68,5 +68,16 @@ public class MavenLoggingMojo extends AbstractMojo {
         }
 
         MavenUtils.setLogLevels(level == 0 ? MavenUtils.ERROR_LOG_LEVEL : level, MavenUtils.getMavenLoggers());
+    }
+
+    /**
+     * The Mojo's configuration options.
+     */
+    private class Config {
+
+        /**
+         * The Mojo's logging level.
+         */
+        private static final String LEVEL = "level";
     }
 }

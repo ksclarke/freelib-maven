@@ -19,7 +19,7 @@ import info.freelibrary.util.LoggerFactory;
 /**
  * A Maven mojo that can insert properties into the build as a result of checking the existence of a file.
  */
-@Mojo(name = "check-file-set-property", defaultPhase = LifecyclePhase.INITIALIZE)
+@Mojo(name = MojoNames.CHECK_FILE_SET_PROPERTY, defaultPhase = LifecyclePhase.INITIALIZE)
 public class IfFileThenPropertiesMojo extends AbstractMojo {
 
     /**
@@ -36,19 +36,19 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
     /**
      * A path to a file to test for presence.
      */
-    @Parameter(alias = "exists")
+    @Parameter(alias = Config.EXISTS)
     protected File myExistsFile;
 
     /**
      * A path to a file to test for absence.
      */
-    @Parameter(alias = "missing")
+    @Parameter(alias = Config.MISSING)
     protected File myMissingFile;
 
     /**
      * Properties to set if the file exists.
      */
-    @Parameter(alias = "properties")
+    @Parameter(alias = Config.PROPERTIES)
     protected Properties myProperties;
 
     @Override
@@ -79,5 +79,26 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
         } else {
             LOGGER.warn(MessageCodes.MVN_015, myExistsFile);
         }
+    }
+
+    /**
+     * The Mojo's configuration options.
+     */
+    private class Config {
+
+        /**
+         * The property configuration option.
+         */
+        private static final String PROPERTIES = "properties";
+
+        /**
+         * The missing configuration option.
+         */
+        private static final String MISSING = "missing";
+
+        /**
+         * The exists configuration option.
+         */
+        private static final String EXISTS = "exists";
     }
 }

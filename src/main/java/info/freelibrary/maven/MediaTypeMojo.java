@@ -42,35 +42,23 @@ import info.freelibrary.util.I18nRuntimeException;
 import info.freelibrary.util.Logger;
 import info.freelibrary.util.LoggerFactory;
 import info.freelibrary.util.StringUtils;
+import info.freelibrary.util.warnings.Checkstyle;
+import info.freelibrary.util.warnings.PMD;
 
 /**
  * A Maven mojo that generates an enum of pre-configured mime-types, adding any addition ones (with extensions) found in
  * the system's <code>/etc/mime.types</code> file.
  */
-@SuppressWarnings({ "PMD.ExcessiveImports", "MultipleStringLiterals", "PMD.AvoidDuplicateLiterals",
-    "PMD.ConsecutiveLiteralAppends" })
-@Mojo(name = "generate-mediatype", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+@SuppressWarnings({ "PMD.ExcessiveImports", PMD.EXCESSIVE_IMPORTS, "MultipleStringLiterals",
+    Checkstyle.MULTIPLE_STRING_LITERALS, "PMD.AvoidDuplicateLiterals", PMD.AVOID_DUPLICATE_LITERALS,
+    "PMD.ConsecutiveLiteralAppends", PMD.CONSECUTIVE_LITERAL_APPENDS })
+@Mojo(name = MojoNames.GENERATE_MEDIATYPE, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class MediaTypeMojo extends AbstractMojo {
-
-    /**
-     * A property value for the package path.
-     */
-    static final String PACKAGE = "mediaTypePackage";
-
-    /**
-     * A property value for the generated sources directory.
-     */
-    static final String GEN_SRC = "generatedSourcesDirectory";
-
-    /**
-     * A comma delimited list of media types to override.
-     */
-    static final String OVERRIDDEN_TYPES = "overriddenMediaTypes";
 
     /**
      * A static value for the enumeration's class name.
      */
-    static final String CLASS_NAME = "MediaType";
+    private static final String CLASS_NAME = "MediaType";
 
     /**
      * The mojo's logger.
@@ -96,13 +84,14 @@ public class MediaTypeMojo extends AbstractMojo {
     /**
      * A configuration option for the generated sources directory.
      */
-    @Parameter(alias = GEN_SRC, property = GEN_SRC, defaultValue = "${project.basedir}/src/main/generated")
+    @Parameter(alias = Config.GEN_SRC, property = Config.GEN_SRC,
+            defaultValue = "${project.basedir}/src/main/generated")
     protected File myGenSrcDir;
 
     /**
      * A configuration option for the to be created mime-types package.
      */
-    @Parameter(alias = PACKAGE, property = PACKAGE, defaultValue = "${project.groupId}")
+    @Parameter(alias = Config.PACKAGE, property = Config.PACKAGE, defaultValue = "${project.groupId}")
     protected String myPackagePath;
 
     /**
@@ -595,6 +584,29 @@ public class MediaTypeMojo extends AbstractMojo {
         @Override
         public int hashCode() {
             return myType.hashCode();
+        }
+    }
+
+    /**
+     * The Mojo's configuration options.
+     */
+    final class Config {
+
+        /**
+         * A property value for the package path.
+         */
+        static final String PACKAGE = "mediaTypePackage";
+
+        /**
+         * A property value for the generated sources directory.
+         */
+        static final String GEN_SRC = "generatedSourcesDirectory";
+
+        /**
+         * A private constructor for a constants class.
+         */
+        private Config() {
+            // This is intentionally left empty.
         }
     }
 }

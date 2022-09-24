@@ -1,10 +1,6 @@
 
 package info.freelibrary.maven;
 
-import static info.freelibrary.maven.LatestSnapshotURLMojo.SNAPSHOT_ARTIFACT;
-import static info.freelibrary.maven.LatestSnapshotURLMojo.SNAPSHOT_GROUP;
-import static info.freelibrary.maven.LatestSnapshotURLMojo.SNAPSHOT_VERSION;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
@@ -35,8 +31,9 @@ public class LatestSnapshotURLMojoTest extends BetterAbstractMojoTestCase {
      */
     @Test
     public void testMojoGoal() throws Exception {
-        final Properties props = getProperties(SNAPSHOT_ARTIFACT, "cantaloupe-auth-delegate", SNAPSHOT_GROUP,
-                "edu.ucla.library", SNAPSHOT_VERSION, "0.0.1-SNAPSHOT");
+        final Properties props = getProperties(LatestSnapshotURLMojo.Config.SNAPSHOT_ARTIFACT,
+                "cantaloupe-auth-delegate", LatestSnapshotURLMojo.Config.SNAPSHOT_GROUP, "edu.ucla.library",
+                LatestSnapshotURLMojo.Config.SNAPSHOT_VERSION, "0.0.1-SNAPSHOT");
         final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         final PrintStream standardErrorStream = System.err;
 

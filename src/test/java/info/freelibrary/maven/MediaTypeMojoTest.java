@@ -1,13 +1,12 @@
 
 package info.freelibrary.maven;
 
-import static info.freelibrary.maven.MediaTypeMojo.GEN_SRC;
-import static info.freelibrary.maven.MediaTypeMojo.PACKAGE;
-
 import java.io.File;
 import java.util.Properties;
 
 import org.junit.Test;
+
+import info.freelibrary.maven.MediaTypeMojo.Config;
 
 /**
  * A test of the {@link MimeTypeMojo}.
@@ -36,7 +35,7 @@ public class MediaTypeMojoTest extends BetterAbstractMojoTestCase {
      */
     @Test
     public void testMojoGoal() throws Exception {
-        final Properties props = getProperties(PACKAGE, TEST_PACKAGE, GEN_SRC, TEST_GEN_SRC);
+        final Properties props = getProperties(Config.PACKAGE, TEST_PACKAGE, Config.GEN_SRC, TEST_GEN_SRC);
         final File mediaTypeFile = new File("src/test/generated/info/freelibrary/maven/MediaType.java");
 
         // Run our test of the mojo
