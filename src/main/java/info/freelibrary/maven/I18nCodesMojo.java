@@ -10,8 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.maven.plugin.AbstractMojo;
@@ -29,6 +30,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.StringUtils;
 import org.jboss.forge.roaster.Roaster;
@@ -48,7 +50,8 @@ import info.freelibrary.util.warnings.PMD;
  * be referenced. The codes are then used to retrieve textual messages from resource bundles. The benefit of this is the
  * code can be generic, but the actual text from the pre-configured message file will be displayed in the IDE.
  */
-@Mojo(name = MojoNames.GENERATE_CODES, defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+@Mojo(name = MojoNames.GENERATE_CODES, defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+        requiresDependencyResolution = ResolutionScope.COMPILE)
 public class I18nCodesMojo extends AbstractMojo {
 
     /**
@@ -86,7 +89,7 @@ public class I18nCodesMojo extends AbstractMojo {
      * A configuration option for the message file(s).
      */
     @Parameter(alias = Config.MESSAGE_FILES, property = Config.MESSAGE_FILES)
-    protected List<File> myPropertyFiles;
+    protected List<String> myPropertyFiles;
 
     /**
      * A configuration option for the generated sources directory.
@@ -105,19 +108,24 @@ public class I18nCodesMojo extends AbstractMojo {
     @SuppressWarnings({ "PMD.PreserveStackTrace", PMD.PRESERVE_STACK_TRACE, "PMD.CyclomaticComplexity",
         PMD.CYCLOMATIC_COMPLEXITY })
     public void execute() throws MojoExecutionException, MojoFailureException {
+        LOGGER.info(MessageCodes.MVN_127);
+
         try {
             if (myPropertyFiles != null && !myPropertyFiles.isEmpty()) {
                 generateMessageCodes(myPropertyFiles);
 
                 if (isTranscodingNeeded) {
+                    LOGGER.info(MessageCodes.MVN_128);
                     writePropertiesFiles(getPropertyFiles());
                 }
             } else {
-                final List<File> fileList = Arrays.asList(FileUtils.listFiles(RESOURCES_DIR, DEFAULT_MESSAGE_FILTER));
+                final List<String> fileList = Arrays.stream(FileUtils.listFiles(RESOURCES_DIR, DEFAULT_MESSAGE_FILTER))
+                        .map(File::getAbsolutePath).collect(Collectors.toList());
 
                 generateMessageCodes(fileList);
 
                 if (isTranscodingNeeded) {
+                    LOGGER.info(MessageCodes.MVN_129);
                     writePropertiesFiles(fileList);
                 }
             }
@@ -136,37 +144,31 @@ public class I18nCodesMojo extends AbstractMojo {
      * @return An array of accessible property files
      * @throws IOException If there is trouble reading the property files
      */
-    private List<File> getPropertyFiles() throws IOException {
-        final List<File> files = new ArrayList<>();
+    private List<String> getPropertyFiles() throws IOException {
+        final List<String> files = new ArrayList<>();
 
-        myPropertyFiles.stream().forEach((ThrowingConsumer<File>) file -> {
-            if (file.exists()) {
+        myPropertyFiles.stream().forEach((ThrowingConsumer<String>) file -> {
+            if (new File(file).exists()) {
                 files.add(file);
             } else {
-                final String filePath = file.getPath();
+                final Stream<String> classpathStream = myProject.getCompileClasspathElements().stream();
+                final Predicate<String> isJar = element -> element.endsWith(".jar");
 
-                // Cycle through all the Jars on the Classpath
-                for (final URL url : JarUtils.getJarURLs()) {
-                    final JarURLConnection jarConnection = (JarURLConnection) url.openConnection();
+                LOGGER.debug("Checking Jar files for: {}", file);
 
-                    jarConnection.setUseCaches(false);
+                classpathStream.filter(isJar).forEach((ThrowingConsumer<String>) jar -> {
+                    final JarFile jarFile = new JarFile(jar);
 
-                    try {
-                        final JarFile jarFile = jarConnection.getJarFile();
+                    LOGGER.debug("Checking {}", jar);
+                    if (JarUtils.contains(jarFile, file)) {
+                        final File tmpDir = Files.createTempDirectory(UUID.randomUUID().toString() + DASH).toFile();
 
-                        // We use the first Jar that the requested file appears in -- these should be unique
-                        if (JarUtils.contains(jarFile, filePath)) {
-                            final File tmpDir = Files.createTempDirectory(UUID.randomUUID().toString() + DASH).toFile();
+                        LOGGER.debug("Found resource file: {}", file);
 
-                            JarUtils.extract(jarFile, filePath, tmpDir);
-                            files.add(Path.of(tmpDir.toString(), filePath).toFile());
-
-                            break; // We stop after we find the first file
-                        }
-                    } catch (final FileNotFoundException details) {
-                        LOGGER.trace(details.getMessage());
+                        JarUtils.extract(jarFile, file, tmpDir);
+                        files.add(Path.of(tmpDir.toString(), file).toString());
                     }
-                }
+                });
             }
         });
 
@@ -178,8 +180,8 @@ public class I18nCodesMojo extends AbstractMojo {
      *
      * @param aFilesList A list of XML resource files
      */
-    private void writePropertiesFiles(final List<File> aFilesList) {
-        aFilesList.stream().map(File::getPath).forEach((ThrowingConsumer<String>) xmlFilePath -> {
+    private void writePropertiesFiles(final List<String> aFilesList) {
+        aFilesList.stream().forEach((ThrowingConsumer<String>) xmlFilePath -> {
             final Path fileName = Path.of(xmlFilePath.replace(".xml", ".properties")).getFileName();
             final Path filePath = Path.of("target/classes", fileName.toString());
             final Path sourceFilePath = Path.of(xmlFilePath);
@@ -206,10 +208,12 @@ public class I18nCodesMojo extends AbstractMojo {
      */
     @SuppressWarnings({ "PMD.AvoidFileStream", PMD.AVOID_FILE_STREAM, "PMD.CyclomaticComplexity",
         PMD.CYCLOMATIC_COMPLEXITY, "PMD.CognitiveComplexity", PMD.COGNITIVE_COMPLEXITY })
-    private void generateMessageCodes(final List<File> aFilesList) {
+    private void generateMessageCodes(final List<String> aFilesList) {
         final Properties properties = new Properties();
 
-        aFilesList.stream().filter(File::exists).forEach((ThrowingConsumer<File>) file -> {
+        aFilesList.stream().map(File::new).filter(File::exists).forEach((ThrowingConsumer<File>) file -> {
+            LOGGER.debug("Generating message codes for: {}", file);
+
             try (FileInputStream inStream = new FileInputStream(file)) {
                 properties.loadFromXML(inStream);
 
