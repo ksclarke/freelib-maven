@@ -40,5 +40,9 @@
   <entry key="MVN-127">Generating I18n resource bundles</entry>
   <entry key="MVN-128">Transcoding supplied resource bundles</entry>
   <entry key="MVN-129">Transcoding default resource bundle</entry>
+  <entry key="MVN-130">Found resource in Jar file: {}</entry>
+  <entry key="MVN-131">Checking Jar files for: {}</entry>
+  <entry key="MVN-132"></entry>
+  <entry key="MVN-133"></entry>
 
 </properties>

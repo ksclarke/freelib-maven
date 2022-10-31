@@ -7,6 +7,8 @@
   <properties>
     <junit.version>4.13.2</junit.version>
     <freelib.maven.version>0.0.0-SNAPSHOT</freelib.maven.version>
+    <testLogLevel>DEBUG</testLogLevel>
+    <logLevel>DEBUG</logLevel>
   </properties>
 
   <dependencies>
@@ -18,6 +20,14 @@
     </dependency>
   </dependencies>
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>freelib-maven_messages.xml</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>info.freelibrary</groupId>
