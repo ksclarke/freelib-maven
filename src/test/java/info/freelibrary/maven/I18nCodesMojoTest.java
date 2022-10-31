@@ -14,9 +14,9 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.maven.plugin.Mojo;
 import org.junit.Test;
 
-import info.freelibrary.util.FileUtils;
 import info.freelibrary.util.Logger;
 import info.freelibrary.util.LoggerFactory;
 import info.freelibrary.util.StringUtils;
@@ -34,7 +34,7 @@ public class I18nCodesMojoTest extends BetterAbstractMojoTestCase {
     /**
      * The POM file being used by the tests.
      */
-    private static final File POM = new File("src/test/resources/test-pom.xml");
+    private static final File POM = new File("target/test-project/test-pom.xml");
 
     /**
      * A pattern to match the replacement characters.
@@ -48,14 +48,17 @@ public class I18nCodesMojoTest extends BetterAbstractMojoTestCase {
      */
     @Test
     public void testMojoGoal() throws Exception {
-        final File propertiesFile = new File("target/classes/freelib-maven_messages.properties");
-        final File codes = new File("src/test/resources/src/main/generated/info/freelibrary/maven/MessageCodes.java");
+        final File propertiesFile = new File("target/test-project/target/classes/freelib-maven_messages.properties");
+        final File codes = new File("target/test-project/src/main/generated/info/freelibrary/maven/MessageCodes.java");
         final Properties properties = getProperties(I18nCodesMojo.Config.IS_TRANSCODING_NEEDED, Boolean.toString(true),
                 I18nCodesMojo.Config.MESSAGE_FILES,
                 "src/main/resources/freelib-maven_messages.xml,freelib-utils_messages.xml");
 
         // Run our test of the mojo
-        lookupConfiguredMojo(POM, properties, MojoNames.GENERATE_CODES).execute();
+        final Mojo mojo = lookupConfiguredMojo(POM, properties, MojoNames.GENERATE_CODES);
+
+        mojo.setLog(new MavenLogger(LOGGER));
+        mojo.execute();
 
         // Load generated properties file
         try (InputStream inStream = Files.newInputStream(propertiesFile.toPath())) {
@@ -81,10 +84,6 @@ public class I18nCodesMojoTest extends BetterAbstractMojoTestCase {
                 message = StringUtils.format(testProperties.getProperty(key), args);
                 assertEquals(LOGGER.getMessage(key, args), message.replaceAll("\\R", EMPTY).replaceAll("\\s+", SPACE));
             }
-
-            // Test the that test artifact has been cleaned up
-            assertTrue(propertiesFile.delete());
-            assertTrue(FileUtils.delete(new File("src/test/resources/src")));
         } catch (final IOException details) {
             fail(details.getMessage());
         }

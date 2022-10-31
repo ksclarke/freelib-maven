@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,7 +130,7 @@ public class I18nCodesMojo extends AbstractMojo {
                     writePropertiesFiles(fileList);
                 }
             }
-        } catch (final FileNotFoundException details) {
+        } catch (final FileNotFoundException | NoSuchFileException details) {
             LOGGER.warn(MessageCodes.MVN_001);
         } catch (final IOException details) {
             throw new MojoExecutionException(details);
@@ -154,16 +155,15 @@ public class I18nCodesMojo extends AbstractMojo {
                 final Stream<String> classpathStream = myProject.getCompileClasspathElements().stream();
                 final Predicate<String> isJar = element -> element.endsWith(".jar");
 
-                LOGGER.debug("Checking Jar files for: {}", file);
+                LOGGER.debug(MessageCodes.MVN_131, file);
 
                 classpathStream.filter(isJar).forEach((ThrowingConsumer<String>) jar -> {
                     final JarFile jarFile = new JarFile(jar);
 
-                    LOGGER.debug("Checking {}", jar);
                     if (JarUtils.contains(jarFile, file)) {
                         final File tmpDir = Files.createTempDirectory(UUID.randomUUID().toString() + DASH).toFile();
 
-                        LOGGER.debug("Found resource file: {}", file);
+                        LOGGER.debug(MessageCodes.MVN_130, jar);
 
                         JarUtils.extract(jarFile, file, tmpDir);
                         files.add(Path.of(tmpDir.toString(), file).toString());
@@ -183,20 +183,20 @@ public class I18nCodesMojo extends AbstractMojo {
     private void writePropertiesFiles(final List<String> aFilesList) {
         aFilesList.stream().forEach((ThrowingConsumer<String>) xmlFilePath -> {
             final Path fileName = Path.of(xmlFilePath.replace(".xml", ".properties")).getFileName();
-            final Path filePath = Path.of("target/classes", fileName.toString());
+            final String projectDir = myProject.getBasedir().getAbsolutePath();
+            final Path filePath = Path.of(projectDir, "target/classes", fileName.toString());
             final Path sourceFilePath = Path.of(xmlFilePath);
             final Properties properties = new Properties();
 
             LOGGER.debug(MessageCodes.MVN_125, xmlFilePath, filePath);
 
+            // Make sure out output directory exists before trying to write to it
+            Files.createDirectories(filePath.getParent());
+
             try (InputStream xmlFileStream = Files.newInputStream(sourceFilePath);
                     BufferedWriter fileWriter = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
                 properties.loadFromXML(xmlFileStream);
                 properties.store(fileWriter, LOGGER.getMessage(MessageCodes.MVN_126));
-
-                if (!sourceFilePath.toString().contains(RESOURCES_DIR.getPath())) {
-                    Files.deleteIfExists(sourceFilePath);
-                }
             }
         });
     }
