@@ -2,9 +2,10 @@
 package info.freelibrary.maven;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -86,7 +87,6 @@ public class TemplateInitMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final File pomFile = myProject.getFile();
-        final FileOutputStream fileOutputStream;
         final Serializer serializer;
 
         try {
@@ -158,10 +158,11 @@ public class TemplateInitMojo extends AbstractMojo {
                 properties.appendChild(functionVersion);
             }
 
-            fileOutputStream = new FileOutputStream(pomFile);
-            serializer = new Serializer(fileOutputStream, StandardCharsets.UTF_8.name());
-            serializer.setLineSeparator(System.lineSeparator());
-            serializer.write(pom);
+            try (OutputStream outputStream = Files.newOutputStream(pomFile.toPath())) {
+                serializer = new Serializer(outputStream, StandardCharsets.UTF_8.name());
+                serializer.setLineSeparator(System.lineSeparator());
+                serializer.write(pom);
+            }
         } catch (ParsingException | IOException details) {
             throw new MojoExecutionException(details);
         }
@@ -186,13 +187,6 @@ public class TemplateInitMojo extends AbstractMojo {
          * Whether the version of a function has been updated.
          */
         private boolean myVersionUpdated;
-
-        /**
-         * Creates a new FunctionProperties object.
-         */
-        private FunctionProperties() {
-            // This is intentionally left empty.
-        }
 
         /**
          * Updates a function property.
