@@ -85,7 +85,7 @@ public class TemplateInitMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final File pomFile = new File("pom.xml");
+        final File pomFile = myProject.getFile();
         final FileOutputStream fileOutputStream;
         final Serializer serializer;
 
