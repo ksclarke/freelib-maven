@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import info.freelibrary.maven.TemplateInitMojo.Config;
 
+/**
+ * Tests of the TemplateInitMojo.
+ */
 public class TemplateInitMojoTest extends BetterAbstractMojoTestCase {
 
     /**

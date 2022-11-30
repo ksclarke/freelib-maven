@@ -170,7 +170,7 @@ public class TemplateInitMojo extends AbstractMojo {
     /**
      * A collection of properties related to functions.
      */
-    private class FunctionProperties {
+    private final class FunctionProperties {
 
         /**
          * Whether the artifactId of a function has been updated.
@@ -235,7 +235,14 @@ public class TemplateInitMojo extends AbstractMojo {
     /**
      * The Mojo's configuration options.
      */
-    class Config {
+    final class Config {
+
+        /**
+         * Creates a new private configuration object.
+         */
+        private Config() {
+            // This is intentionally left empty.
+        }
 
         /**
          * The artifactId of the template project.
