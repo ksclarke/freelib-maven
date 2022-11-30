@@ -160,6 +160,7 @@ public class TemplateInitMojo extends AbstractMojo {
 
             fileOutputStream = new FileOutputStream(pomFile);
             serializer = new Serializer(fileOutputStream, StandardCharsets.UTF_8.name());
+            serializer.setLineSeparator(System.lineSeparator());
             serializer.write(pom);
         } catch (ParsingException | IOException details) {
             throw new MojoExecutionException(details);
