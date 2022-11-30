@@ -16,7 +16,7 @@ public class TemplateInitMojoTest extends BetterAbstractMojoTestCase {
     /**
      * The POM file being used by the tests.
      */
-    private static final File POM = new File("src/test/resources/template-pom.xml");
+    private static final File POM = new File("target/test-classes/template-pom.xml");
 
     /**
      * A function artifactId.
