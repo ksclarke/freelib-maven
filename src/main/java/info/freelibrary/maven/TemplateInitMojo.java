@@ -160,7 +160,6 @@ public class TemplateInitMojo extends AbstractMojo {
 
             fileOutputStream = new FileOutputStream(pomFile);
             serializer = new Serializer(fileOutputStream, StandardCharsets.UTF_8.name());
-            serializer.setIndent(2);
             serializer.write(pom);
         } catch (ParsingException | IOException details) {
             throw new MojoExecutionException(details);
@@ -247,16 +246,16 @@ public class TemplateInitMojo extends AbstractMojo {
         /**
          * The artifactId of the template project.
          */
-        static final String ARTIFACT_ID = "artifactId";
+        final static String ARTIFACT_ID = "artifactId";
 
         /**
          * The groupId of the template project.
          */
-        static final String GROUP_ID = "groupId";
+        final static String GROUP_ID = "groupId";
 
         /**
          * The default version of the template project.
          */
-        static final String VERSION = "version";
+        final static String VERSION = "version";
     }
 }
