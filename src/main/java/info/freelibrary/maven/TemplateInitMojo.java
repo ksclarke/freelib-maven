@@ -90,7 +90,7 @@ public class TemplateInitMojo extends AbstractMojo {
         final Serializer serializer;
 
         try {
-            final Document pom = new Builder(true).build(pomFile);
+            final Document pom = new Builder().build(pomFile);
             final Element root = pom.getRootElement();
             final Elements propertiesList = root.getChildElements(PROPERTIES, XMLNS);
             final FunctionProperties functionProperties = new FunctionProperties();
@@ -186,6 +186,13 @@ public class TemplateInitMojo extends AbstractMojo {
          * Whether the version of a function has been updated.
          */
         private boolean myVersionUpdated;
+
+        /**
+         * Creates a new FunctionProperties object.
+         */
+        private FunctionProperties() {
+            // This is intentionally left empty.
+        }
 
         /**
          * Updates a function property.
