@@ -238,25 +238,25 @@ public class TemplateInitMojo extends AbstractMojo {
     final class Config {
 
         /**
+         * The artifactId of the template project.
+         */
+        static final String ARTIFACT_ID = "artifactId";
+
+        /**
+         * The groupId of the template project.
+         */
+        static final String GROUP_ID = "groupId";
+
+        /**
+         * The default version of the template project.
+         */
+        static final String VERSION = "version";
+
+        /**
          * Creates a new private configuration object.
          */
         private Config() {
             // This is intentionally left empty.
         }
-
-        /**
-         * The artifactId of the template project.
-         */
-        final static String ARTIFACT_ID = "artifactId";
-
-        /**
-         * The groupId of the template project.
-         */
-        final static String GROUP_ID = "groupId";
-
-        /**
-         * The default version of the template project.
-         */
-        final static String VERSION = "version";
     }
 }

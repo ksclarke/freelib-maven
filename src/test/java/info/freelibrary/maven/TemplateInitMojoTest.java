@@ -6,6 +6,8 @@ import java.util.Properties;
 
 import org.junit.Test;
 
+import com.google.common.io.Files;
+
 import info.freelibrary.maven.TemplateInitMojo.Config;
 
 /**
@@ -41,6 +43,9 @@ public class TemplateInitMojoTest extends BetterAbstractMojoTestCase {
     @Test
     public final void testTemplateInitMojo() throws Exception {
         final Properties props = getProperties(Config.ARTIFACT_ID, TEST_ARTIFACT_ID, Config.GROUP_ID, TEST_GROUP_ID);
+
+        // Copy test POM file to a place where we can overwrite it
+        Files.copy(new File("src/test/resources/template-pom.xml"), POM);
 
         // Run our test of the mojo
         lookupConfiguredMojo(POM, props, MojoNames.TEMPLATE_INIT).execute();
