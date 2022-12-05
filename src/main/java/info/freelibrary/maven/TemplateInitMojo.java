@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Objects;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -31,34 +32,34 @@ import nu.xom.Serializer;
 public class TemplateInitMojo extends AbstractMojo {
 
     /**
-     * The logger for IfFileThenPropertiesMojo.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateInitMojo.class, MessageCodes.BUNDLE);
-
-    /**
      * The XML namespace for the Maven POM.
      */
-    private static final String XMLNS = "http://maven.apache.org/POM/4.0.0";
+    static final String XMLNS = "http://maven.apache.org/POM/4.0.0";
 
     /**
      * A property name for a function's name.
      */
-    private static final String FUNCTION_NAME = "function.name";
+    static final String FUNCTION_NAME = "function.name";
 
     /**
      * A property name for a function's group.
      */
-    private static final String FUNCTION_GROUP = "function.group";
+    static final String FUNCTION_GROUP = "function.group";
 
     /**
      * A property name for the function's version.
      */
-    private static final String FUNCTION_VERSION = "function.version";
+    static final String FUNCTION_VERSION = "function.version";
 
     /**
      * A properties element name.
      */
-    private static final String PROPERTIES = "properties";
+    static final String PROPERTIES = "properties";
+
+    /**
+     * The logger for IfFileThenPropertiesMojo.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateInitMojo.class, MessageCodes.BUNDLE);
 
     /**
      * The Maven project directory.
@@ -69,97 +70,45 @@ public class TemplateInitMojo extends AbstractMojo {
     /**
      * A path to a file to test for presence.
      */
-    @Parameter(alias = Config.ARTIFACT_ID, required = true)
+    @Parameter(alias = FUNCTION_NAME, property = FUNCTION_NAME, required = true)
     protected String myArtifactId;
 
     /**
      * A path to a file to test for absence.
      */
-    @Parameter(alias = Config.GROUP_ID, required = true)
+    @Parameter(alias = FUNCTION_GROUP, property = FUNCTION_GROUP, required = true)
     protected String myGroupId;
 
     /**
      * Properties to set if the file exists.
      */
-    @Parameter(alias = Config.VERSION, defaultValue = "0.0.0-SNAPSHOT")
+    @Parameter(alias = FUNCTION_VERSION, property = FUNCTION_VERSION, defaultValue = "0.0.0-SNAPSHOT")
     protected String myVersion;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final File pomFile = myProject.getFile();
-        final Serializer serializer;
+        Objects.requireNonNull(myArtifactId, LOGGER.getMessage(MessageCodes.MVN_134, "artifactId"));
+        Objects.requireNonNull(myGroupId, LOGGER.getMessage(MessageCodes.MVN_134, "groupId"));
 
         try {
+            final File pomFile = myProject.getFile();
             final Document pom = new Builder().build(pomFile);
             final Element root = pom.getRootElement();
-            final Elements propertiesList = root.getChildElements(PROPERTIES, XMLNS);
-            final FunctionProperties functionProperties = new FunctionProperties();
-            final Element properties;
-
-            // Create the properties element if it doesn't already exist
-            if (propertiesList.size() == 0) {
-                properties = new Element(PROPERTIES, XMLNS);
-                root.appendChild(properties);
-            } else {
-                properties = propertiesList.get(0);
-            }
+            final Element properties = getProperties(root);
 
             // Check if we're working with a multi-module project
             if (root.getChildElements("modules", XMLNS).size() != 0) {
                 throw new UnsupportedOperationException("Single project templates not yet implemented");
             }
 
-            // Update the values of function properties that already exist
-            properties.getChildElements().forEach(element -> {
-                final String name = element.getLocalName();
-
-                if (FUNCTION_NAME.equals(name)) {
-                    LOGGER.debug(MessageCodes.MVN_132, FUNCTION_NAME, myArtifactId);
-                    element.removeChildren();
-                    element.appendChild(myArtifactId);
-                    functionProperties.update(FUNCTION_NAME);
-                } else if (FUNCTION_VERSION.equals(name)) {
-                    LOGGER.debug(MessageCodes.MVN_132, FUNCTION_VERSION, myVersion);
-                    element.removeChildren();
-                    element.appendChild(myVersion);
-                    functionProperties.update(FUNCTION_VERSION);
-                } else if (FUNCTION_GROUP.equals(name)) {
-                    LOGGER.debug(MessageCodes.MVN_132, FUNCTION_GROUP, myGroupId);
-                    element.removeChildren();
-                    element.appendChild(myGroupId);
-                    functionProperties.update(FUNCTION_GROUP);
-                }
-            });
-
-            // If function's artifactId doesn't already exist, add it
-            if (!functionProperties.isUpdated(FUNCTION_NAME)) {
-                final Element functionName = new Element(FUNCTION_NAME, XMLNS);
-
-                LOGGER.debug(MessageCodes.MVN_133, FUNCTION_NAME, myArtifactId);
-                functionName.appendChild(myArtifactId);
-                properties.appendChild(functionName);
-            }
-
-            // If function's groupId doesn't already exist, add it
-            if (!functionProperties.isUpdated(FUNCTION_GROUP)) {
-                final Element functionGroup = new Element(FUNCTION_GROUP, XMLNS);
-
-                LOGGER.debug(MessageCodes.MVN_133, FUNCTION_GROUP, myGroupId);
-                functionGroup.appendChild(myGroupId);
-                properties.appendChild(functionGroup);
-            }
-
-            // If function's version doesn't already exist, add it
-            if (!functionProperties.isUpdated(FUNCTION_VERSION)) {
-                final Element functionVersion = new Element(FUNCTION_VERSION, XMLNS);
-
-                LOGGER.debug(MessageCodes.MVN_133, FUNCTION_VERSION, myVersion);
-                functionVersion.appendChild(myVersion);
-                properties.appendChild(functionVersion);
-            }
+            // Else, we have a multi-module project; in our case, used for functions
+            updateProperty(properties, FUNCTION_NAME, myArtifactId);
+            updateProperty(properties, FUNCTION_GROUP, myGroupId);
+            updateProperty(properties, FUNCTION_VERSION, myVersion);
 
             try (OutputStream outputStream = Files.newOutputStream(pomFile.toPath())) {
-                serializer = new Serializer(outputStream, StandardCharsets.UTF_8.name());
+                final Serializer serializer = new Serializer(outputStream, StandardCharsets.UTF_8.name());
+
                 serializer.setLineSeparator(System.lineSeparator());
                 serializer.write(pom);
             }
@@ -169,88 +118,45 @@ public class TemplateInitMojo extends AbstractMojo {
     }
 
     /**
-     * A collection of properties related to functions.
+     * Updates a property in the POM file.
+     *
+     * @param aPropertyList A list of properties
+     * @param aName A property name
+     * @param aValue A property value
      */
-    private final class FunctionProperties {
+    private void updateProperty(final Element aPropertyList, final String aName, final String aValue) {
+        final Element property = aPropertyList.getFirstChildElement(aName, XMLNS);
 
-        /**
-         * Whether the artifactId of a function has been updated.
-         */
-        private boolean myArtifactIdUpdated;
+        if (property != null) {
+            property.removeChildren();
+            property.appendChild(aValue);
+            LOGGER.debug(MessageCodes.MVN_132, aName, aValue);
+        } else {
+            final Element functionProperty = new Element(aName, XMLNS);
 
-        /**
-         * Whether the groupId of a function has been updated.
-         */
-        private boolean myGroupIdUpdated;
-
-        /**
-         * Whether the version of a function has been updated.
-         */
-        private boolean myVersionUpdated;
-
-        /**
-         * Updates a function property.
-         *
-         * @param aProperty A function property
-         */
-        private void update(final String aProperty) {
-            switch (aProperty) {
-                case FUNCTION_NAME:
-                    myArtifactIdUpdated = true;
-                case FUNCTION_GROUP:
-                    myGroupIdUpdated = true;
-                case FUNCTION_VERSION:
-                    myVersionUpdated = true;
-                default:
-                    throw new UnsupportedOperationException(aProperty);
-            }
-        }
-
-        /**
-         * Gets whether a function property has been updated.
-         *
-         * @param aProperty A function property
-         * @return True if the function property has been updated; else, false
-         */
-        private boolean isUpdated(final String aProperty) {
-            switch (aProperty) {
-                case FUNCTION_NAME:
-                    return myArtifactIdUpdated;
-                case FUNCTION_GROUP:
-                    return myGroupIdUpdated;
-                case FUNCTION_VERSION:
-                    return myVersionUpdated;
-                default:
-                    return false;
-            }
+            functionProperty.appendChild(aValue);
+            aPropertyList.appendChild(functionProperty);
+            LOGGER.debug(MessageCodes.MVN_133, aName, aValue);
         }
     }
 
     /**
-     * The Mojo's configuration options.
+     * Gets the POM's properties.
+     *
+     * @param aRoot The root element of the POM
+     * @return The properties element
      */
-    final class Config {
+    private Element getProperties(final Element aRoot) {
+        final Elements propertiesList = aRoot.getChildElements(PROPERTIES, XMLNS);
+        final Element properties;
 
-        /**
-         * The artifactId of the template project.
-         */
-        static final String ARTIFACT_ID = "artifactId";
-
-        /**
-         * The groupId of the template project.
-         */
-        static final String GROUP_ID = "groupId";
-
-        /**
-         * The default version of the template project.
-         */
-        static final String VERSION = "version";
-
-        /**
-         * Creates a new private configuration object.
-         */
-        private Config() {
-            // This is intentionally left empty.
+        if (propertiesList.size() == 0) {
+            properties = new Element(PROPERTIES, XMLNS);
+            aRoot.appendChild(properties);
+        } else {
+            properties = propertiesList.get(0);
         }
+
+        return properties;
     }
 }

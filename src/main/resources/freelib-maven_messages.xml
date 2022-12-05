@@ -44,5 +44,6 @@
   <entry key="MVN-131">Checking Jar files for: {}</entry>
   <entry key="MVN-132">Updating '{}' property with: {}</entry>
   <entry key="MVN-133">Adding '{}' property value: {}</entry>
+  <entry key="MVN-134">'{}' is a required plugin parameter</entry>
 
 </properties>
