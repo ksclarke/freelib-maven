@@ -39,7 +39,7 @@ public class MediaTypeMojoTest extends BetterAbstractMojoTestCase {
         final File mediaTypeFile = new File("src/test/generated/info/freelibrary/maven/MediaType.java");
 
         // Run our test of the mojo
-        lookupConfiguredMojo(POM, props, "generate-mediatype").execute();
+        lookupConfiguredMojo(POM, props, MojoNames.GENERATE_MEDIATYPE).execute();
 
         // Check to see that the generated file exists
         assertTrue(mediaTypeFile.exists());

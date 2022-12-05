@@ -22,6 +22,11 @@ final class MojoNames {
     static final String SET_FILE_PERMS = "set-file-perms";
 
     /**
+     * The name of the Mojo that initializes a template project.
+     */
+    static final String TEMPLATE_INIT = "template-init";
+
+    /**
      * The name of the Mojo that sets a property on the presence of a file.
      */
     static final String CHECK_FILE_SET_PROPERTY = "check-file-set-property";
