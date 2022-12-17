@@ -45,5 +45,8 @@
   <entry key="MVN-132">Updating '{}' property with: {}</entry>
   <entry key="MVN-133">Adding '{}' property value: {}</entry>
   <entry key="MVN-134">'{}' is a required plugin parameter</entry>
+  <entry key="MVN-135">POM file must exist</entry>
+  <entry key="MVN-136">POM file argument may not be null</entry>
+  <entry key="MVN-137">Module name cannot be found in POM: {}</entry>
 
 </properties>
