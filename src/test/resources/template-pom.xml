@@ -5,6 +5,7 @@
   <groupId>info.freelibrary</groupId>
   <artifactId>plugin-test</artifactId>
   <version>0.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
   <properties>
     <junit.version>4.13.2</junit.version>
@@ -21,6 +22,11 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <modules>
+    <module>test.module</module>
+  </modules>
+
   <build>
     <resources>
       <resource>

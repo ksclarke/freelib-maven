@@ -102,8 +102,8 @@ public abstract class BetterAbstractMojoTestCase extends AbstractMojoTestCase {
      */
     protected Mojo lookupConfiguredMojo(final File aPOM, final Properties aProperties, final String aGoal)
             throws Exception {
-        assertNotNull(aPOM);
-        assertTrue(aPOM.exists());
+        assertNotNull(LOGGER.getMessage(MessageCodes.MVN_136), aPOM);
+        assertTrue(LOGGER.getMessage(MessageCodes.MVN_135), aPOM.exists());
 
         final ProjectBuildingRequest buildingRequest = newMavenSession().getProjectBuildingRequest();
         final MavenProject project = lookup(ProjectBuilder.class).build(aPOM, buildingRequest).getProject();
