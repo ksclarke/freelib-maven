@@ -105,6 +105,13 @@ public class I18nCodesMojo extends AbstractMojo {
     @Parameter(alias = Config.IS_TRANSCODING_NEEDED, property = Config.IS_TRANSCODING_NEEDED, defaultValue = "false")
     protected boolean isTranscodingNeeded;
 
+    /**
+     * A configuration option to ignore if the messages file is missing.
+     */
+    @Parameter(alias = Config.IGNORE_MISSING_MESSAGE_FILES, property = Config.IGNORE_MISSING_MESSAGE_FILES,
+            defaultValue = "false")
+    protected boolean isIgnoringMissingFiles;
+
     @Override
     @SuppressWarnings({ "PMD.PreserveStackTrace", PMD.PRESERVE_STACK_TRACE, "PMD.CyclomaticComplexity",
         PMD.CYCLOMATIC_COMPLEXITY })
@@ -131,7 +138,9 @@ public class I18nCodesMojo extends AbstractMojo {
                 }
             }
         } catch (final FileNotFoundException | NoSuchFileException details) {
-            LOGGER.warn(MessageCodes.MVN_001);
+            if (!isIgnoringMissingFiles) {
+                LOGGER.warn(MessageCodes.MVN_001);
+            }
         } catch (final IOException details) {
             throw new MojoExecutionException(details);
         } catch (final I18nRuntimeException details) {
@@ -303,6 +312,11 @@ public class I18nCodesMojo extends AbstractMojo {
          * Constant for the message files property.
          */
         static final String MESSAGE_FILES = "messageFiles";
+
+        /**
+         * Constant for whether to ignore possibly missing message files.
+         */
+        static final String IGNORE_MISSING_MESSAGE_FILES = "ignoreMissing";
 
         /**
          * A private constructor for a constants class.
