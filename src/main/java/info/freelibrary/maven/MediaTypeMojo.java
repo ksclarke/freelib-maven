@@ -422,6 +422,11 @@ public class MediaTypeMojo extends AbstractMojo {
         javadoc.setText("Gets a media type from the supplied extension." + EOL + "*");
     }
 
+    /**
+     * Adds the MediaType's <code>getExt()</code> method.
+     *
+     * @param aSource A reference to the generated Java source code
+     */
     private void addGetExtMethod(final JavaEnumSource aSource) {
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
@@ -430,6 +435,11 @@ public class MediaTypeMojo extends AbstractMojo {
         javadoc.setText("Gets the first relevant media-type extension.");
     }
 
+    /**
+     * Adds the MediaType's <code>getExts()</code> method.
+     *
+     * @param aSource A reference to the generated Java source code
+     */
     private void addGetExtsMethod(final JavaEnumSource aSource) {
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
