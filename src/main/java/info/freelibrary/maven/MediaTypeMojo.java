@@ -51,7 +51,7 @@ import info.freelibrary.util.warnings.PMD;
  */
 @SuppressWarnings({ "PMD.ExcessiveImports", PMD.EXCESSIVE_IMPORTS, "MultipleStringLiterals",
     Checkstyle.MULTIPLE_STRING_LITERALS, "PMD.AvoidDuplicateLiterals", PMD.AVOID_DUPLICATE_LITERALS,
-    "PMD.ConsecutiveLiteralAppends", PMD.CONSECUTIVE_LITERAL_APPENDS })
+    "PMD.ConsecutiveLiteralAppends", PMD.CONSECUTIVE_LITERAL_APPENDS, "PMD.GodClass", PMD.GOD_CLASS })
 @Mojo(name = MojoNames.GENERATE_MEDIATYPE, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class MediaTypeMojo extends AbstractMojo {
 
@@ -192,10 +192,10 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the simple methods that just get MediaType field values
         source.addMethod("public String toString() { return myType; }");
-        source.addMethod("public String getExt() { return myExts[0]; }");
-        source.addMethod("public String[] getExts() { return myExts; }");
 
         // Add the more complicated methods that have to do some more work
+        addGetExtMethod(source);
+        addGetExtsMethod(source);
         addFromStringMethod(source);
         addFromExtMethod(source);
         addFromExtMethodWithHint(source);
@@ -420,6 +420,32 @@ public class MediaTypeMojo extends AbstractMojo {
         javadoc.addTagValue("@param", "aExt The extension of the desired media type");
         javadoc.addTagValue("@return", "The media type that corresponds to the supplied extension");
         javadoc.setText("Gets a media type from the supplied extension." + EOL + "*");
+    }
+
+    /**
+     * Adds the MediaType's <code>getExt()</code> method.
+     *
+     * @param aSource A reference to the generated Java source code
+     */
+    private void addGetExtMethod(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        javadoc = aSource.addMethod("public String getExt() { return myExts[0]; }").getJavaDoc();
+        javadoc.addTagValue("@return", "The first relevant media-type extension");
+        javadoc.setText("Gets the first relevant media-type extension.");
+    }
+
+    /**
+     * Adds the MediaType's <code>getExts()</code> method.
+     *
+     * @param aSource A reference to the generated Java source code
+     */
+    private void addGetExtsMethod(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        javadoc = aSource.addMethod("public String[] getExts() { return myExts; }").getJavaDoc();
+        javadoc.addTagValue("@return", "An array of relevant media-type extensions");
+        javadoc.setText("Gets an array of relevant media-type extensions.");
     }
 
     /**
