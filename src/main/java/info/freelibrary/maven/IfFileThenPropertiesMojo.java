@@ -62,6 +62,9 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
         }
     }
 
+    /**
+     * Adds properties to the Maven build.
+     */
     private void addProperties() {
         final Properties properties = myProject.getProperties();
 

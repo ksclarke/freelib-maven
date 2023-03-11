@@ -22,6 +22,7 @@ import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.internal.impl.SimpleLocalRepositoryManagerFactory;
 import org.eclipse.aether.repository.LocalRepository;
 
+import info.freelibrary.util.I18nRuntimeException;
 import info.freelibrary.util.Logger;
 import info.freelibrary.util.LoggerFactory;
 
@@ -40,6 +41,7 @@ public abstract class BetterAbstractMojoTestCase extends AbstractMojoTestCase {
      * Creates a new Maven session with system properties and a local repository set.
      *
      * @return A pre-configured Maven session
+     * @throws I18nRuntimeException If there is an exception thrown while creating a new session
      */
     @SuppressWarnings("deprecation")
     protected MavenSession newMavenSession() {
@@ -58,7 +60,7 @@ public abstract class BetterAbstractMojoTestCase extends AbstractMojoTestCase {
 
             return new MavenSession(getContainer(), session, request, result);
         } catch (final Exception details) {
-            throw new RuntimeException(details);
+            throw new I18nRuntimeException(details);
         }
     }
 
@@ -85,6 +87,7 @@ public abstract class BetterAbstractMojoTestCase extends AbstractMojoTestCase {
      *
      * @param aPOM A POM file
      * @param aGoal The goal for the Maven mojo we want to retrieve
+     * @throws Exception If an exception is thrown while looking up the configured mojo
      * @return A Maven mojo
      */
     protected Mojo lookupConfiguredMojo(final File aPOM, final String aGoal) throws Exception {
@@ -98,6 +101,7 @@ public abstract class BetterAbstractMojoTestCase extends AbstractMojoTestCase {
      * @param aPOM A POM file
      * @param aProperties A set of properties to use for the test
      * @param aGoal The goal for the Maven mojo we want to retrieve
+     * @throws Exception If an exception is thrown while looking up the configured mojo
      * @return A Maven mojo
      */
     protected Mojo lookupConfiguredMojo(final File aPOM, final Properties aProperties, final String aGoal)
@@ -129,6 +133,7 @@ public abstract class BetterAbstractMojoTestCase extends AbstractMojoTestCase {
      *
      * @param aKvArray An array of keys and values from which to build a properties object
      * @return A properties object
+     * @throws IllegalArgumentException If the supplied properties are not supplied in pairs
      */
     protected Properties getProperties(final String... aKvArray) {
         final Properties properties = new Properties();
