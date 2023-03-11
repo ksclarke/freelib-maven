@@ -176,6 +176,9 @@ public class TemplateInitMojo extends AbstractMojo {
 
     /**
      * Updates the child project (module), if necessary.
+     *
+     * @throws ParsingException If the template POM file cannot be parsed
+     * @throws IOException If the template POM file cannot be read
      */
     private void updateChildPOM() throws ParsingException, IOException {
         final File pomFile = Path.of(myProject.getBasedir().toString(), myModuleName, "pom.xml").toFile();

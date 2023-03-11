@@ -206,6 +206,8 @@ public class LatestSnapshotURLMojo extends AbstractMojo {
          * Returns a URL for the artifact's latest snapshot Jar file.
          *
          * @return A URL for the artifact's latest snapshot Jar file
+         * @throws MojoFailureException If the mojo fails to execute successfully
+         * @throws MojoExecutionException If the execution of the mojo throws an exception
          */
         private String getJarURL() throws MojoFailureException, MojoExecutionException {
             final Metadata metadata;

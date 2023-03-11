@@ -367,3 +367,4 @@ video/x-msvideo                         avi
 video/x-matroska                        mkv mpv
 video/x-sgi-movie                       movie
 x-world/x-vrml                          vrm vrml wrl
+x-fake/x-fake                           

@@ -533,9 +533,9 @@ public class MediaTypeMojo extends AbstractMojo {
         final LineNumberReader reader = new LineNumberReader(new InputStreamReader(aInStream));
         final List<MediaTypeEntry> entries = aEntryList == null ? new ArrayList<>() : aEntryList;
 
-        reader.lines().forEach(line -> {
+        reader.lines().map(String::trim).forEach(line -> {
             // We only care about the media types that have extensions and skip those that are commented out
-            if (line.contains(SPACE) && line.trim().charAt(0) != '#') {
+            if (line.contains(SPACE) && line.charAt(0) != '#') {
                 final String[] parts = line.split("\\s+");
                 final String[] exts = Arrays.copyOfRange(parts, 1, parts.length);
                 final MediaTypeEntry entry = new MediaTypeEntry(parts[0], exts);

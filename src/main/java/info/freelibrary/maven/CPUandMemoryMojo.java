@@ -94,7 +94,7 @@ public class CPUandMemoryMojo extends AbstractMojo {
     /**
      * Convert the size string returned by {@link FileUtils#sizeFromBytes} into the format we need for the JVM.
      *
-     * @param aSizeInBytes
+     * @param aSizeInBytes An amount of memory
      * @return A formatted string representation of the supplied amount of memory
      */
     private String sizeToString(final long aSizeInBytes) {
