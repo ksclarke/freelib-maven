@@ -53,7 +53,7 @@
     <commons.io.version>2.7</commons.io.version>
     <commons.codec.version>1.13</commons.codec.version>
     <commons.httpclient.version>4.5.13</commons.httpclient.version>
-    <commons.compress.version>1.21</commons.compress.version>
+    <commons.compress.version>1.26.0</commons.compress.version>
     <xerces.version>2.12.2</xerces.version>
 
     <!-- Our Maven mojo dependencies -->
