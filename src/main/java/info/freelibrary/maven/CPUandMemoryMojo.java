@@ -66,7 +66,7 @@ public class CPUandMemoryMojo extends AbstractMojo {
     protected MavenProject myProject;
 
     @Override
-    @SuppressWarnings({ "PMD.AvoidLiteralsInIfCondition", PMD.AVOID_LITERALS_IN_IF_CONDITION })
+    @SuppressWarnings({ PMD.AVOID_LITERALS_IN_IF_CONDITION })
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Properties properties = myProject.getProperties();
         final int cores = Runtime.getRuntime().availableProcessors();

@@ -1,5 +1,5 @@
 
-package info.freelibrary.maven; // NOPMD
+package info.freelibrary.maven;
 
 import static info.freelibrary.util.Constants.EOL;
 import static info.freelibrary.util.Constants.HASH;
@@ -49,16 +49,10 @@ import info.freelibrary.util.warnings.PMD;
  * A Maven mojo that generates an enum of pre-configured mime-types, adding any addition ones (with extensions) found in
  * the system's <code>/etc/mime.types</code> file.
  */
-@SuppressWarnings({ "PMD.ExcessiveImports", PMD.EXCESSIVE_IMPORTS, "MultipleStringLiterals",
-    Checkstyle.MULTIPLE_STRING_LITERALS, "PMD.AvoidDuplicateLiterals", PMD.AVOID_DUPLICATE_LITERALS,
-    "PMD.ConsecutiveLiteralAppends", PMD.CONSECUTIVE_LITERAL_APPENDS, "PMD.GodClass", PMD.GOD_CLASS })
 @Mojo(name = MojoNames.GENERATE_MEDIATYPE, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+@SuppressWarnings({ PMD.EXCESSIVE_IMPORTS, Checkstyle.MULTIPLE_STRING_LITERALS, PMD.AVOID_DUPLICATE_LITERALS,
+    PMD.CONSECUTIVE_LITERAL_APPENDS, PMD.GOD_CLASS })
 public class MediaTypeMojo extends AbstractMojo {
-
-    /**
-     * The default size of StringBuilders used in the mojo.
-     */
-    private static final int BUILDER_SIZE = 450;
 
     /**
      * A static value for the enumeration's class name.
@@ -275,8 +269,8 @@ public class MediaTypeMojo extends AbstractMojo {
             aSource.addImport(List.class);
         }
 
-        if (!aSource.hasImport(ArrayList.class)) { // NOPMD - ArrayList has to be used to get its import added
-            aSource.addImport(ArrayList.class); // NOPMD
+        if (!aSource.hasImport(java.util.ArrayList.class)) {
+            aSource.addImport(java.util.ArrayList.class);
         }
 
         // Add Javadocs for this method

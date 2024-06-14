@@ -1,5 +1,5 @@
 
-package info.freelibrary.maven; // NOPMD - ExcessiveImports
+package info.freelibrary.maven;
 
 import static info.freelibrary.util.Constants.DASH;
 
@@ -53,6 +53,7 @@ import info.freelibrary.util.warnings.PMD;
  */
 @Mojo(name = MojoNames.GENERATE_CODES, defaultPhase = LifecyclePhase.PROCESS_SOURCES,
         requiresDependencyResolution = ResolutionScope.COMPILE)
+@SuppressWarnings({ PMD.EXCESSIVE_IMPORTS })
 public class I18nCodesMojo extends AbstractMojo {
 
     /**
@@ -113,8 +114,7 @@ public class I18nCodesMojo extends AbstractMojo {
     protected List<String> myPropertyFiles;
 
     @Override
-    @SuppressWarnings({ "PMD.PreserveStackTrace", PMD.PRESERVE_STACK_TRACE, "PMD.CyclomaticComplexity",
-        PMD.CYCLOMATIC_COMPLEXITY })
+    @SuppressWarnings({ PMD.PRESERVE_STACK_TRACE, PMD.CYCLOMATIC_COMPLEXITY })
     public void execute() throws MojoExecutionException, MojoFailureException {
         LOGGER.info(MessageCodes.MVN_127);
 
@@ -153,8 +153,7 @@ public class I18nCodesMojo extends AbstractMojo {
      *
      * @param aFilesList A list of message files
      */
-    @SuppressWarnings({ "PMD.AvoidFileStream", PMD.AVOID_FILE_STREAM, "PMD.CyclomaticComplexity",
-        PMD.CYCLOMATIC_COMPLEXITY, "PMD.CognitiveComplexity", PMD.COGNITIVE_COMPLEXITY })
+    @SuppressWarnings({ PMD.AVOID_FILE_STREAM, PMD.CYCLOMATIC_COMPLEXITY, PMD.COGNITIVE_COMPLEXITY })
     private void generateMessageCodes(final List<String> aFilesList) {
         final Properties properties = new Properties();
 

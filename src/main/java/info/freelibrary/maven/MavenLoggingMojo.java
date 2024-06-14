@@ -45,7 +45,7 @@ import info.freelibrary.util.LoggerFactory;
  * </pre>
  */
 @Mojo(name = MojoNames.CONFIGURE_LOGGING)
-@SuppressWarnings("PMD.CommentSize")
+@SuppressWarnings({ "PMD.CommentSize" })
 public class MavenLoggingMojo extends AbstractMojo {
 
     /**
