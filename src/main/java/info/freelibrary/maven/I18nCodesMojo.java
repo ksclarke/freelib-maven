@@ -56,9 +56,9 @@ import info.freelibrary.util.warnings.PMD;
 public class I18nCodesMojo extends AbstractMojo {
 
     /**
-     * The logger for I18nCodesMojo.
+     * A delimiter to use in the bundle name.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(I18nCodesMojo.class, MessageCodes.BUNDLE);
+    private static final String BUNDLE_DELIM = "_";
 
     /**
      * A regular expression pattern to find the expected message file.
@@ -66,9 +66,9 @@ public class I18nCodesMojo extends AbstractMojo {
     private static final RegexFileFilter DEFAULT_MESSAGE_FILTER = new RegexFileFilter(".*_messages.xml");
 
     /**
-     * The resources directory where the message file should be found.
+     * The logger for I18nCodesMojo.
      */
-    private static final File RESOURCES_DIR = new File("src/main/resources");
+    private static final Logger LOGGER = LoggerFactory.getLogger(I18nCodesMojo.class, MessageCodes.BUNDLE);
 
     /**
      * The name of the message class.
@@ -76,9 +76,29 @@ public class I18nCodesMojo extends AbstractMojo {
     private static final String MESSAGE_CLASS_NAME = "message-class-name";
 
     /**
-     * A delimiter to use in the bundle name.
+     * The resources directory where the message file should be found.
      */
-    private static final String BUNDLE_DELIM = "_";
+    private static final File RESOURCES_DIR = new File("src/main/resources");
+
+    /**
+     * A configuration option to ignore if the messages file is missing.
+     */
+    @Parameter(alias = Config.IGNORE_MISSING_MESSAGE_FILES, property = Config.IGNORE_MISSING_MESSAGE_FILES,
+            defaultValue = "false")
+    protected boolean isIgnoringMissingFiles;
+
+    /**
+     * A configuration option for generating a standard properties file in addition to the codes class.
+     */
+    @Parameter(alias = Config.IS_TRANSCODING_NEEDED, property = Config.IS_TRANSCODING_NEEDED, defaultValue = "false")
+    protected boolean isTranscodingNeeded;
+
+    /**
+     * A configuration option for the generated sources directory.
+     */
+    @Parameter(alias = Config.GEN_SRC_DIR, property = Config.GEN_SRC_DIR,
+            defaultValue = "${project.basedir}/src/main/generated")
+    protected File myGeneratedSrcDir;
 
     /**
      * The Maven project directory.
@@ -91,26 +111,6 @@ public class I18nCodesMojo extends AbstractMojo {
      */
     @Parameter(alias = Config.MESSAGE_FILES, property = Config.MESSAGE_FILES)
     protected List<String> myPropertyFiles;
-
-    /**
-     * A configuration option for the generated sources directory.
-     */
-    @Parameter(alias = Config.GEN_SRC_DIR, property = Config.GEN_SRC_DIR,
-            defaultValue = "${project.basedir}/src/main/generated")
-    protected File myGeneratedSrcDir;
-
-    /**
-     * A configuration option for generating a standard properties file in addition to the codes class.
-     */
-    @Parameter(alias = Config.IS_TRANSCODING_NEEDED, property = Config.IS_TRANSCODING_NEEDED, defaultValue = "false")
-    protected boolean isTranscodingNeeded;
-
-    /**
-     * A configuration option to ignore if the messages file is missing.
-     */
-    @Parameter(alias = Config.IGNORE_MISSING_MESSAGE_FILES, property = Config.IGNORE_MISSING_MESSAGE_FILES,
-            defaultValue = "false")
-    protected boolean isIgnoringMissingFiles;
 
     @Override
     @SuppressWarnings({ "PMD.PreserveStackTrace", PMD.PRESERVE_STACK_TRACE, "PMD.CyclomaticComplexity",
@@ -146,68 +146,6 @@ public class I18nCodesMojo extends AbstractMojo {
         } catch (final I18nRuntimeException details) {
             throw new MojoExecutionException(details.getCause());
         }
-    }
-
-    /**
-     * Load the user supplied property files from a combination of file and Jar sources.
-     *
-     * @return An array of accessible property files
-     * @throws IOException If there is trouble reading the property files
-     */
-    private List<String> getPropertyFiles() throws IOException {
-        final List<String> files = new ArrayList<>();
-
-        myPropertyFiles.stream().forEach((ThrowingConsumer<String>) file -> {
-            if (new File(file).exists()) {
-                files.add(file);
-            } else {
-                final Stream<String> classpathStream = myProject.getCompileClasspathElements().stream();
-                final Predicate<String> isJar = element -> element.endsWith(".jar");
-
-                LOGGER.debug(MessageCodes.MVN_131, file);
-
-                classpathStream.filter(isJar).forEach((ThrowingConsumer<String>) jar -> {
-                    final JarFile jarFile = new JarFile(jar);
-
-                    if (JarUtils.contains(jarFile, file)) {
-                        final File tmpDir = Files.createTempDirectory(UUID.randomUUID().toString() + DASH).toFile();
-
-                        LOGGER.debug(MessageCodes.MVN_130, jar);
-
-                        JarUtils.extract(jarFile, file, tmpDir);
-                        files.add(Path.of(tmpDir.toString(), file).toString());
-                    }
-                });
-            }
-        });
-
-        return files;
-    }
-
-    /**
-     * Writes corresponding properties files from the supplied XML files.
-     *
-     * @param aFilesList A list of XML resource files
-     */
-    private void writePropertiesFiles(final List<String> aFilesList) {
-        aFilesList.stream().forEach((ThrowingConsumer<String>) xmlFilePath -> {
-            final Path fileName = Path.of(xmlFilePath.replace(".xml", ".properties")).getFileName();
-            final String projectDir = myProject.getBasedir().getAbsolutePath();
-            final Path filePath = Path.of(projectDir, "target/classes", fileName.toString());
-            final Path sourceFilePath = Path.of(xmlFilePath);
-            final Properties properties = new Properties();
-
-            LOGGER.debug(MessageCodes.MVN_125, xmlFilePath, filePath);
-
-            // Make sure out output directory exists before trying to write to it
-            Files.createDirectories(filePath.getParent());
-
-            try (InputStream xmlFileStream = Files.newInputStream(sourceFilePath);
-                    BufferedWriter fileWriter = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
-                properties.loadFromXML(xmlFileStream);
-                properties.store(fileWriter, LOGGER.getMessage(MessageCodes.MVN_126));
-            }
-        });
     }
 
     /**
@@ -294,14 +232,71 @@ public class I18nCodesMojo extends AbstractMojo {
     }
 
     /**
+     * Load the user supplied property files from a combination of file and Jar sources.
+     *
+     * @return An array of accessible property files
+     * @throws IOException If there is trouble reading the property files
+     */
+    private List<String> getPropertyFiles() throws IOException {
+        final List<String> files = new ArrayList<>();
+
+        myPropertyFiles.stream().forEach((ThrowingConsumer<String>) file -> {
+            if (new File(file).exists()) {
+                files.add(file);
+            } else {
+                final Stream<String> classpathStream = myProject.getCompileClasspathElements().stream();
+                final Predicate<String> isJar = element -> element.endsWith(".jar");
+
+                LOGGER.debug(MessageCodes.MVN_131, file);
+
+                classpathStream.filter(isJar).forEach((ThrowingConsumer<String>) jar -> {
+                    final JarFile jarFile = new JarFile(jar);
+
+                    if (JarUtils.contains(jarFile, file)) {
+                        final File tmpDir = Files.createTempDirectory(UUID.randomUUID().toString() + DASH).toFile();
+
+                        LOGGER.debug(MessageCodes.MVN_130, jar);
+
+                        JarUtils.extract(jarFile, file, tmpDir);
+                        files.add(Path.of(tmpDir.toString(), file).toString());
+                    }
+                });
+            }
+        });
+
+        return files;
+    }
+
+    /**
+     * Writes corresponding properties files from the supplied XML files.
+     *
+     * @param aFilesList A list of XML resource files
+     */
+    private void writePropertiesFiles(final List<String> aFilesList) {
+        aFilesList.stream().forEach((ThrowingConsumer<String>) xmlFilePath -> {
+            final Path fileName = Path.of(xmlFilePath.replace(".xml", ".properties")).getFileName();
+            final String projectDir = myProject.getBasedir().getAbsolutePath();
+            final Path filePath = Path.of(projectDir, "target/classes", fileName.toString());
+            final Path sourceFilePath = Path.of(xmlFilePath);
+            final Properties properties = new Properties();
+
+            LOGGER.debug(MessageCodes.MVN_125, xmlFilePath, filePath);
+
+            // Make sure out output directory exists before trying to write to it
+            Files.createDirectories(filePath.getParent());
+
+            try (InputStream xmlFileStream = Files.newInputStream(sourceFilePath);
+                    BufferedWriter fileWriter = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+                properties.loadFromXML(xmlFileStream);
+                properties.store(fileWriter, LOGGER.getMessage(MessageCodes.MVN_126));
+            }
+        });
+    }
+
+    /**
      * The Mojo's configuration options.
      */
     final class Config {
-
-        /**
-         * Constant for the transcoding needed property.
-         */
-        static final String IS_TRANSCODING_NEEDED = "createPropertiesFile";
 
         /**
          * Constant for the generated sources directory property.
@@ -309,14 +304,19 @@ public class I18nCodesMojo extends AbstractMojo {
         static final String GEN_SRC_DIR = "generatedSourcesDirectory";
 
         /**
-         * Constant for the message files property.
-         */
-        static final String MESSAGE_FILES = "messageFiles";
-
-        /**
          * Constant for whether to ignore possibly missing message files.
          */
         static final String IGNORE_MISSING_MESSAGE_FILES = "ignoreMissing";
+
+        /**
+         * Constant for the transcoding needed property.
+         */
+        static final String IS_TRANSCODING_NEEDED = "createPropertiesFile";
+
+        /**
+         * Constant for the message files property.
+         */
+        static final String MESSAGE_FILES = "messageFiles";
 
         /**
          * A private constructor for a constants class.

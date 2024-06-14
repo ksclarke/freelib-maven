@@ -15,14 +15,14 @@ import org.junit.Test;
 public class LatestSnapshotURLMojoTest extends BetterAbstractMojoTestCase {
 
     /**
-     * The POM file being used by the tests.
-     */
-    private static final File POM = new File("src/test/resources/test-pom.xml");
-
-    /**
      * The output we expect to see in our logging.
      */
     private static final String EXPECTED_VALUE = "Setting System property (snapshot.url = https://s01.oss.sonatype";
+
+    /**
+     * The POM file being used by the tests.
+     */
+    private static final File POM = new File("src/test/resources/test-pom.xml");
 
     /**
      * Tests running the {@link LatestSnapshotURLMojo}.

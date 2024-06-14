@@ -56,6 +56,11 @@ import info.freelibrary.util.warnings.PMD;
 public class MediaTypeMojo extends AbstractMojo {
 
     /**
+     * The default size of StringBuilders used in the mojo.
+     */
+    private static final int BUILDER_SIZE = 450;
+
+    /**
      * A static value for the enumeration's class name.
      */
     private static final String CLASS_NAME = "MediaType";
@@ -71,17 +76,6 @@ public class MediaTypeMojo extends AbstractMojo {
     private static final String QUOTE = "\"";
 
     /**
-     * The default size of StringBuilders used in the mojo.
-     */
-    private static final int BUILDER_SIZE = 450;
-
-    /**
-     * The Maven project directory.
-     */
-    @Parameter(defaultValue = "${project}")
-    protected MavenProject myProject;
-
-    /**
      * A configuration option for the generated sources directory.
      */
     @Parameter(alias = Config.GEN_SRC, property = Config.GEN_SRC,
@@ -93,6 +87,12 @@ public class MediaTypeMojo extends AbstractMojo {
      */
     @Parameter(alias = Config.PACKAGE, property = Config.PACKAGE, defaultValue = "${project.groupId}")
     protected String myPackagePath;
+
+    /**
+     * The Maven project directory.
+     */
+    @Parameter(defaultValue = "${project}")
+    protected MavenProject myProject;
 
     /**
      * The method that runs the MimeTypesMojo.
@@ -116,6 +116,359 @@ public class MediaTypeMojo extends AbstractMojo {
         readUserMediaTypes(Paths.get(System.getProperty("user.home"), ".mime.types"), mediaTypes);
 
         writeSource(mediaTypes, srcDir);
+    }
+
+    /**
+     * Adds a constructor to the enum class.
+     *
+     * @param aSource The source on which to add the constructor
+     * @return The constructor's method
+     */
+    private MethodSource<JavaEnumSource> addConstructor(final JavaEnumSource aSource) {
+        final MethodSource<JavaEnumSource> constructor = aSource.addMethod().setPackagePrivate().setConstructor(true);
+
+        constructor.getJavaDoc().setText("Creates a new media type.");
+        return constructor;
+    }
+
+    /**
+     * Adds a fromExt method to the supplied Java source.
+     *
+     * @param aSource A Java source object
+     */
+    private void addFromExtMethod(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        final String method = """
+            public static Optional<MediaType> fromExt(final String aExt) {
+                return fromExt(aExt, null);
+            }
+            """;
+
+        javadoc = aSource.addMethod(method).getJavaDoc();
+        javadoc.addTagValue("@param", "aExt The extension of the desired media type");
+        javadoc.addTagValue("@return", "The media type that corresponds to the supplied extension");
+        javadoc.setText("Gets a media type from the supplied extension." + EOL + "*");
+    }
+
+    /**
+     * Adds a fromExt method to the supplied Java source.
+     *
+     * @param aSource A Java source object
+     */
+    private void addFromExtMethodWithHint(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        final String method = """
+            public static Optional<MediaType> fromExt(final String aExt, final String aHint) {
+                final String hint = aHint != null ? aHint.toLowerCase() : null;
+                MediaType chosenMediaType = null;
+
+                for (final MediaType mediaType : values()) {
+                    for (final String ext : mediaType.getExts()) {
+                        if (ext.equalsIgnoreCase(aExt)) {
+                            if (hint != null && mediaType.toString().startsWith(hint)) {
+                                return Optional.of(mediaType);
+                            }
+
+                            if (chosenMediaType == null) { chosenMediaType = mediaType; }
+                        }
+                    }
+                }
+
+                return Optional.ofNullable(chosenMediaType);
+            }
+            """;
+
+        if (!aSource.hasImport(Optional.class)) {
+            aSource.addImport(Optional.class);
+        }
+
+        javadoc = aSource.addMethod(method).getJavaDoc();
+        javadoc.addTagValue("@param", "aExt The extension of the desired media type");
+        javadoc.addTagValue("@param", "aHint A class of type (e.g. 'audio' or 'application')");
+        javadoc.addTagValue("@return", "The media type that corresponds to the supplied extension");
+        javadoc.setText("Gets a media type from the supplied extension." + EOL + "*");
+    }
+
+    /**
+     * Adds a fromString method to the supplied Java source.
+     *
+     * @param aSource A Java source object
+     */
+    private void addFromStringMethod(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        final String method = """
+            public static Optional<MediaType> fromString(final String aType) {
+                for (final MediaType mediaType : values()) {
+                    if (mediaType.myType.equalsIgnoreCase(aType)) {
+                        return Optional.of(mediaType);
+                    }
+                }
+
+                return Optional.empty();
+            }
+            """;
+
+        // Add an import for Optional since this method returns an Optional
+        if (!aSource.hasImport(Optional.class)) {
+            aSource.addImport(Optional.class);
+        }
+
+        // Add the fromString method to the source
+        javadoc = aSource.addMethod(method).getJavaDoc();
+        javadoc.addTagValue("@param", "aType A type of media type");
+        javadoc.addTagValue("@return", "The media type that corresponds to the supplied type");
+        javadoc.setText("Gets a media type from the supplied type." + EOL + "*");
+    }
+
+    /**
+     * Adds the MediaType's <code>getExt()</code> method.
+     *
+     * @param aSource A reference to the generated Java source code
+     */
+    private void addGetExtMethod(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        javadoc = aSource.addMethod("public String getExt() { return myExts[0]; }").getJavaDoc();
+        javadoc.addTagValue("@return", "The first relevant media-type extension");
+        javadoc.setText("Gets the first relevant media-type extension.");
+    }
+
+    /**
+     * Adds the MediaType's <code>getExts()</code> method.
+     *
+     * @param aSource A reference to the generated Java source code
+     */
+    private void addGetExtsMethod(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        javadoc = aSource.addMethod("public String[] getExts() { return myExts; }").getJavaDoc();
+        javadoc.addTagValue("@return", "An array of relevant media-type extensions");
+        javadoc.setText("Gets an array of relevant media-type extensions.");
+    }
+
+    /**
+     * Adds a getTypes method that returns media types for a supplied class of type (e.g., "application").
+     *
+     * @param aSource A Java source object
+     */
+    private void addGetTypesMethod(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        final String method = """
+            public static List<MediaType> getTypes(final String aClass) {
+                final List<MediaType> types = new ArrayList<>();
+                for (final MediaType mediaType : values()) {
+                    if (mediaType.myType.startsWith(aClass.toLowerCase() + \"/\")) {
+                        types.add(mediaType);
+                    }
+                }
+
+                return types;
+            }
+            """;
+
+        // Add imports for the classes used in this method
+        if (!aSource.hasImport(List.class)) {
+            aSource.addImport(List.class);
+        }
+
+        if (!aSource.hasImport(ArrayList.class)) { // NOPMD - ArrayList has to be used to get its import added
+            aSource.addImport(ArrayList.class); // NOPMD
+        }
+
+        // Add Javadocs for this method
+        javadoc = aSource.addMethod(method).getJavaDoc();
+        javadoc.addTagValue("@param", "aClass A class of media type (e.g., &quot;application&quot;)");
+        javadoc.addTagValue("@return", "The media types that correspond to the supplied type class");
+        javadoc.setText("Gets a list of media types that correspond to the supplied class." + EOL + "*");
+    }
+
+    /**
+     * Adds an additional parse method to the supplied Java source.
+     *
+     * @param aSource A Java source object
+     */
+    private void addParseStringMethod(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        final String method = """
+            public static Optional<MediaType> parse(final String aURI) {
+                return parse(URI.create(aURI), null);
+            }
+            """;
+
+        // Add the URI class to imports if it hasn't already been added
+        if (!aSource.hasImport(URI.class)) {
+            aSource.addImport(URI.class);
+        }
+
+        // Add the parse method to the source
+        javadoc = aSource.addMethod(method).getJavaDoc();
+        javadoc.addTagValue("@param", "aURI A string URI from which to parse the media type");
+        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
+        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
+    }
+
+    /**
+     * Adds an additional parse method to the supplied Java source.
+     *
+     * @param aSource A Java source object
+     */
+    private void addParseStringMethodWithHint(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        final String method = """
+            public static Optional<MediaType> parse(final String aURI, final String aHint) {
+                return parse(URI.create(aURI), aHint);
+            }
+            """;
+
+        // Add the URI class to imports if it hasn't already been added
+        if (!aSource.hasImport(URI.class)) {
+            aSource.addImport(URI.class);
+        }
+
+        // Add the parse method to the source
+        javadoc = aSource.addMethod(method).getJavaDoc();
+        javadoc.addTagValue("@param", "aURI A string URI from which to parse the media type");
+        javadoc.addTagValue("@param", "aHint A class of type (e.g. 'audio' or 'application')");
+        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
+        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
+    }
+
+    /**
+     * Adds an additional parse method to the supplied Java source.
+     *
+     * @param aSource A Java source object
+     */
+    private void addParseUriMethod(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        final String method = """
+            public static Optional<MediaType> parse(final URI aURI) {
+                return parse(aURI, null);
+            }
+            """;
+
+        // Add the URI class to imports if it hasn't already been added
+        if (!aSource.hasImport(URI.class)) {
+            aSource.addImport(URI.class);
+        }
+
+        // Add the parse method to the source
+        javadoc = aSource.addMethod(method).getJavaDoc();
+        javadoc.addTagValue("@param", "aURI A URI from which to parse the media type");
+        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
+        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
+    }
+
+    /**
+     * Adds a parse method to the supplied Java source.
+     *
+     * @param aSource A Java source object
+     */
+    private void addParseUriMethodWithHint(final JavaEnumSource aSource) {
+        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+
+        final String method = StringUtils.format("""
+            public static Optional<MediaType> parse(final URI aURI, final String aHint) {
+                final String fragment = '{}' + aURI.getFragment();
+                final String ext;
+                final int index;
+
+                String uri = aURI.toString();
+
+                if ((index = uri.indexOf(fragment)) != -1) {
+                    uri = uri.substring(0, index);
+                }
+
+                ext = StringUtils.trimToNull(FileUtils.getExt(uri));
+
+                if (ext != null) {
+                    return fromExt(ext, aHint);
+                }
+
+                return fromString(uri);
+            }
+            """, HASH);
+
+        // Add necessary imports
+        if (!aSource.hasImport(StringUtils.class)) {
+            aSource.addImport(StringUtils.class);
+        }
+
+        if (!aSource.hasImport(FileUtils.class)) {
+            aSource.addImport(FileUtils.class);
+        }
+
+        if (!aSource.hasImport(URI.class)) {
+            aSource.addImport(URI.class);
+        }
+
+        // Add the parse method to the source
+        javadoc = aSource.addMethod(method).getJavaDoc();
+        javadoc.addTagValue("@param", "aURI A URI from which to parse the media type");
+        javadoc.addTagValue("@param", "aHint A hint as to what class of media type we want");
+        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
+        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
+    }
+
+    /**
+     * Gets the constructor's body.
+     *
+     * @return The body of the constructor
+     */
+    private String getConstructorBody() {
+        return new StringBuilder().append("myType = aType;").append("myExts = aExts;").toString();
+    }
+
+    /**
+     * Gets the constructor's parameters.
+     *
+     * @return The constructor's parameters
+     */
+    private String getConstructorParams() {
+        return "final String aType, final String[] aExts";
+    }
+
+    /**
+     * Gets the media types from the supplied stream.
+     *
+     * @param aInStream An input stream for the media types
+     * @return An array of media types to be used as values in the enum
+     */
+    private List<MediaTypeEntry> getMediaTypes(final InputStream aInStream) {
+        return getMediaTypes(aInStream, null);
+    }
+
+    /**
+     * Gets the media types from the supplied stream and puts them in the supplied list.
+     *
+     * @param aInStream An input stream for the media types
+     * @param aEntryList A list of media type entries
+     * @return An array of media types to be used as values in the enum
+     */
+    private List<MediaTypeEntry> getMediaTypes(final InputStream aInStream, final List<MediaTypeEntry> aEntryList) {
+        final LineNumberReader reader = new LineNumberReader(new InputStreamReader(aInStream));
+        final List<MediaTypeEntry> entries = aEntryList == null ? new ArrayList<>() : aEntryList;
+
+        reader.lines().map(String::trim).forEach(line -> {
+            // We only care about the media types that have extensions and skip those that are commented out
+            if (line.contains(SPACE) && line.charAt(0) != '#') {
+                final String[] parts = line.split("\\s+");
+                final String[] exts = Arrays.copyOfRange(parts, 1, parts.length);
+                final MediaTypeEntry entry = new MediaTypeEntry(parts[0], exts);
+
+                if (!entries.contains(entry)) {
+                    entries.add(entry);
+                }
+            } // ignore everything else...
+        });
+
+        return entries;
     }
 
     /**
@@ -229,356 +582,26 @@ public class MediaTypeMojo extends AbstractMojo {
     }
 
     /**
-     * Adds a parse method to the supplied Java source.
-     *
-     * @param aSource A Java source object
+     * The Mojo's configuration options.
      */
-    private void addParseUriMethodWithHint(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
+    final class Config {
 
-        final String method = StringUtils.format("""
-            public static Optional<MediaType> parse(final URI aURI, final String aHint) {
-                final String fragment = '{}' + aURI.getFragment();
-                final String ext;
-                final int index;
+        /**
+         * A property value for the generated sources directory.
+         */
+        static final String GEN_SRC = "generatedSourcesDirectory";
 
-                String uri = aURI.toString();
+        /**
+         * A property value for the package path.
+         */
+        static final String PACKAGE = "mediaTypePackage";
 
-                if ((index = uri.indexOf(fragment)) != -1) {
-                    uri = uri.substring(0, index);
-                }
-
-                ext = StringUtils.trimToNull(FileUtils.getExt(uri));
-
-                if (ext != null) {
-                    return fromExt(ext, aHint);
-                }
-
-                return fromString(uri);
-            }
-            """, HASH);
-
-        // Add necessary imports
-        if (!aSource.hasImport(StringUtils.class)) {
-            aSource.addImport(StringUtils.class);
+        /**
+         * A private constructor for a constants class.
+         */
+        private Config() {
+            // This is intentionally left empty.
         }
-
-        if (!aSource.hasImport(FileUtils.class)) {
-            aSource.addImport(FileUtils.class);
-        }
-
-        if (!aSource.hasImport(URI.class)) {
-            aSource.addImport(URI.class);
-        }
-
-        // Add the parse method to the source
-        javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aURI A URI from which to parse the media type");
-        javadoc.addTagValue("@param", "aHint A hint as to what class of media type we want");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
-        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
-    }
-
-    /**
-     * Adds an additional parse method to the supplied Java source.
-     *
-     * @param aSource A Java source object
-     */
-    private void addParseUriMethod(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
-
-        final String method = """
-            public static Optional<MediaType> parse(final URI aURI) {
-                return parse(aURI, null);
-            }
-            """;
-
-        // Add the URI class to imports if it hasn't already been added
-        if (!aSource.hasImport(URI.class)) {
-            aSource.addImport(URI.class);
-        }
-
-        // Add the parse method to the source
-        javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aURI A URI from which to parse the media type");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
-        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
-    }
-
-    /**
-     * Adds an additional parse method to the supplied Java source.
-     *
-     * @param aSource A Java source object
-     */
-    private void addParseStringMethod(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
-
-        final String method = """
-            public static Optional<MediaType> parse(final String aURI) {
-                return parse(URI.create(aURI), null);
-            }
-            """;
-
-        // Add the URI class to imports if it hasn't already been added
-        if (!aSource.hasImport(URI.class)) {
-            aSource.addImport(URI.class);
-        }
-
-        // Add the parse method to the source
-        javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aURI A string URI from which to parse the media type");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
-        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
-    }
-
-    /**
-     * Adds an additional parse method to the supplied Java source.
-     *
-     * @param aSource A Java source object
-     */
-    private void addParseStringMethodWithHint(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
-
-        final String method = """
-            public static Optional<MediaType> parse(final String aURI, final String aHint) {
-                return parse(URI.create(aURI), aHint);
-            }
-            """;
-
-        // Add the URI class to imports if it hasn't already been added
-        if (!aSource.hasImport(URI.class)) {
-            aSource.addImport(URI.class);
-        }
-
-        // Add the parse method to the source
-        javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aURI A string URI from which to parse the media type");
-        javadoc.addTagValue("@param", "aHint A class of type (e.g. 'audio' or 'application')");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
-        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
-    }
-
-    /**
-     * Adds a fromString method to the supplied Java source.
-     *
-     * @param aSource A Java source object
-     */
-    private void addFromStringMethod(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
-
-        final String method = """
-            public static Optional<MediaType> fromString(final String aType) {
-                for (final MediaType mediaType : values()) {
-                    if (mediaType.myType.equalsIgnoreCase(aType)) {
-                        return Optional.of(mediaType);
-                    }
-                }
-
-                return Optional.empty();
-            }
-            """;
-
-        // Add an import for Optional since this method returns an Optional
-        if (!aSource.hasImport(Optional.class)) {
-            aSource.addImport(Optional.class);
-        }
-
-        // Add the fromString method to the source
-        javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aType A type of media type");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied type");
-        javadoc.setText("Gets a media type from the supplied type." + EOL + "*");
-    }
-
-    /**
-     * Adds a getTypes method that returns media types for a supplied class of type (e.g., "application").
-     *
-     * @param aSource A Java source object
-     */
-    private void addGetTypesMethod(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
-
-        final String method = """
-            public static List<MediaType> getTypes(final String aClass) {
-                final List<MediaType> types = new ArrayList<>();
-                for (final MediaType mediaType : values()) {
-                    if (mediaType.myType.startsWith(aClass.toLowerCase() + \"/\")) {
-                        types.add(mediaType);
-                    }
-                }
-
-                return types;
-            }
-            """;
-
-        // Add imports for the classes used in this method
-        if (!aSource.hasImport(List.class)) {
-            aSource.addImport(List.class);
-        }
-
-        if (!aSource.hasImport(ArrayList.class)) { // NOPMD - ArrayList has to be used to get its import added
-            aSource.addImport(ArrayList.class); // NOPMD
-        }
-
-        // Add Javadocs for this method
-        javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aClass A class of media type (e.g., &quot;application&quot;)");
-        javadoc.addTagValue("@return", "The media types that correspond to the supplied type class");
-        javadoc.setText("Gets a list of media types that correspond to the supplied class." + EOL + "*");
-    }
-
-    /**
-     * Adds a fromExt method to the supplied Java source.
-     *
-     * @param aSource A Java source object
-     */
-    private void addFromExtMethod(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
-
-        final String method = """
-            public static Optional<MediaType> fromExt(final String aExt) {
-                return fromExt(aExt, null);
-            }
-            """;
-
-        javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aExt The extension of the desired media type");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied extension");
-        javadoc.setText("Gets a media type from the supplied extension." + EOL + "*");
-    }
-
-    /**
-     * Adds the MediaType's <code>getExt()</code> method.
-     *
-     * @param aSource A reference to the generated Java source code
-     */
-    private void addGetExtMethod(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
-
-        javadoc = aSource.addMethod("public String getExt() { return myExts[0]; }").getJavaDoc();
-        javadoc.addTagValue("@return", "The first relevant media-type extension");
-        javadoc.setText("Gets the first relevant media-type extension.");
-    }
-
-    /**
-     * Adds the MediaType's <code>getExts()</code> method.
-     *
-     * @param aSource A reference to the generated Java source code
-     */
-    private void addGetExtsMethod(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
-
-        javadoc = aSource.addMethod("public String[] getExts() { return myExts; }").getJavaDoc();
-        javadoc.addTagValue("@return", "An array of relevant media-type extensions");
-        javadoc.setText("Gets an array of relevant media-type extensions.");
-    }
-
-    /**
-     * Adds a fromExt method to the supplied Java source.
-     *
-     * @param aSource A Java source object
-     */
-    private void addFromExtMethodWithHint(final JavaEnumSource aSource) {
-        final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
-
-        final String method = """
-            public static Optional<MediaType> fromExt(final String aExt, final String aHint) {
-                final String hint = aHint != null ? aHint.toLowerCase() : null;
-                MediaType chosenMediaType = null;
-
-                for (final MediaType mediaType : values()) {
-                    for (final String ext : mediaType.getExts()) {
-                        if (ext.equalsIgnoreCase(aExt)) {
-                            if (hint != null && mediaType.toString().startsWith(hint)) {
-                                return Optional.of(mediaType);
-                            }
-
-                            if (chosenMediaType == null) { chosenMediaType = mediaType; }
-                        }
-                    }
-                }
-
-                return Optional.ofNullable(chosenMediaType);
-            }
-            """;
-
-        if (!aSource.hasImport(Optional.class)) {
-            aSource.addImport(Optional.class);
-        }
-
-        javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aExt The extension of the desired media type");
-        javadoc.addTagValue("@param", "aHint A class of type (e.g. 'audio' or 'application')");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied extension");
-        javadoc.setText("Gets a media type from the supplied extension." + EOL + "*");
-    }
-
-    /**
-     * Adds a constructor to the enum class.
-     *
-     * @param aSource The source on which to add the constructor
-     * @return The constructor's method
-     */
-    private MethodSource<JavaEnumSource> addConstructor(final JavaEnumSource aSource) {
-        final MethodSource<JavaEnumSource> constructor = aSource.addMethod().setPackagePrivate().setConstructor(true);
-
-        constructor.getJavaDoc().setText("Creates a new media type.");
-        return constructor;
-    }
-
-    /**
-     * Gets the constructor's parameters.
-     *
-     * @return The constructor's parameters
-     */
-    private String getConstructorParams() {
-        return "final String aType, final String[] aExts";
-    }
-
-    /**
-     * Gets the constructor's body.
-     *
-     * @return The body of the constructor
-     */
-    private String getConstructorBody() {
-        return new StringBuilder().append("myType = aType;").append("myExts = aExts;").toString();
-    }
-
-    /**
-     * Gets the media types from the supplied stream.
-     *
-     * @param aInStream An input stream for the media types
-     * @return An array of media types to be used as values in the enum
-     */
-    private List<MediaTypeEntry> getMediaTypes(final InputStream aInStream) {
-        return getMediaTypes(aInStream, null);
-    }
-
-    /**
-     * Gets the media types from the supplied stream and puts them in the supplied list.
-     *
-     * @param aInStream An input stream for the media types
-     * @param aEntryList A list of media type entries
-     * @return An array of media types to be used as values in the enum
-     */
-    private List<MediaTypeEntry> getMediaTypes(final InputStream aInStream, final List<MediaTypeEntry> aEntryList) {
-        final LineNumberReader reader = new LineNumberReader(new InputStreamReader(aInStream));
-        final List<MediaTypeEntry> entries = aEntryList == null ? new ArrayList<>() : aEntryList;
-
-        reader.lines().map(String::trim).forEach(line -> {
-            // We only care about the media types that have extensions and skip those that are commented out
-            if (line.contains(SPACE) && line.charAt(0) != '#') {
-                final String[] parts = line.split("\\s+");
-                final String[] exts = Arrays.copyOfRange(parts, 1, parts.length);
-                final MediaTypeEntry entry = new MediaTypeEntry(parts[0], exts);
-
-                if (!entries.contains(entry)) {
-                    entries.add(entry);
-                }
-            } // ignore everything else...
-        });
-
-        return entries;
     }
 
     /**
@@ -587,14 +610,14 @@ public class MediaTypeMojo extends AbstractMojo {
     class MediaTypeEntry {
 
         /**
-         * My media type name.
-         */
-        private final String myType;
-
-        /**
          * The extensions for my media type.
          */
         private final String[] myExts;
+
+        /**
+         * My media type name.
+         */
+        private final String myType;
 
         /**
          * Creates a new media type.
@@ -607,13 +630,23 @@ public class MediaTypeMojo extends AbstractMojo {
             myType = aType;
         }
 
+        @Override
+        public boolean equals(final Object aObject) {
+            return aObject instanceof MediaTypeEntry && ((MediaTypeEntry) aObject).myType.equalsIgnoreCase(myType);
+        }
+
+        @Override
+        public int hashCode() {
+            return myType.hashCode();
+        }
+
         /**
-         * Gets the media type for this entry.
+         * Gets the known extensions for this media type.
          *
-         * @return The media type
+         * @return The known extensions for this media type
          */
-        String getType() {
-            return myType;
+        String[] getExts() {
+            return myExts.clone();
         }
 
         /**
@@ -626,45 +659,12 @@ public class MediaTypeMojo extends AbstractMojo {
         }
 
         /**
-         * Gets the known extensions for this media type.
+         * Gets the media type for this entry.
          *
-         * @return The known extensions for this media type
+         * @return The media type
          */
-        String[] getExts() {
-            return myExts.clone();
-        }
-
-        @Override
-        public boolean equals(final Object aObject) {
-            return aObject instanceof MediaTypeEntry && ((MediaTypeEntry) aObject).myType.equalsIgnoreCase(myType);
-        }
-
-        @Override
-        public int hashCode() {
-            return myType.hashCode();
-        }
-    }
-
-    /**
-     * The Mojo's configuration options.
-     */
-    final class Config {
-
-        /**
-         * A property value for the package path.
-         */
-        static final String PACKAGE = "mediaTypePackage";
-
-        /**
-         * A property value for the generated sources directory.
-         */
-        static final String GEN_SRC = "generatedSourcesDirectory";
-
-        /**
-         * A private constructor for a constants class.
-         */
-        private Config() {
-            // This is intentionally left empty.
+        String getType() {
+            return myType;
         }
     }
 }
