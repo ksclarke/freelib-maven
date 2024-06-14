@@ -73,7 +73,7 @@ public class MavenLoggingMojo extends AbstractMojo {
     /**
      * The Mojo's configuration options.
      */
-    private class Config {
+    private static final class Config {
 
         /**
          * The Mojo's logging level.

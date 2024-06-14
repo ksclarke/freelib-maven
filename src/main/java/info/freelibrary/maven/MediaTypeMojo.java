@@ -73,7 +73,7 @@ public class MediaTypeMojo extends AbstractMojo {
     /**
      * The default size of StringBuilders used in the mojo.
      */
-    private static final int BUILDER_SIZE = 350;
+    private static final int BUILDER_SIZE = 450;
 
     /**
      * The Maven project directory.
@@ -191,7 +191,7 @@ public class MediaTypeMojo extends AbstractMojo {
         });
 
         // Add the simple methods that just get MediaType field values
-        source.addMethod("public String toString() { return myType; }");
+        source.addMethod("@Override public String toString() { return myType; }");
 
         // Add the more complicated methods that have to do some more work
         addGetExtMethod(source);
@@ -234,19 +234,29 @@ public class MediaTypeMojo extends AbstractMojo {
      * @param aSource A Java source object
      */
     private void addParseUriMethodWithHint(final JavaEnumSource aSource) {
-        final String methodTemplate = "public static Optional<MediaType> parse(final URI aURI, final String aHint) {}";
-        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append('{') //
-                .append("final String fragment = '").append(HASH).append("' + aURI.getFragment();") //
-                .append("final String ext; final int index;") //
-                .append("String uri = aURI.toString();") //
-                .append("if ((index = uri.indexOf(fragment)) != -1) { uri = uri.substring(0, index); }") //
-                .append("ext = StringUtils.trimToNull(FileUtils.getExt(uri));") //
-                .append("if (ext != null) {") //
-                .append("return fromExt(ext, aHint);") //
-                .append("} return fromString(uri); }");
+        final String method = StringUtils.format("""
+            public static Optional<MediaType> parse(final URI aURI, final String aHint) {
+                final String fragment = '{}' + aURI.getFragment();
+                final String ext;
+                final int index;
+
+                String uri = aURI.toString();
+
+                if ((index = uri.indexOf(fragment)) != -1) {
+                    uri = uri.substring(0, index);
+                }
+
+                ext = StringUtils.trimToNull(FileUtils.getExt(uri));
+
+                if (ext != null) {
+                    return fromExt(ext, aHint);
+                }
+
+                return fromString(uri);
+            }
+            """, HASH);
 
         // Add necessary imports
         if (!aSource.hasImport(StringUtils.class)) {
@@ -261,8 +271,8 @@ public class MediaTypeMojo extends AbstractMojo {
             aSource.addImport(URI.class);
         }
 
-        // Add the fromString method to the source
-        javadoc = aSource.addMethod(StringUtils.format(methodTemplate, impl.toString())).getJavaDoc();
+        // Add the parse method to the source
+        javadoc = aSource.addMethod(method).getJavaDoc();
         javadoc.addTagValue("@param", "aURI A URI from which to parse the media type");
         javadoc.addTagValue("@param", "aHint A hint as to what class of media type we want");
         javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
@@ -275,19 +285,21 @@ public class MediaTypeMojo extends AbstractMojo {
      * @param aSource A Java source object
      */
     private void addParseUriMethod(final JavaEnumSource aSource) {
-        final String methodTemplate = "public static Optional<MediaType> parse(final URI aURI) {}";
-        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append("{ return parse(aURI, null); }");
+        final String method = """
+            public static Optional<MediaType> parse(final URI aURI) {
+                return parse(aURI, null);
+            }
+            """;
 
         // Add the URI class to imports if it hasn't already been added
         if (!aSource.hasImport(URI.class)) {
             aSource.addImport(URI.class);
         }
 
-        // Add the fromString method to the source
-        javadoc = aSource.addMethod(StringUtils.format(methodTemplate, impl.toString())).getJavaDoc();
+        // Add the parse method to the source
+        javadoc = aSource.addMethod(method).getJavaDoc();
         javadoc.addTagValue("@param", "aURI A URI from which to parse the media type");
         javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
         javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
@@ -299,19 +311,21 @@ public class MediaTypeMojo extends AbstractMojo {
      * @param aSource A Java source object
      */
     private void addParseStringMethod(final JavaEnumSource aSource) {
-        final String methodTemplate = "public static Optional<MediaType> parse(final String aURI) {}";
-        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append("{ return parse(URI.create(aURI), null); }");
+        final String method = """
+            public static Optional<MediaType> parse(final String aURI) {
+                return parse(URI.create(aURI), null);
+            }
+            """;
 
         // Add the URI class to imports if it hasn't already been added
         if (!aSource.hasImport(URI.class)) {
             aSource.addImport(URI.class);
         }
 
-        // Add the fromString method to the source
-        javadoc = aSource.addMethod(StringUtils.format(methodTemplate, impl.toString())).getJavaDoc();
+        // Add the parse method to the source
+        javadoc = aSource.addMethod(method).getJavaDoc();
         javadoc.addTagValue("@param", "aURI A string URI from which to parse the media type");
         javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
         javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
@@ -323,20 +337,21 @@ public class MediaTypeMojo extends AbstractMojo {
      * @param aSource A Java source object
      */
     private void addParseStringMethodWithHint(final JavaEnumSource aSource) {
-        final String methodTemplate =
-                "public static Optional<MediaType> parse(final String aURI, final String aHint) {}";
-        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append("{ return parse(URI.create(aURI), aHint); }");
+        final String method = """
+            public static Optional<MediaType> parse(final String aURI, final String aHint) {
+                return parse(URI.create(aURI), aHint);
+            }
+            """;
 
         // Add the URI class to imports if it hasn't already been added
         if (!aSource.hasImport(URI.class)) {
             aSource.addImport(URI.class);
         }
 
-        // Add the fromString method to the source
-        javadoc = aSource.addMethod(StringUtils.format(methodTemplate, impl.toString())).getJavaDoc();
+        // Add the parse method to the source
+        javadoc = aSource.addMethod(method).getJavaDoc();
         javadoc.addTagValue("@param", "aURI A string URI from which to parse the media type");
         javadoc.addTagValue("@param", "aHint A class of type (e.g. 'audio' or 'application')");
         javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
@@ -349,15 +364,19 @@ public class MediaTypeMojo extends AbstractMojo {
      * @param aSource A Java source object
      */
     private void addFromStringMethod(final JavaEnumSource aSource) {
-        final String methodTemplate = "public static Optional<MediaType> fromString(final String aType) {}";
-        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append('{') //
-                .append("for (final MediaType mediaType : values()) {") //
-                .append("if (mediaType.myType.equalsIgnoreCase(aType)) {") //
-                .append("return Optional.of(mediaType);") //
-                .append("}} return Optional.empty(); }");
+        final String method = """
+            public static Optional<MediaType> fromString(final String aType) {
+                for (final MediaType mediaType : values()) {
+                    if (mediaType.myType.equalsIgnoreCase(aType)) {
+                        return Optional.of(mediaType);
+                    }
+                }
+
+                return Optional.empty();
+            }
+            """;
 
         // Add an import for Optional since this method returns an Optional
         if (!aSource.hasImport(Optional.class)) {
@@ -365,7 +384,7 @@ public class MediaTypeMojo extends AbstractMojo {
         }
 
         // Add the fromString method to the source
-        javadoc = aSource.addMethod(StringUtils.format(methodTemplate, impl.toString())).getJavaDoc();
+        javadoc = aSource.addMethod(method).getJavaDoc();
         javadoc.addTagValue("@param", "aType A type of media type");
         javadoc.addTagValue("@return", "The media type that corresponds to the supplied type");
         javadoc.setText("Gets a media type from the supplied type." + EOL + "*");
@@ -377,16 +396,20 @@ public class MediaTypeMojo extends AbstractMojo {
      * @param aSource A Java source object
      */
     private void addGetTypesMethod(final JavaEnumSource aSource) {
-        final String methodTemplate = "public static List<MediaType> getTypes(final String aClass) {}";
-        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append('{') //
-                .append("final List<MediaType> types = new ArrayList<>();") //
-                .append("for (final MediaType mediaType : values()) {") //
-                .append("if (mediaType.myType.startsWith(aClass.toLowerCase() + \"/\")) {") //
-                .append("types.add(mediaType);") //
-                .append("}} return types; }");
+        final String method = """
+            public static List<MediaType> getTypes(final String aClass) {
+                final List<MediaType> types = new ArrayList<>();
+                for (final MediaType mediaType : values()) {
+                    if (mediaType.myType.startsWith(aClass.toLowerCase() + \"/\")) {
+                        types.add(mediaType);
+                    }
+                }
+
+                return types;
+            }
+            """;
 
         // Add imports for the classes used in this method
         if (!aSource.hasImport(List.class)) {
@@ -398,7 +421,7 @@ public class MediaTypeMojo extends AbstractMojo {
         }
 
         // Add Javadocs for this method
-        javadoc = aSource.addMethod(StringUtils.format(methodTemplate, impl.toString())).getJavaDoc();
+        javadoc = aSource.addMethod(method).getJavaDoc();
         javadoc.addTagValue("@param", "aClass A class of media type (e.g., &quot;application&quot;)");
         javadoc.addTagValue("@return", "The media types that correspond to the supplied type class");
         javadoc.setText("Gets a list of media types that correspond to the supplied class." + EOL + "*");
@@ -410,13 +433,15 @@ public class MediaTypeMojo extends AbstractMojo {
      * @param aSource A Java source object
      */
     private void addFromExtMethod(final JavaEnumSource aSource) {
-        final String methodTemplate = "public static Optional<MediaType> fromExt(final String aExt) {}";
-        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append("{ return fromExt(aExt, null); }");
+        final String method = """
+            public static Optional<MediaType> fromExt(final String aExt) {
+                return fromExt(aExt, null);
+            }
+            """;
 
-        javadoc = aSource.addMethod(StringUtils.format(methodTemplate, impl.toString())).getJavaDoc();
+        javadoc = aSource.addMethod(method).getJavaDoc();
         javadoc.addTagValue("@param", "aExt The extension of the desired media type");
         javadoc.addTagValue("@return", "The media type that corresponds to the supplied extension");
         javadoc.setText("Gets a media type from the supplied extension." + EOL + "*");
@@ -454,27 +479,34 @@ public class MediaTypeMojo extends AbstractMojo {
      * @param aSource A Java source object
      */
     private void addFromExtMethodWithHint(final JavaEnumSource aSource) {
-        final String methodTemplate =
-                "public static Optional<MediaType> fromExt(final String aExt, final String aHint) {}";
-        final StringBuilder impl = new StringBuilder(BUILDER_SIZE);
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
-        impl.append('{') //
-                .append("final String hint = aHint != null ? aHint.toLowerCase() : null;") //
-                .append("MediaType chosenMediaType = null;") //
-                .append("for (final MediaType mediaType : values()) {") //
-                .append(" for (final String ext : mediaType.getExts()) {") //
-                .append("  if (ext.equalsIgnoreCase(aExt)) {") //
-                .append("   if (hint != null && mediaType.toString().startsWith(hint)) { ") //
-                .append("     return Optional.of(mediaType); }") //
-                .append("   if (chosenMediaType == null) { chosenMediaType = mediaType; }") //
-                .append("}}} return Optional.ofNullable(chosenMediaType); }");
+        final String method = """
+            public static Optional<MediaType> fromExt(final String aExt, final String aHint) {
+                final String hint = aHint != null ? aHint.toLowerCase() : null;
+                MediaType chosenMediaType = null;
+
+                for (final MediaType mediaType : values()) {
+                    for (final String ext : mediaType.getExts()) {
+                        if (ext.equalsIgnoreCase(aExt)) {
+                            if (hint != null && mediaType.toString().startsWith(hint)) {
+                                return Optional.of(mediaType);
+                            }
+
+                            if (chosenMediaType == null) { chosenMediaType = mediaType; }
+                        }
+                    }
+                }
+
+                return Optional.ofNullable(chosenMediaType);
+            }
+            """;
 
         if (!aSource.hasImport(Optional.class)) {
             aSource.addImport(Optional.class);
         }
 
-        javadoc = aSource.addMethod(StringUtils.format(methodTemplate, impl.toString())).getJavaDoc();
+        javadoc = aSource.addMethod(method).getJavaDoc();
         javadoc.addTagValue("@param", "aExt The extension of the desired media type");
         javadoc.addTagValue("@param", "aHint A class of type (e.g. 'audio' or 'application')");
         javadoc.addTagValue("@return", "The media type that corresponds to the supplied extension");

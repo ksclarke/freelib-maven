@@ -38,6 +38,74 @@ public abstract class BetterAbstractMojoTestCase extends AbstractMojoTestCase {
     private static final Logger LOGGER = LoggerFactory.getLogger(BetterAbstractMojoTestCase.class, MessageCodes.BUNDLE);
 
     /**
+     * Builds a Properties object from the supplied strings.
+     *
+     * @param aKvArray An array of keys and values from which to build a properties object
+     * @return A properties object
+     * @throws IllegalArgumentException If the supplied properties are not supplied in pairs
+     */
+    protected Properties getProperties(final String... aKvArray) {
+        final Properties properties = new Properties();
+
+        if (aKvArray.length % 2 == 1) {
+            throw new IllegalArgumentException(LOGGER.getMessage(MessageCodes.MVN_117, aKvArray.length, aKvArray));
+        }
+
+        for (int index = 0; index < aKvArray.length; index += 2) {
+            properties.put(aKvArray[index], aKvArray[index + 1]);
+        }
+
+        return properties;
+    }
+
+    /**
+     * Provides a wrapper around the parent class' {@link #lookupConfiguredMojo(MavenProject, String)}; it wraps the
+     * super method and improves on it by simplifying the arguments needed.
+     *
+     * @param aPOM A POM file
+     * @param aProperties A set of properties to use for the test
+     * @param aGoal The goal for the Maven mojo we want to retrieve
+     * @throws Exception If an exception is thrown while looking up the configured mojo
+     * @return A Maven mojo
+     */
+    protected Mojo lookupConfiguredMojo(final File aPOM, final Properties aProperties, final String aGoal)
+            throws Exception {
+        assertNotNull(LOGGER.getMessage(MessageCodes.MVN_136), aPOM);
+        assertTrue(LOGGER.getMessage(MessageCodes.MVN_135), aPOM.exists());
+
+        final ProjectBuildingRequest buildingRequest = newMavenSession().getProjectBuildingRequest();
+        final MavenProject project = lookup(ProjectBuilder.class).build(aPOM, buildingRequest).getProject();
+        final Mojo mojo;
+
+        // Give option to override the system properties at time of individual test
+        if (aProperties != null) {
+            final Properties properties = project.getProperties();
+
+            aProperties.forEach((key, value) -> {
+                properties.put(key, value);
+            });
+        }
+
+        mojo = lookupConfiguredMojo(project, aGoal);
+        assertNotNull(mojo);
+
+        return mojo;
+    }
+
+    /**
+     * Provides a wrapper around the parent class' {@link #lookupConfiguredMojo(MavenProject, String)}; it wraps the
+     * super method and improves on it by simplifying the arguments needed.
+     *
+     * @param aPOM A POM file
+     * @param aGoal The goal for the Maven mojo we want to retrieve
+     * @throws Exception If an exception is thrown while looking up the configured mojo
+     * @return A Maven mojo
+     */
+    protected Mojo lookupConfiguredMojo(final File aPOM, final String aGoal) throws Exception {
+        return lookupConfiguredMojo(aPOM, null, aGoal);
+    }
+
+    /**
      * Creates a new Maven session with system properties and a local repository set.
      *
      * @return A pre-configured Maven session
@@ -79,73 +147,5 @@ public abstract class BetterAbstractMojoTestCase extends AbstractMojoTestCase {
         session.setProjects(Arrays.asList(aProject));
 
         return session;
-    }
-
-    /**
-     * Provides a wrapper around the parent class' {@link #lookupConfiguredMojo(MavenProject, String)}; it wraps the
-     * super method and improves on it by simplifying the arguments needed.
-     *
-     * @param aPOM A POM file
-     * @param aGoal The goal for the Maven mojo we want to retrieve
-     * @throws Exception If an exception is thrown while looking up the configured mojo
-     * @return A Maven mojo
-     */
-    protected Mojo lookupConfiguredMojo(final File aPOM, final String aGoal) throws Exception {
-        return lookupConfiguredMojo(aPOM, null, aGoal);
-    }
-
-    /**
-     * Provides a wrapper around the parent class' {@link #lookupConfiguredMojo(MavenProject, String)}; it wraps the
-     * super method and improves on it by simplifying the arguments needed.
-     *
-     * @param aPOM A POM file
-     * @param aProperties A set of properties to use for the test
-     * @param aGoal The goal for the Maven mojo we want to retrieve
-     * @throws Exception If an exception is thrown while looking up the configured mojo
-     * @return A Maven mojo
-     */
-    protected Mojo lookupConfiguredMojo(final File aPOM, final Properties aProperties, final String aGoal)
-            throws Exception {
-        assertNotNull(LOGGER.getMessage(MessageCodes.MVN_136), aPOM);
-        assertTrue(LOGGER.getMessage(MessageCodes.MVN_135), aPOM.exists());
-
-        final ProjectBuildingRequest buildingRequest = newMavenSession().getProjectBuildingRequest();
-        final MavenProject project = lookup(ProjectBuilder.class).build(aPOM, buildingRequest).getProject();
-        final Mojo mojo;
-
-        // Give option to override the system properties at time of individual test
-        if (aProperties != null) {
-            final Properties properties = project.getProperties();
-
-            aProperties.forEach((key, value) -> {
-                properties.put(key, value);
-            });
-        }
-
-        mojo = lookupConfiguredMojo(project, aGoal);
-        assertNotNull(mojo);
-
-        return mojo;
-    }
-
-    /**
-     * Builds a Properties object from the supplied strings.
-     *
-     * @param aKvArray An array of keys and values from which to build a properties object
-     * @return A properties object
-     * @throws IllegalArgumentException If the supplied properties are not supplied in pairs
-     */
-    protected Properties getProperties(final String... aKvArray) {
-        final Properties properties = new Properties();
-
-        if (aKvArray.length % 2 == 1) {
-            throw new IllegalArgumentException(LOGGER.getMessage(MessageCodes.MVN_117, aKvArray.length, aKvArray));
-        }
-
-        for (int index = 0; index < aKvArray.length; index += 2) {
-            properties.put(aKvArray[index], aKvArray[index + 1]);
-        }
-
-        return properties;
     }
 }

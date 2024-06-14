@@ -25,18 +25,6 @@ import info.freelibrary.util.FileUtils;
 public class FilePermissionsMojo extends AbstractMojo {
 
     /**
-     * The Maven project directory.
-     */
-    @Parameter(defaultValue = "${project}")
-    protected MavenProject myProject;
-
-    /**
-     * The permissions to set.
-     */
-    @Parameter(alias = Config.PERMISSIONS)
-    protected int myPerms;
-
-    /**
      * The file or directory on which to set permissions.
      */
     @Parameter(alias = Config.FILE)
@@ -47,6 +35,18 @@ public class FilePermissionsMojo extends AbstractMojo {
      */
     @Parameter(alias = Config.FILES)
     protected List<String> myFiles;
+
+    /**
+     * The permissions to set.
+     */
+    @Parameter(alias = Config.PERMISSIONS)
+    protected int myPerms;
+
+    /**
+     * The Maven project directory.
+     */
+    @Parameter(defaultValue = "${project}")
+    protected MavenProject myProject;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -70,12 +70,7 @@ public class FilePermissionsMojo extends AbstractMojo {
     /**
      * Configuration options for the Mojo.
      */
-    private class Config {
-
-        /**
-         * The permissions configuration option.
-         */
-        private static final String PERMISSIONS = "perms";
+    private static final class Config {
 
         /**
          * The file configuration option.
@@ -86,5 +81,10 @@ public class FilePermissionsMojo extends AbstractMojo {
          * The files configuration option.
          */
         private static final String FILES = "files";
+
+        /**
+         * The permissions configuration option.
+         */
+        private static final String PERMISSIONS = "perms";
     }
 }

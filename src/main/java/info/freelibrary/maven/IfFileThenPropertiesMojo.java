@@ -28,12 +28,6 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
     private static final Logger LOGGER = LoggerFactory.getLogger(UUIDGeneratingMojo.class, MessageCodes.BUNDLE);
 
     /**
-     * The Maven project directory.
-     */
-    @Parameter(defaultValue = "${project}")
-    protected MavenProject myProject;
-
-    /**
      * A path to a file to test for presence.
      */
     @Parameter(alias = Config.EXISTS)
@@ -44,6 +38,12 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
      */
     @Parameter(alias = Config.MISSING)
     protected File myMissingFile;
+
+    /**
+     * The Maven project directory.
+     */
+    @Parameter(defaultValue = "${project}")
+    protected MavenProject myProject;
 
     /**
      * Properties to set if the file exists.
@@ -87,12 +87,12 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
     /**
      * The Mojo's configuration options.
      */
-    private class Config {
+    private static final class Config {
 
         /**
-         * The property configuration option.
+         * The exists configuration option.
          */
-        private static final String PROPERTIES = "properties";
+        private static final String EXISTS = "exists";
 
         /**
          * The missing configuration option.
@@ -100,8 +100,8 @@ public class IfFileThenPropertiesMojo extends AbstractMojo {
         private static final String MISSING = "missing";
 
         /**
-         * The exists configuration option.
+         * The property configuration option.
          */
-        private static final String EXISTS = "exists";
+        private static final String PROPERTIES = "properties";
     }
 }
