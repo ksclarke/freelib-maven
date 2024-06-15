@@ -45,7 +45,7 @@ import info.freelibrary.util.LoggerFactory;
  * </pre>
  */
 @Mojo(name = MojoNames.CONFIGURE_LOGGING)
-@SuppressWarnings("PMD.CommentSize")
+@SuppressWarnings({ "PMD.CommentSize" })
 public class MavenLoggingMojo extends AbstractMojo {
 
     /**
@@ -73,7 +73,7 @@ public class MavenLoggingMojo extends AbstractMojo {
     /**
      * The Mojo's configuration options.
      */
-    private class Config {
+    private static final class Config {
 
         /**
          * The Mojo's logging level.

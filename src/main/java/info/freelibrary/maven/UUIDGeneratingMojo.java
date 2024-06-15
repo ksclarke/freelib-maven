@@ -27,28 +27,28 @@ public class UUIDGeneratingMojo extends AbstractMojo {
     private static final Logger LOGGER = LoggerFactory.getLogger(UUIDGeneratingMojo.class, MessageCodes.BUNDLE);
 
     /**
-     * The Maven project directory.
-     */
-    @Parameter(defaultValue = "${project}")
-    protected MavenProject myProject;
-
-    /**
-     * An optional String value from which to construct the UUID.
-     */
-    @Parameter(alias = Config.STRING)
-    protected String myString;
-
-    /**
      * An optional build property name for the requested UUID.
      */
     @Parameter(alias = Config.NAME, defaultValue = "uuid")
     protected String myName;
 
     /**
+     * The Maven project directory.
+     */
+    @Parameter(defaultValue = "${project}")
+    protected MavenProject myProject;
+
+    /**
      * An option to not override the property if it's already set.
      */
     @Parameter(alias = Config.OVERRIDE, defaultValue = "true")
     protected boolean myPropertyOverrides;
+
+    /**
+     * An optional String value from which to construct the UUID.
+     */
+    @Parameter(alias = Config.STRING)
+    protected String myString;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -65,17 +65,17 @@ public class UUIDGeneratingMojo extends AbstractMojo {
     /**
      * The Mojo's configuration options.
      */
-    private class Config {
-
-        /**
-         * The override configuration option.
-         */
-        private static final String OVERRIDE = "override";
+    private static final class Config {
 
         /**
          * The name configuration option.
          */
         private static final String NAME = "name";
+
+        /**
+         * The override configuration option.
+         */
+        private static final String OVERRIDE = "override";
 
         /**
          * The string configuration option.

@@ -4,6 +4,7 @@ package info.freelibrary.maven;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -15,23 +16,8 @@ import info.freelibrary.util.warnings.PMD;
 /**
  * Maven related utilities.
  */
-@SuppressWarnings({ "PMD.MoreThanOneLogger", PMD.MORE_THAN_ONE_LOGGER })
+@SuppressWarnings({ PMD.MORE_THAN_ONE_LOGGER })
 public final class MavenUtils {
-
-    /**
-     * The error log level integer.
-     */
-    public static final int ERROR_LOG_LEVEL = LocationAwareLogger.ERROR_INT;
-
-    /**
-     * The warn log level integer.
-     */
-    public static final int WARN_LOG_LEVEL = LocationAwareLogger.WARN_INT;
-
-    /**
-     * The info log level integer.
-     */
-    public static final int INFO_LOG_LEVEL = LocationAwareLogger.INFO_INT;
 
     /**
      * The debug log level integer.
@@ -39,9 +25,24 @@ public final class MavenUtils {
     public static final int DEBUG_LOG_LEVEL = LocationAwareLogger.DEBUG_INT;
 
     /**
+     * The error log level integer.
+     */
+    public static final int ERROR_LOG_LEVEL = LocationAwareLogger.ERROR_INT;
+
+    /**
+     * The info log level integer.
+     */
+    public static final int INFO_LOG_LEVEL = LocationAwareLogger.INFO_INT;
+
+    /**
      * The trace log level integer.
      */
     public static final int TRACE_LOG_LEVEL = LocationAwareLogger.TRACE_INT;
+
+    /**
+     * The warn log level integer.
+     */
+    public static final int WARN_LOG_LEVEL = LocationAwareLogger.WARN_INT;
 
     /**
      * The logger used by MavenUtils.
@@ -53,6 +54,72 @@ public final class MavenUtils {
      */
     private MavenUtils() {
         // This intentionally left empty
+    }
+
+    /**
+     * Returns the int of the supplied log level or zero if the supplied name doesn't match a known log level.
+     *
+     * @param aLogLevelName The name (error, warn, info, debug, or trace) of a logging level
+     * @return The int code of the supplied level or zero if the supplied name doesn't correspond to a known level
+     */
+    @SuppressWarnings({ PMD.AVOID_LITERALS_IN_IF_CONDITION })
+    public static int getLevelIntCode(final String aLogLevelName) {
+        final String levelName = aLogLevelName.trim().toLowerCase(Locale.US);
+
+        if ("error".equals(levelName)) {
+            return ERROR_LOG_LEVEL;
+        }
+
+        if ("warn".equals(levelName)) {
+            return WARN_LOG_LEVEL;
+        }
+
+        if ("info".equals(levelName)) {
+            return INFO_LOG_LEVEL;
+        }
+
+        if ("debug".equals(levelName)) {
+            return DEBUG_LOG_LEVEL;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns a name for the supplied integer value of a log level.
+     *
+     * @param aLogLevel The int value of a log level
+     * @return The human-friendly name value of a log level
+     */
+    public static String getLevelName(final int aLogLevel) {
+        return switch (aLogLevel) {
+            case ERROR_LOG_LEVEL -> "ERROR";
+            case WARN_LOG_LEVEL -> "WARN";
+            case INFO_LOG_LEVEL -> "INFO";
+            case DEBUG_LOG_LEVEL -> "DEBUG";
+            case TRACE_LOG_LEVEL -> "TRACE";
+            default -> "UNKNOWN";
+        };
+    }
+
+    /**
+     * Gets a list of names of loggers that Maven uses in a typical build.
+     *
+     * @return A list of names of loggers used by a standard Maven build
+     */
+    public static String[] getMavenLoggers() {
+        return new String[] { "org.apache.maven.cli.event.ExecutionEventLogger",
+            "org.apache.maven.tools.plugin.scanner.DefaultMojoScanner",
+            "org.apache.maven.plugin.plugin.DescriptorGeneratorMojo",
+            "org.apache.maven.plugin.dependency.fromConfiguration.UnpackMojo",
+            "org.apache.maven.shared.filtering.DefaultMavenResourcesFiltering",
+            "org.apache.maven.plugin.checkstyle.CheckstyleViolationCheckMojo",
+            "org.apache.maven.plugin.clean.CleanMojo",
+            "org.apache.maven.tools.plugin.annotations.JavaAnnotationsMojoDescriptorExtractor",
+            "org.apache.maven.plugin.failsafe.VerifyMojo", "org.apache.maven.DefaultMaven",
+            "org.apache.maven.plugin.compiler.TestCompilerMojo", "org.apache.maven.plugins.enforcer.EnforceMojo",
+            "org.apache.maven.plugin.compiler.CompilerMojo", "org.codehaus.plexus.archiver.jar.JarArchiver",
+            "org.apache.maven.plugin.surefire.SurefirePlugin", "org.apache.maven.plugin.failsafe.IntegrationTestMojo" };
     }
 
     /**
@@ -74,11 +141,10 @@ public final class MavenUtils {
      * @param aExcludesList A list of names of loggers to exclude from the reset
      * @param aIncludesList A list of names of additional loggers to include in the reset
      */
-    @SuppressWarnings({ "PMD.CyclomaticComplexity", PMD.CYCLOMATIC_COMPLEXITY, "PMD.CognitiveComplexity",
-        PMD.COGNITIVE_COMPLEXITY })
+    @SuppressWarnings({ PMD.CYCLOMATIC_COMPLEXITY, PMD.COGNITIVE_COMPLEXITY })
     public static void setLogLevels(final int aLogLevel, final String[] aLoggerList, final String[] aExcludesList,
             final String... aIncludesList) {
-        final ArrayList<String> loggerList = new ArrayList<>(Arrays.asList(aLoggerList));
+        final List<String> loggerList = new ArrayList<>(Arrays.asList(aLoggerList));
         final Class<? extends Logger> simpleLogger = LoggerFactory.getLogger("org.slf4j.impl.SimpleLogger").getClass();
 
         if (aIncludesList != null) {
@@ -121,77 +187,6 @@ public final class MavenUtils {
                 LOGGER.warn(MessageCodes.MVN_010, loggerName);
             }
         }
-    }
-
-    /**
-     * Gets a list of names of loggers that Maven uses in a typical build.
-     *
-     * @return A list of names of loggers used by a standard Maven build
-     */
-    public static String[] getMavenLoggers() {
-        return new String[] { "org.apache.maven.cli.event.ExecutionEventLogger",
-            "org.apache.maven.tools.plugin.scanner.DefaultMojoScanner",
-            "org.apache.maven.plugin.plugin.DescriptorGeneratorMojo",
-            "org.apache.maven.plugin.dependency.fromConfiguration.UnpackMojo",
-            "org.apache.maven.shared.filtering.DefaultMavenResourcesFiltering",
-            "org.apache.maven.plugin.checkstyle.CheckstyleViolationCheckMojo",
-            "org.apache.maven.plugin.clean.CleanMojo",
-            "org.apache.maven.tools.plugin.annotations.JavaAnnotationsMojoDescriptorExtractor",
-            "org.apache.maven.plugin.failsafe.VerifyMojo", "org.apache.maven.DefaultMaven",
-            "org.apache.maven.plugin.compiler.TestCompilerMojo", "org.apache.maven.plugins.enforcer.EnforceMojo",
-            "org.apache.maven.plugin.compiler.CompilerMojo", "org.codehaus.plexus.archiver.jar.JarArchiver",
-            "org.apache.maven.plugin.surefire.SurefirePlugin", "org.apache.maven.plugin.failsafe.IntegrationTestMojo" };
-    }
-
-    /**
-     * Returns a name for the supplied integer value of a log level.
-     *
-     * @param aLogLevel The int value of a log level
-     * @return The human-friendly name value of a log level
-     */
-    public static String getLevelName(final int aLogLevel) {
-        switch (aLogLevel) {
-            case ERROR_LOG_LEVEL:
-                return "ERROR";
-            case WARN_LOG_LEVEL:
-                return "WARN";
-            case INFO_LOG_LEVEL:
-                return "INFO";
-            case DEBUG_LOG_LEVEL:
-                return "DEBUG";
-            case TRACE_LOG_LEVEL:
-                return "TRACE";
-            default:
-                return "UNKNOWN";
-        }
-    }
-
-    /**
-     * Returns the int of the supplied log level or zero if the supplied name doesn't match a known log level.
-     *
-     * @param aLogLevelName The name (error, warn, info, debug, or trace) of a logging level
-     * @return The int code of the supplied level or zero if the supplied name doesn't correspond to a known level
-     */
-    public static int getLevelIntCode(final String aLogLevelName) {
-        final String levelName = aLogLevelName.trim().toLowerCase(Locale.US);
-
-        if ("error".equals(levelName)) {
-            return ERROR_LOG_LEVEL;
-        }
-
-        if ("warn".equals(levelName)) {
-            return WARN_LOG_LEVEL;
-        }
-
-        if ("info".equals(levelName)) {
-            return INFO_LOG_LEVEL;
-        }
-
-        if ("debug".equals(levelName)) {
-            return DEBUG_LOG_LEVEL;
-        }
-
-        return 0;
     }
 
 }

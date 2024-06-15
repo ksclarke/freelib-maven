@@ -54,19 +54,19 @@ public class CPUandMemoryMojo extends AbstractMojo {
     private static final Logger LOGGER = LoggerFactory.getLogger(CPUandMemoryMojo.class, MessageCodes.BUNDLE);
 
     /**
-     * The Maven project directory.
-     */
-    @Parameter(defaultValue = "${project}")
-    protected MavenProject myProject;
-
-    /**
      * A percentage of the total memory to return instead of the total.
      */
     @Parameter(alias = Config.FREE_MEMORY_PERCENT, property = Config.FREE_MEMORY_PERCENT, defaultValue = "1")
     protected String myFreeMemPercent;
 
+    /**
+     * The Maven project directory.
+     */
+    @Parameter(defaultValue = "${project}")
+    protected MavenProject myProject;
+
     @Override
-    @SuppressWarnings({ "PMD.AvoidLiteralsInIfCondition", PMD.AVOID_LITERALS_IN_IF_CONDITION })
+    @SuppressWarnings({ PMD.AVOID_LITERALS_IN_IF_CONDITION })
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Properties properties = myProject.getProperties();
         final int cores = Runtime.getRuntime().availableProcessors();
@@ -105,7 +105,7 @@ public class CPUandMemoryMojo extends AbstractMojo {
     /**
      * Mojo configuration options.
      */
-    private class Config {
+    private static final class Config {
 
         /**
          * The percentage of free memory.

@@ -215,6 +215,7 @@ application/zip                         zip
 audio/3gpp                              3gpp
 audio/3gp2                              3gp2
 audio/3gpp2                             3gpp2
+audio/alac                              m4a                             
 audio/basic                             au snd
 audio/csound                            csd orc sco
 audio/flac                              flac
@@ -227,13 +228,13 @@ audio/vnd.digital-winds                 eol
 audio/vnd.dra                           dra
 audio/vnd.dts                           dts
 audio/vnd.dts.hd                        dtshd
+audio/wav                               wav
 audio/webm                              weba
 audio/x-aac                             aac
 audio/x-aiff                            aif aiff aifc
 audio/x-ms-wax                          wax
 audio/x-ms-wma                          wma
 audio/x-pn-realaudio                    ra rm ram
-audio/x-wav                             wav
 chemical/x-cache                        cac cache
 chemical/x-cactvs-binary                cbin cascii ctab
 chemical/x-cdx                          cdx

@@ -41,6 +41,11 @@ import nu.xom.Serializer;
  */
 public class TemplateInitMojoTest extends BetterAbstractMojoTestCase {
 
+    /**
+     * A default module version.
+     */
+    private static final String DEFAULT_VERSION = "0.0.0-SNAPSHOT";
+
     /** The tests' logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateInitMojoTest.class, MessageCodes.BUNDLE);
 
@@ -65,19 +70,14 @@ public class TemplateInitMojoTest extends BetterAbstractMojoTestCase {
     private static final String TEST_GROUP_ID = "info.freelibrary";
 
     /**
-     * A module version.
-     */
-    private static final String TEST_VERSION = "0.0.2-SNAPSHOT";
-
-    /**
-     * A default module version.
-     */
-    private static final String DEFAULT_VERSION = "0.0.0-SNAPSHOT";
-
-    /**
      * A function name.
      */
     private static final String TEST_MODULE = "test.module";
+
+    /**
+     * A module version.
+     */
+    private static final String TEST_VERSION = "0.0.2-SNAPSHOT";
 
     /**
      * Tests the happy path for the TemplateInitMojo using the default version.
@@ -102,34 +102,6 @@ public class TemplateInitMojoTest extends BetterAbstractMojoTestCase {
             assertEquals(TEST_GROUP_ID, properties.getFirstChildElement(MODULE_GROUP, XMLNS).getValue());
             assertEquals(TEST_ARTIFACT_ID, properties.getFirstChildElement(MODULE_ARTIFACT, XMLNS).getValue());
             assertEquals(DEFAULT_VERSION, properties.getFirstChildElement(MODULE_VERSION, XMLNS).getValue());
-        } catch (final ParsingException | IOException details) {
-            throw new MojoExecutionException(details);
-        }
-    }
-
-    /**
-     * Tests the happy path for the TemplateInitMojo with a supplied version.
-     *
-     * @throws Exception If there is trouble while executing the tests.
-     */
-    @Test
-    public final void testTemplateInitMojoVersionSet() throws Exception {
-        final File templatePOM = new File(StringUtils.format(TEMPLATE_POM, UUID.randomUUID().toString()));
-        final Properties props = getProperties(MODULE_ARTIFACT, TEST_ARTIFACT_ID, MODULE_GROUP, TEST_GROUP_ID,
-                MODULE_VERSION, TEST_VERSION, MODULE_NAME, TEST_MODULE);
-
-        Files.copy(POM, templatePOM);
-
-        // Run our test of the mojo
-        lookupConfiguredMojo(templatePOM, props, TEMPLATE_INIT).execute();
-
-        try {
-            final Element root = new Builder().build(templatePOM).getRootElement();
-            final Element properties = root.getFirstChildElement(PROPERTIES, XMLNS);
-
-            assertEquals(TEST_GROUP_ID, properties.getFirstChildElement(MODULE_GROUP, XMLNS).getValue());
-            assertEquals(TEST_ARTIFACT_ID, properties.getFirstChildElement(MODULE_ARTIFACT, XMLNS).getValue());
-            assertEquals(TEST_VERSION, properties.getFirstChildElement(MODULE_VERSION, XMLNS).getValue());
         } catch (final ParsingException | IOException details) {
             throw new MojoExecutionException(details);
         }
@@ -174,6 +146,58 @@ public class TemplateInitMojoTest extends BetterAbstractMojoTestCase {
     }
 
     /**
+     * Tests if execution is skipped when skip flag supplied.
+     *
+     * @throws Exception If there is trouble while executing the tests.
+     */
+    @Test
+    public final void testTemplateInitMojoSkipParam() throws Exception {
+        final File templatePOM = new File(StringUtils.format(TEMPLATE_POM, UUID.randomUUID().toString()));
+        final Properties props = getProperties(SKIP, Boolean.TRUE.toString(), MODULE_NAME, TEST_MODULE);
+
+        Files.copy(POM, templatePOM);
+
+        lookupConfiguredMojo(templatePOM, props, TEMPLATE_INIT).execute();
+
+        try {
+            final Element root = new Builder().build(templatePOM).getRootElement();
+            final Element properties = root.getFirstChildElement(PROPERTIES, XMLNS);
+
+            assertNull(properties.getFirstChildElement(MODULE_VERSION, XMLNS));
+        } catch (final ParsingException | IOException details) {
+            throw new MojoExecutionException(details);
+        }
+    }
+
+    /**
+     * Tests the happy path for the TemplateInitMojo with a supplied version.
+     *
+     * @throws Exception If there is trouble while executing the tests.
+     */
+    @Test
+    public final void testTemplateInitMojoVersionSet() throws Exception {
+        final File templatePOM = new File(StringUtils.format(TEMPLATE_POM, UUID.randomUUID().toString()));
+        final Properties props = getProperties(MODULE_ARTIFACT, TEST_ARTIFACT_ID, MODULE_GROUP, TEST_GROUP_ID,
+                MODULE_VERSION, TEST_VERSION, MODULE_NAME, TEST_MODULE);
+
+        Files.copy(POM, templatePOM);
+
+        // Run our test of the mojo
+        lookupConfiguredMojo(templatePOM, props, TEMPLATE_INIT).execute();
+
+        try {
+            final Element root = new Builder().build(templatePOM).getRootElement();
+            final Element properties = root.getFirstChildElement(PROPERTIES, XMLNS);
+
+            assertEquals(TEST_GROUP_ID, properties.getFirstChildElement(MODULE_GROUP, XMLNS).getValue());
+            assertEquals(TEST_ARTIFACT_ID, properties.getFirstChildElement(MODULE_ARTIFACT, XMLNS).getValue());
+            assertEquals(TEST_VERSION, properties.getFirstChildElement(MODULE_VERSION, XMLNS).getValue());
+        } catch (final ParsingException | IOException details) {
+            throw new MojoExecutionException(details);
+        }
+    }
+
+    /**
      * Tests that an exception is thrown if the artifactId isn't supplied.
      *
      * @throws Exception If there is trouble while executing the tests.
@@ -210,30 +234,6 @@ public class TemplateInitMojoTest extends BetterAbstractMojoTestCase {
             fail(LOGGER.getMessage(MessageCodes.MVN_134, MODULE_GROUP));
         } catch (final MojoExecutionException details) {
             assertNotNull(details);
-        }
-    }
-
-    /**
-     * Tests if execution is skipped when skip flag supplied.
-     *
-     * @throws Exception If there is trouble while executing the tests.
-     */
-    @Test
-    public final void testTemplateInitMojoSkipParam() throws Exception {
-        final File templatePOM = new File(StringUtils.format(TEMPLATE_POM, UUID.randomUUID().toString()));
-        final Properties props = getProperties(SKIP, Boolean.TRUE.toString(), MODULE_NAME, TEST_MODULE);
-
-        Files.copy(POM, templatePOM);
-
-        lookupConfiguredMojo(templatePOM, props, TEMPLATE_INIT).execute();
-
-        try {
-            final Element root = new Builder().build(templatePOM).getRootElement();
-            final Element properties = root.getFirstChildElement(PROPERTIES, XMLNS);
-
-            assertNull(properties.getFirstChildElement(MODULE_VERSION, XMLNS));
-        } catch (final ParsingException | IOException details) {
-            throw new MojoExecutionException(details);
         }
     }
 

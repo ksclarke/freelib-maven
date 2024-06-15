@@ -25,11 +25,6 @@ public class MavenLogger implements Log {
     }
 
     @Override
-    public boolean isDebugEnabled() {
-        return myLogger.isDebugEnabled();
-    }
-
-    @Override
     public void debug(final CharSequence aMessage) {
         myLogger.debug(aMessage.toString());
     }
@@ -45,8 +40,18 @@ public class MavenLogger implements Log {
     }
 
     @Override
-    public boolean isInfoEnabled() {
-        return myLogger.isInfoEnabled();
+    public void error(final CharSequence aMessage) {
+        myLogger.error(aMessage.toString());
+    }
+
+    @Override
+    public void error(final CharSequence aMessage, final Throwable aError) {
+        myLogger.error(aMessage.toString(), aError);
+    }
+
+    @Override
+    public void error(final Throwable aError) {
+        myLogger.error(aError.getMessage(), aError);
     }
 
     @Override
@@ -62,6 +67,21 @@ public class MavenLogger implements Log {
     @Override
     public void info(final Throwable aError) {
         myLogger.info(aError.getMessage(), aError);
+    }
+
+    @Override
+    public boolean isDebugEnabled() {
+        return myLogger.isDebugEnabled();
+    }
+
+    @Override
+    public boolean isErrorEnabled() {
+        return myLogger.isErrorEnabled();
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return myLogger.isInfoEnabled();
     }
 
     @Override
@@ -82,26 +102,6 @@ public class MavenLogger implements Log {
     @Override
     public void warn(final Throwable aError) {
         myLogger.warn(aError.getMessage(), aError);
-    }
-
-    @Override
-    public boolean isErrorEnabled() {
-        return myLogger.isErrorEnabled();
-    }
-
-    @Override
-    public void error(final CharSequence aMessage) {
-        myLogger.error(aMessage.toString());
-    }
-
-    @Override
-    public void error(final CharSequence aMessage, final Throwable aError) {
-        myLogger.error(aMessage.toString(), aError);
-    }
-
-    @Override
-    public void error(final Throwable aError) {
-        myLogger.error(aError.getMessage(), aError);
     }
 
 }

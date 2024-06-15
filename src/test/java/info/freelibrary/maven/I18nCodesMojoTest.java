@@ -32,14 +32,14 @@ public class I18nCodesMojoTest extends BetterAbstractMojoTestCase {
     private static final Logger LOGGER = LoggerFactory.getLogger(I18nCodesMojo.class, MessageCodes.BUNDLE);
 
     /**
-     * The POM file being used by the tests.
-     */
-    private static final File POM = new File("target/test-project/test-pom.xml");
-
-    /**
      * A pattern to match the replacement characters.
      */
     private static final Pattern PATTERN = Pattern.compile("\\{\\}");
+
+    /**
+     * The POM file being used by the tests.
+     */
+    private static final File POM = new File("target/test-project/test-pom.xml");
 
     /**
      * Tests running the {@link I18nCodesMojo}.

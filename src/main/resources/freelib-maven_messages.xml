@@ -48,5 +48,24 @@
   <entry key="MVN-135">POM file must exist</entry>
   <entry key="MVN-136">POM file argument may not be null</entry>
   <entry key="MVN-137">Module name cannot be found in POM: {}</entry>
+  <entry key="MVN-138">aExt The extension of the desired media type</entry>
+  <entry key="MVN-139">The media type that corresponds to the supplied extension</entry>
+  <entry key="MVN-140">Gets a media type from the supplied extension.</entry>
+  <entry key="MVN-141">aHint A class of type (e.g. 'audio' or 'application')</entry>
+  <entry key="MVN-142">aURI A string URI from which to parse the media type</entry>
+  <entry key="MVN-143">The media type that corresponds to the supplied URI</entry>
+  <entry key="MVN-144">Gets a media type from the supplied URI's extension.</entry>
+  <entry key="MVN-145">aURI A URI from which to parse the media type</entry>
+  <entry key="MVN-146">aType A type of media type</entry>
+  <entry key="MVN-147">The media type that corresponds to the supplied type</entry>
+  <entry key="MVN-148">Gets a media type from the supplied type.</entry>
+  <entry key="MVN-149">The first relevant media-type extension</entry>
+  <entry key="MVN-150">Gets the first relevant media-type extension.</entry>
+  <entry key="MVN-151">An array of relevant media-type extensions</entry>
+  <entry key="MVN-152">Gets an array of relevant media-type extensions.</entry>
+  <entry key="MVN-153">aClass A class of media type (e.g., &quot;application&quot;)</entry>
+  <entry key="MVN-154">The media types that correspond to the supplied type class</entry>
+  <entry key="MVN-155">Gets a list of media types that correspond to the supplied class.</entry>
+  <entry key="MVN-156">aHint A hint as to what class of media type we want</entry>
 
 </properties>

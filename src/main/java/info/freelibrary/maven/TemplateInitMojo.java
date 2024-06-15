@@ -34,11 +34,6 @@ import nu.xom.Serializer;
 public class TemplateInitMojo extends AbstractMojo {
 
     /**
-     * The XML namespace for the Maven POM.
-     */
-    static final String XMLNS = "http://maven.apache.org/POM/4.0.0";
-
-    /**
      * The POM file's artifact ID.
      */
     static final String ARTIFACT_ID = "artifactId";
@@ -47,11 +42,6 @@ public class TemplateInitMojo extends AbstractMojo {
      * The POM file's group ID.
      */
     static final String GROUP_ID = "groupId";
-
-    /**
-     * The POM file's version.
-     */
-    static final String VERSION = "version";
 
     /**
      * A property name for a function's name.
@@ -64,14 +54,14 @@ public class TemplateInitMojo extends AbstractMojo {
     static final String MODULE_GROUP = "module.group";
 
     /**
-     * A property name for the function's version.
-     */
-    static final String MODULE_VERSION = "module.version";
-
-    /**
      * A property name for a function's module.
      */
     static final String MODULE_NAME = "module.name";
+
+    /**
+     * A property name for the function's version.
+     */
+    static final String MODULE_VERSION = "module.version";
 
     /**
      * A properties element name.
@@ -84,15 +74,25 @@ public class TemplateInitMojo extends AbstractMojo {
     static final String SKIP = "skip";
 
     /**
+     * The POM file's version.
+     */
+    static final String VERSION = "version";
+
+    /**
+     * The XML namespace for the Maven POM.
+     */
+    static final String XMLNS = "http://maven.apache.org/POM/4.0.0";
+
+    /**
      * The logger for IfFileThenPropertiesMojo.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateInitMojo.class, MessageCodes.BUNDLE);
 
     /**
-     * The Maven project directory.
+     * The plugin's skip flag.
      */
-    @Parameter(defaultValue = "${project}")
-    protected MavenProject myProject;
+    @Parameter(alias = SKIP, property = SKIP, defaultValue = "false")
+    protected boolean myExecutionShouldBeSkipped;
 
     /**
      * The name of an optional module's artifactId.
@@ -107,22 +107,22 @@ public class TemplateInitMojo extends AbstractMojo {
     protected String myModuleGroup;
 
     /**
-     * The name of an optional module's version.
-     */
-    @Parameter(alias = MODULE_VERSION, property = MODULE_VERSION, defaultValue = "0.0.0-SNAPSHOT")
-    protected String myModuleVersion;
-
-    /**
      * The name of an optional module.
      */
     @Parameter(alias = MODULE_NAME, property = MODULE_NAME)
     protected String myModuleName;
 
     /**
-     * The plugin's skip flag.
+     * The name of an optional module's version.
      */
-    @Parameter(alias = SKIP, property = SKIP, defaultValue = "false")
-    protected boolean myExecutionShouldBeSkipped;
+    @Parameter(alias = MODULE_VERSION, property = MODULE_VERSION, defaultValue = "0.0.0-SNAPSHOT")
+    protected String myModuleVersion;
+
+    /**
+     * The Maven project directory.
+     */
+    @Parameter(defaultValue = "${project}")
+    protected MavenProject myProject;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -159,19 +159,79 @@ public class TemplateInitMojo extends AbstractMojo {
     }
 
     /**
-     * Write the supplied POM file to disk.
+     * Checks the module name for consistency with the defined modules.
      *
-     * @param aPOM A POM document
-     * @param aFile A POM file
-     * @throws IOException If there is trouble writing the file to disk
+     * @param aModuleList A list of modules defined in the POM
+     * @throws MojoExecutionException If the expected module cannot be found
      */
-    private void writePOM(final Document aPOM, final File aFile) throws IOException {
-        try (OutputStream outputStream = Files.newOutputStream(aFile.toPath())) {
-            final Serializer serializer = new Serializer(outputStream, StandardCharsets.UTF_8.name());
+    private void checkModuleConsistency(final Elements aModuleList) throws MojoExecutionException {
+        final Elements modules = aModuleList.get(0).getChildElements("module", XMLNS);
+        boolean hasModule = false;
 
-            serializer.setLineSeparator(System.lineSeparator());
-            serializer.write(aPOM);
+        for (int index = 0; index < modules.size(); index++) {
+            final Element module = modules.get(index);
+
+            if (module != null && myModuleName.equals(module.getValue())) {
+                hasModule = true;
+            }
         }
+
+        if (!hasModule) {
+            throw new MojoExecutionException(LOGGER.getMessage(MessageCodes.MVN_137, myModuleName));
+        }
+    }
+
+    /**
+     * Checks the parameters expected for a module template.
+     *
+     * @throws MojoExecutionException If required parameters are missing or invalid
+     */
+    private void checkModuleParameters() throws MojoExecutionException {
+        if (StringUtils.trimToNull(myModuleName) == null) {
+            throw new MojoExecutionException(LOGGER.getMessage(MessageCodes.MVN_134, MODULE_NAME));
+        }
+
+        if (StringUtils.trimToNull(myModuleGroup) == null) {
+            throw new MojoExecutionException(LOGGER.getMessage(MessageCodes.MVN_134, MODULE_GROUP));
+        }
+
+        if (StringUtils.trimToNull(myModuleArtifact) == null) {
+            throw new MojoExecutionException(LOGGER.getMessage(MessageCodes.MVN_134, MODULE_ARTIFACT));
+        }
+    }
+
+    /**
+     * Create an XML element in our namespace using the supplied name and value.
+     *
+     * @param aName An XML element name
+     * @param aValue An element value
+     * @return A newly created XML element
+     */
+    private Element createElement(final String aName, final String aValue) {
+        final Element element = new Element(aName, XMLNS);
+
+        element.appendChild(aValue);
+        return element;
+    }
+
+    /**
+     * Gets the POM's properties.
+     *
+     * @param aRoot The root element of the POM
+     * @return The properties element
+     */
+    private Element getProperties(final Element aRoot) {
+        final Elements propertiesList = aRoot.getChildElements(PROPERTIES, XMLNS);
+        final Element properties;
+
+        if (propertiesList.size() == 0) {
+            properties = new Element(PROPERTIES, XMLNS);
+            aRoot.appendChild(properties);
+        } else {
+            properties = propertiesList.get(0);
+        }
+
+        return properties;
     }
 
     /**
@@ -213,48 +273,6 @@ public class TemplateInitMojo extends AbstractMojo {
     }
 
     /**
-     * Checks the parameters expected for a module template.
-     *
-     * @throws MojoExecutionException If required parameters are missing or invalid
-     */
-    private void checkModuleParameters() throws MojoExecutionException {
-        if (StringUtils.trimToNull(myModuleName) == null) {
-            throw new MojoExecutionException(LOGGER.getMessage(MessageCodes.MVN_134, MODULE_NAME));
-        }
-
-        if (StringUtils.trimToNull(myModuleGroup) == null) {
-            throw new MojoExecutionException(LOGGER.getMessage(MessageCodes.MVN_134, MODULE_GROUP));
-        }
-
-        if (StringUtils.trimToNull(myModuleArtifact) == null) {
-            throw new MojoExecutionException(LOGGER.getMessage(MessageCodes.MVN_134, MODULE_ARTIFACT));
-        }
-    }
-
-    /**
-     * Checks the module name for consistency with the defined modules.
-     *
-     * @param aModuleList A list of modules defined in the POM
-     * @throws MojoExecutionException If the expected module cannot be found
-     */
-    private void checkModuleConsistency(final Elements aModuleList) throws MojoExecutionException {
-        final Elements modules = aModuleList.get(0).getChildElements("module", XMLNS);
-        boolean hasModule = false;
-
-        for (int index = 0; index < modules.size(); index++) {
-            final Element module = modules.get(index);
-
-            if (module != null && myModuleName.equals(module.getValue())) {
-                hasModule = true;
-            }
-        }
-
-        if (!hasModule) {
-            throw new MojoExecutionException(LOGGER.getMessage(MessageCodes.MVN_137, myModuleName));
-        }
-    }
-
-    /**
      * Updates a property in the POM file.
      *
      * @param aPropertyList A list of properties
@@ -278,36 +296,18 @@ public class TemplateInitMojo extends AbstractMojo {
     }
 
     /**
-     * Create an XML element in our namespace using the supplied name and value.
+     * Write the supplied POM file to disk.
      *
-     * @param aName An XML element name
-     * @param aValue An element value
-     * @return A newly created XML element
+     * @param aPOM A POM document
+     * @param aFile A POM file
+     * @throws IOException If there is trouble writing the file to disk
      */
-    private Element createElement(final String aName, final String aValue) {
-        final Element element = new Element(aName, XMLNS);
+    private void writePOM(final Document aPOM, final File aFile) throws IOException {
+        try (OutputStream outputStream = Files.newOutputStream(aFile.toPath())) {
+            final Serializer serializer = new Serializer(outputStream, StandardCharsets.UTF_8.name());
 
-        element.appendChild(aValue);
-        return element;
-    }
-
-    /**
-     * Gets the POM's properties.
-     *
-     * @param aRoot The root element of the POM
-     * @return The properties element
-     */
-    private Element getProperties(final Element aRoot) {
-        final Elements propertiesList = aRoot.getChildElements(PROPERTIES, XMLNS);
-        final Element properties;
-
-        if (propertiesList.size() == 0) {
-            properties = new Element(PROPERTIES, XMLNS);
-            aRoot.appendChild(properties);
-        } else {
-            properties = propertiesList.get(0);
+            serializer.setLineSeparator(System.lineSeparator());
+            serializer.write(aPOM);
         }
-
-        return properties;
     }
 }
