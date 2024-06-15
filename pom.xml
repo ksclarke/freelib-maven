@@ -55,7 +55,7 @@
 
     <!-- Our Maven mojo dependencies -->
     <roaster.version>2.29.0.Final</roaster.version>
-    <plexus.utils.version>3.3.0</plexus.utils.version>
+    <plexus.utils.version>4.0.1</plexus.utils.version>
 
     <!-- Test dependencies -->
     <test.harness.version>3.3.0</test.harness.version>
