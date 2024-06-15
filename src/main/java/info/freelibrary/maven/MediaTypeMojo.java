@@ -4,6 +4,7 @@ package info.freelibrary.maven;
 import static info.freelibrary.util.Constants.EOL;
 import static info.freelibrary.util.Constants.HASH;
 import static info.freelibrary.util.Constants.PERIOD;
+import static info.freelibrary.util.Constants.QUOTE;
 import static info.freelibrary.util.Constants.SLASH;
 import static info.freelibrary.util.Constants.SPACE;
 
@@ -51,23 +52,23 @@ import info.freelibrary.util.warnings.PMD;
  */
 @Mojo(name = MojoNames.GENERATE_MEDIATYPE, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 @SuppressWarnings({ PMD.EXCESSIVE_IMPORTS, Checkstyle.MULTIPLE_STRING_LITERALS, PMD.AVOID_DUPLICATE_LITERALS,
-    PMD.CONSECUTIVE_LITERAL_APPENDS, PMD.GOD_CLASS })
+    PMD.CONSECUTIVE_LITERAL_APPENDS, PMD.GOD_CLASS, PMD.TOO_MANY_STATIC_IMPORTS })
 public class MediaTypeMojo extends AbstractMojo {
 
-    /**
-     * A static value for the enumeration's class name.
-     */
+    /** A static value for the enumeration's class name. */
     private static final String CLASS_NAME = "MediaType";
 
-    /**
-     * The mojo's logger.
-     */
+    /** The mojo's logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaTypeMojo.class, MessageCodes.BUNDLE);
 
-    /**
-     * A constant for a quotation mark, used in the construction of strings.
-     */
-    private static final String QUOTE = "\"";
+    /** A {@code param} constant. */
+    private static final String PARAM_TAG = "@param";
+
+    /** A {@code return} constant. */
+    private static final String RETURN_TAG = "@return";
+
+    /** A constant for an asterisk. */
+    private static final String STAR = "*";
 
     /**
      * A configuration option for the generated sources directory.
@@ -140,9 +141,9 @@ public class MediaTypeMojo extends AbstractMojo {
             """;
 
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aExt The extension of the desired media type");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied extension");
-        javadoc.setText("Gets a media type from the supplied extension." + EOL + "*");
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_138);
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_139);
+        javadoc.setText(MessageCodes.MVN_140 + EOL + STAR);
     }
 
     /**
@@ -179,10 +180,10 @@ public class MediaTypeMojo extends AbstractMojo {
         }
 
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aExt The extension of the desired media type");
-        javadoc.addTagValue("@param", "aHint A class of type (e.g. 'audio' or 'application')");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied extension");
-        javadoc.setText("Gets a media type from the supplied extension." + EOL + "*");
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_138);
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_141);
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_139);
+        javadoc.setText(MessageCodes.MVN_140 + EOL + STAR);
     }
 
     /**
@@ -212,9 +213,9 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the fromString method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aType A type of media type");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied type");
-        javadoc.setText("Gets a media type from the supplied type." + EOL + "*");
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_146);
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_147);
+        javadoc.setText(MessageCodes.MVN_148 + EOL + STAR);
     }
 
     /**
@@ -226,8 +227,8 @@ public class MediaTypeMojo extends AbstractMojo {
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         javadoc = aSource.addMethod("public String getExt() { return myExts[0]; }").getJavaDoc();
-        javadoc.addTagValue("@return", "The first relevant media-type extension");
-        javadoc.setText("Gets the first relevant media-type extension.");
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_149);
+        javadoc.setText(MessageCodes.MVN_150);
     }
 
     /**
@@ -239,8 +240,8 @@ public class MediaTypeMojo extends AbstractMojo {
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         javadoc = aSource.addMethod("public String[] getExts() { return myExts; }").getJavaDoc();
-        javadoc.addTagValue("@return", "An array of relevant media-type extensions");
-        javadoc.setText("Gets an array of relevant media-type extensions.");
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_151);
+        javadoc.setText(MessageCodes.MVN_152);
     }
 
     /**
@@ -269,15 +270,15 @@ public class MediaTypeMojo extends AbstractMojo {
             aSource.addImport(List.class);
         }
 
-        if (!aSource.hasImport(java.util.ArrayList.class)) {
-            aSource.addImport(java.util.ArrayList.class);
+        if (!aSource.hasImport(ArrayList.class)) {
+            aSource.addImport(ArrayList.class);
         }
 
         // Add Javadocs for this method
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aClass A class of media type (e.g., &quot;application&quot;)");
-        javadoc.addTagValue("@return", "The media types that correspond to the supplied type class");
-        javadoc.setText("Gets a list of media types that correspond to the supplied class." + EOL + "*");
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_153);
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_154);
+        javadoc.setText(MessageCodes.MVN_155 + EOL + STAR);
     }
 
     /**
@@ -301,9 +302,9 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the parse method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aURI A string URI from which to parse the media type");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
-        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_142);
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_143);
+        javadoc.setText(MessageCodes.MVN_144 + EOL + STAR);
     }
 
     /**
@@ -327,10 +328,10 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the parse method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aURI A string URI from which to parse the media type");
-        javadoc.addTagValue("@param", "aHint A class of type (e.g. 'audio' or 'application')");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
-        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_142);
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_141);
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_143);
+        javadoc.setText(MessageCodes.MVN_144 + EOL + STAR);
     }
 
     /**
@@ -354,9 +355,9 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the parse method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aURI A URI from which to parse the media type");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
-        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_145);
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_143);
+        javadoc.setText(MessageCodes.MVN_144 + EOL + STAR);
     }
 
     /**
@@ -404,10 +405,10 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the parse method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue("@param", "aURI A URI from which to parse the media type");
-        javadoc.addTagValue("@param", "aHint A hint as to what class of media type we want");
-        javadoc.addTagValue("@return", "The media type that corresponds to the supplied URI");
-        javadoc.setText("Gets a media type from the supplied URI's extension." + EOL + "*");
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_145);
+        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_156);
+        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_143);
+        javadoc.setText(MessageCodes.MVN_144 + EOL + STAR);
     }
 
     /**
