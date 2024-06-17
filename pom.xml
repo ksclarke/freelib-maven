@@ -42,7 +42,7 @@
   <properties>
     <!-- Project specific dependencies -->
     <xom.version>1.3.9</xom.version>
-    <maven.version>3.9.7</maven.version>
+    <maven.version>3.9.8</maven.version>
     <oshi.core.version>6.6.1</oshi.core.version>
     <freelib.utils.version>5.0.0</freelib.utils.version>
     <maven.plugin.version>3.13.1</maven.plugin.version>
