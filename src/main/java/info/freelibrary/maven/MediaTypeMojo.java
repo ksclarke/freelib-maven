@@ -141,9 +141,9 @@ public class MediaTypeMojo extends AbstractMojo {
             """;
 
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_138);
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_139);
-        javadoc.setText(MessageCodes.MVN_140 + EOL + STAR);
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_138));
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_139));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_140) + EOL + STAR);
     }
 
     /**
@@ -180,10 +180,10 @@ public class MediaTypeMojo extends AbstractMojo {
         }
 
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_138);
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_141);
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_139);
-        javadoc.setText(MessageCodes.MVN_140 + EOL + STAR);
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_138));
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_141));
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_139));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_140) + EOL + STAR);
     }
 
     /**
@@ -213,9 +213,9 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the fromString method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_146);
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_147);
-        javadoc.setText(MessageCodes.MVN_148 + EOL + STAR);
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_146));
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_147));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_148) + EOL + STAR);
     }
 
     /**
@@ -227,8 +227,8 @@ public class MediaTypeMojo extends AbstractMojo {
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         javadoc = aSource.addMethod("public String getExt() { return myExts[0]; }").getJavaDoc();
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_149);
-        javadoc.setText(MessageCodes.MVN_150);
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_149));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_150));
     }
 
     /**
@@ -240,8 +240,8 @@ public class MediaTypeMojo extends AbstractMojo {
         final JavaDocSource<MethodSource<JavaEnumSource>> javadoc;
 
         javadoc = aSource.addMethod("public String[] getExts() { return myExts; }").getJavaDoc();
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_151);
-        javadoc.setText(MessageCodes.MVN_152);
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_151));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_152));
     }
 
     /**
@@ -276,9 +276,9 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add Javadocs for this method
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_153);
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_154);
-        javadoc.setText(MessageCodes.MVN_155 + EOL + STAR);
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_153));
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_154));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_155) + EOL + STAR);
     }
 
     /**
@@ -302,9 +302,9 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the parse method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_142);
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_143);
-        javadoc.setText(MessageCodes.MVN_144 + EOL + STAR);
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_142));
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_143));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_144) + EOL + STAR);
     }
 
     /**
@@ -328,10 +328,10 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the parse method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_142);
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_141);
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_143);
-        javadoc.setText(MessageCodes.MVN_144 + EOL + STAR);
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_142));
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_141));
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_143));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_144) + EOL + STAR);
     }
 
     /**
@@ -355,9 +355,9 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the parse method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_145);
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_143);
-        javadoc.setText(MessageCodes.MVN_144 + EOL + STAR);
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_145));
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_143));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_144) + EOL + STAR);
     }
 
     /**
@@ -405,10 +405,10 @@ public class MediaTypeMojo extends AbstractMojo {
 
         // Add the parse method to the source
         javadoc = aSource.addMethod(method).getJavaDoc();
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_145);
-        javadoc.addTagValue(PARAM_TAG, MessageCodes.MVN_156);
-        javadoc.addTagValue(RETURN_TAG, MessageCodes.MVN_143);
-        javadoc.setText(MessageCodes.MVN_144 + EOL + STAR);
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_145));
+        javadoc.addTagValue(PARAM_TAG, LOGGER.getMessage(MessageCodes.MVN_156));
+        javadoc.addTagValue(RETURN_TAG, LOGGER.getMessage(MessageCodes.MVN_143));
+        javadoc.setText(LOGGER.getMessage(MessageCodes.MVN_144) + EOL + STAR);
     }
 
     /**
