@@ -368,7 +368,7 @@
   <parent>
     <artifactId>freelib-parent</artifactId>
     <groupId>info.freelibrary</groupId>
-    <version>9.0.0</version>
+    <version>10.0.1</version>
   </parent>
 
 </project>
