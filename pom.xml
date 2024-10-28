@@ -45,7 +45,7 @@
     <maven.version>3.9.9</maven.version>
     <oshi.core.version>6.6.5</oshi.core.version>
     <freelib.utils.version>5.0.5</freelib.utils.version>
-    <maven.plugin.version>3.15.0</maven.plugin.version>
+    <maven.plugin.version>3.15.1</maven.plugin.version>
     <slf4j.simple.logger.version>2.0.16</slf4j.simple.logger.version>
 
     <!-- Transitive dependencies made explicit for security reasons -->
